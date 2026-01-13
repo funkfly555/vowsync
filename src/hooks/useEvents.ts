@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabase';
 import type { Event, EventFormData, EventWithWedding } from '@/types/event';
 import { toast } from 'sonner';
 
-// List events for a wedding
+// List events for a wedding (sorted chronologically)
 export function useEvents(weddingId: string) {
   return useQuery({
     queryKey: ['events', weddingId],
@@ -12,6 +12,8 @@ export function useEvents(weddingId: string) {
         .from('events')
         .select('*')
         .eq('wedding_id', weddingId)
+        .order('event_date', { ascending: true })
+        .order('event_start_time', { ascending: true })
         .order('event_order', { ascending: true });
 
       if (error) throw error;
