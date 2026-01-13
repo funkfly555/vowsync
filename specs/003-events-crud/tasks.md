@@ -19,10 +19,10 @@
 
 **Purpose**: Types, constants, and utilities needed by all user stories
 
-- [ ] T001 [P] Create Event TypeScript types in src/types/event.ts
-- [ ] T002 [P] Add event constants (EVENT_TYPE_OPTIONS, EVENT_ORDER_OPTIONS, EVENT_COLORS) to src/lib/constants.ts
-- [ ] T003 [P] Add event utility functions (getEventColor, calculateDuration, formatDuration, formatTime, getEventGuestCount) to src/lib/utils.ts
-- [ ] T004 [P] Create event validation schema with Zod in src/schemas/event.ts
+- [x] T001 [P] Create Event TypeScript types in src/types/event.ts
+- [x] T002 [P] Add event constants (EVENT_TYPE_OPTIONS, EVENT_ORDER_OPTIONS, EVENT_COLORS) to src/lib/constants.ts
+- [x] T003 [P] Add event utility functions (getEventColor, calculateDuration, formatDuration, formatTime, getEventGuestCount) to src/lib/utils.ts
+- [x] T004 [P] Create event validation schema with Zod in src/schemas/event.ts
 
 **Checkpoint**: Foundation types and utilities ready - user story implementation can begin
 
@@ -34,12 +34,12 @@
 
 **CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T005 Create useEvents hook with list query in src/hooks/useEvents.ts
-- [ ] T006 Add create mutation to useEvents hook in src/hooks/useEvents.ts
-- [ ] T007 Add update mutation to useEvents hook in src/hooks/useEvents.ts
-- [ ] T008 Add delete mutation to useEvents hook in src/hooks/useEvents.ts
-- [ ] T009 Add getNextAvailableOrder helper to useEvents hook in src/hooks/useEvents.ts
-- [ ] T010 Add routes for event pages to src/App.tsx
+- [x] T005 Create useEvents hook with list query in src/hooks/useEvents.ts
+- [x] T006 Add create mutation to useEvents hook in src/hooks/useEvents.ts
+- [x] T007 Add update mutation to useEvents hook in src/hooks/useEvents.ts
+- [x] T008 Add delete mutation to useEvents hook in src/hooks/useEvents.ts
+- [x] T009 Add getNextAvailableOrder helper to useEvents hook in src/hooks/useEvents.ts
+- [x] T010 Add routes for event pages to src/App.tsx
 
 **Checkpoint**: Data layer ready - user story implementation can now begin in parallel
 
@@ -53,12 +53,12 @@
 
 ### Implementation for User Story 1
 
-- [ ] T011 [P] [US1] Create DurationDisplay component in src/components/events/DurationDisplay.tsx
-- [ ] T012 [P] [US1] Create EmptyEventsState component with "No events yet" message in src/components/events/EmptyEventsState.tsx
-- [ ] T013 [US1] Create EventCard component with color-coded border, time, location, duration in src/components/events/EventCard.tsx
-- [ ] T014 [US1] Create EventTimeline component with vertical timeline and connecting lines in src/components/events/EventTimeline.tsx
-- [ ] T015 [US1] Create EventTimelinePage with header, back button, and Add Event button in src/pages/EventTimelinePage.tsx
-- [ ] T016 [US1] Add "View Events" navigation link to WeddingCard in src/components/weddings/WeddingCard.tsx
+- [x] T011 [P] [US1] Create DurationDisplay component in src/components/events/DurationDisplay.tsx
+- [x] T012 [P] [US1] Create EmptyEventsState component with "No events yet" message in src/components/events/EmptyEventsState.tsx
+- [x] T013 [US1] Create EventCard component with color-coded border, time, location, duration in src/components/events/EventCard.tsx
+- [x] T014 [US1] Create EventTimeline component with vertical timeline and connecting lines in src/components/events/EventTimeline.tsx
+- [x] T015 [US1] Create EventTimelinePage with header, back button, and Add Event button in src/pages/EventTimelinePage.tsx
+- [x] T016 [US1] Add "View Events" navigation link to WeddingCard in src/components/weddings/WeddingCard.tsx
 
 **Checkpoint**: User Story 1 complete - timeline displays events with colors, duration, guest counts. Independently testable.
 
@@ -72,11 +72,11 @@
 
 ### Implementation for User Story 2
 
-- [ ] T017 [US2] Create EventForm component with all fields (order, name, type, date, times, location, notes) in src/components/events/EventForm.tsx
-- [ ] T018 [US2] Add real-time duration preview to EventForm in src/components/events/EventForm.tsx
-- [ ] T019 [US2] Add order uniqueness validation with warning message to EventForm in src/components/events/EventForm.tsx
-- [ ] T020 [US2] Add date warning when event_date differs from wedding_date by >7 days to EventForm in src/components/events/EventForm.tsx
-- [ ] T021 [US2] Create CreateEventPage with form and navigation in src/pages/CreateEventPage.tsx
+- [x] T017 [US2] Create EventForm component with all fields (order, name, type, date, times, location, notes) in src/components/events/EventForm.tsx
+- [x] T018 [US2] Add real-time duration preview to EventForm in src/components/events/EventForm.tsx
+- [x] T019 [US2] Add order uniqueness validation with warning message to EventForm in src/components/events/EventForm.tsx
+- [x] T020 [US2] Add date warning when event_date differs from wedding_date by >7 days to EventForm in src/components/events/EventForm.tsx
+- [x] T021 [US2] Create CreateEventPage with form and navigation in src/pages/CreateEventPage.tsx
 
 **Checkpoint**: User Story 2 complete - can create events with full validation. Independently testable.
 
@@ -90,9 +90,9 @@
 
 ### Implementation for User Story 3
 
-- [ ] T022 [US3] Create EditEventPage with pre-populated form in src/pages/EditEventPage.tsx
-- [ ] T023 [US3] Add guest attendance warning when changing event_order in EditEventPage in src/pages/EditEventPage.tsx
-- [ ] T024 [US3] Make EventCard clickable to navigate to edit page in src/components/events/EventCard.tsx
+- [x] T022 [US3] Create EditEventPage with pre-populated form in src/pages/EditEventPage.tsx
+- [x] T023 [US3] Add guest attendance warning when changing event_order in EditEventPage in src/pages/EditEventPage.tsx
+- [x] T024 [US3] Make EventCard clickable to navigate to edit page in src/components/events/EventCard.tsx
 
 **Checkpoint**: User Story 3 complete - can edit events with all validations. Independently testable.
 
@@ -106,9 +106,9 @@
 
 ### Implementation for User Story 4
 
-- [ ] T025 [US4] Create DeleteEventDialog component with confirmation in src/components/events/DeleteEventDialog.tsx
-- [ ] T026 [US4] Add delete button to EventCard in src/components/events/EventCard.tsx
-- [ ] T027 [US4] Add delete button (red, bottom left) to EditEventPage in src/pages/EditEventPage.tsx
+- [x] T025 [US4] Create DeleteEventDialog component with confirmation in src/components/events/DeleteEventDialog.tsx
+- [x] T026 [US4] Add delete button to EventCard in src/components/events/EventCard.tsx
+- [x] T027 [US4] Add delete button (red, bottom left) to EditEventPage in src/pages/EditEventPage.tsx
 
 **Checkpoint**: User Story 4 complete - can delete events with cascade warning. Independently testable.
 
@@ -118,11 +118,11 @@
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T028 [P] Add mobile responsive styles to EventTimeline in src/components/events/EventTimeline.tsx
-- [ ] T029 [P] Add mobile responsive styles to EventForm in src/components/events/EventForm.tsx
-- [ ] T030 [P] Ensure all interactive elements are keyboard accessible
-- [ ] T031 Verify all toast notifications for create, update, delete actions
-- [ ] T032 Run quickstart.md validation (manual testing with Playwright MCP)
+- [x] T028 [P] Add mobile responsive styles to EventTimeline in src/components/events/EventTimeline.tsx
+- [x] T029 [P] Add mobile responsive styles to EventForm in src/components/events/EventForm.tsx
+- [x] T030 [P] Ensure all interactive elements are keyboard accessible
+- [x] T031 Verify all toast notifications for create, update, delete actions
+- [x] T032 Run quickstart.md validation (manual testing with Playwright MCP)
 
 ---
 

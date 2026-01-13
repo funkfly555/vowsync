@@ -5,6 +5,9 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { WeddingListPage } from './pages/WeddingListPage';
 import { CreateWeddingPage } from './pages/CreateWeddingPage';
 import { EditWeddingPage } from './pages/EditWeddingPage';
+import { EventTimelinePage } from './pages/EventTimelinePage';
+import { CreateEventPage } from './pages/CreateEventPage';
+import { EditEventPage } from './pages/EditEventPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,6 +28,9 @@ function App() {
             <Route path="/" element={<WeddingListPage />} />
             <Route path="/weddings/new" element={<CreateWeddingPage />} />
             <Route path="/weddings/:id/edit" element={<EditWeddingPage />} />
+            <Route path="/weddings/:weddingId/events" element={<EventTimelinePage />} />
+            <Route path="/weddings/:weddingId/events/new" element={<CreateEventPage />} />
+            <Route path="/weddings/:weddingId/events/:eventId/edit" element={<EditEventPage />} />
           </Routes>
         </BrowserRouter>
         <Toaster position="top-right" richColors />

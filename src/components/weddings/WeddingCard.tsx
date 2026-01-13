@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { StatusBadge } from './StatusBadge';
 import { formatDate, cn } from '@/lib/utils';
-import { Calendar, MapPin, Users, Trash2 } from 'lucide-react';
+import { Calendar, MapPin, Users, Trash2, CalendarDays } from 'lucide-react';
 import type { Wedding } from '@/types/wedding';
 
 interface WeddingCardProps {
@@ -71,7 +71,19 @@ export function WeddingCard({ wedding, onDeleteClick }: WeddingCardProps) {
           <span>{totalGuests} guests</span>
         </div>
 
-        <div className="flex justify-end pt-2">
+        <div className="flex justify-between items-center pt-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/weddings/${wedding.id}/events`);
+            }}
+            aria-label={`View events for ${wedding.bride_name} and ${wedding.groom_name}`}
+          >
+            <CalendarDays className="h-4 w-4 mr-1" />
+            Events
+          </Button>
           <Button
             variant="ghost"
             size="sm"
