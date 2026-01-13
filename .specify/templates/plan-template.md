@@ -31,7 +31,25 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+**VowSync Constitutional Gates:**
+
+| Principle | Gate | Status |
+|-----------|------|--------|
+| I. Technical Stack | Uses React 18+, Vite, Tailwind, Shadcn/ui, Supabase | [ ] |
+| II. Design System | Follows color palette, typography, spacing specs | [ ] |
+| III. Database | UUID PKs, RLS enabled, proper constraints | [ ] |
+| IV. Code Quality | TypeScript strict, functional components, proper naming | [ ] |
+| V. Accessibility | WCAG 2.1 AA compliance, contrast, keyboard nav | [ ] |
+| VI. Business Logic | Accurate calculations, proper validations | [ ] |
+| VII. Security | RLS, no API key exposure, input validation | [ ] |
+| VIII. Testing | Manual testing with Playwright MCP only | [ ] |
+| IX. Error Handling | Toast notifications, error boundaries, loading states | [ ] |
+| X. Performance | FCP < 1.2s, TTI < 3.5s, lazy loading | [ ] |
+| XI. API Handling | Standard response format, error pattern | [ ] |
+| XII. Git Workflow | Feature branches, descriptive commits | [ ] |
+| XIII. Documentation | JSDoc for complex functions, README complete | [ ] |
+| XIV. Environment | Uses .env, no secrets in git | [ ] |
+| XV. Prohibited | No violations of prohibited practices | [ ] |
 
 ## Project Structure
 
