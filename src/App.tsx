@@ -10,6 +10,7 @@ import { EventTimelinePage } from './pages/EventTimelinePage';
 import { CreateEventPage } from './pages/CreateEventPage';
 import { EditEventPage } from './pages/EditEventPage';
 import { WeddingDashboardPage } from './pages/WeddingDashboardPage';
+import { GuestListPage } from './pages/GuestListPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -38,6 +39,7 @@ function App() {
               <Route path="/weddings/:weddingId/events" element={<EventTimelinePage />} />
               <Route path="/weddings/:weddingId/events/new" element={<CreateEventPage />} />
               <Route path="/weddings/:weddingId/events/:eventId/edit" element={<EditEventPage />} />
+              <Route path="/weddings/:weddingId/guests" element={<GuestListPage />} />
             </Route>
           </Routes>
         </BrowserRouter>

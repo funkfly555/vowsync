@@ -11,6 +11,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-13
 - Supabase PostgreSQL (existing tables: weddings, events, guests, activity_log, budget_categories) (004-wedding-dashboard)
 - TypeScript 5.x with React 18+ + React Router v6, Tailwind CSS v3, Shadcn/ui, Lucide React, Zustand (drawer state) (005-navigation-shell)
 - N/A (no new database tables) (005-navigation-shell)
+- TypeScript 5.x with React 18+ + React Router v6, TanStack Query v5, Shadcn/ui, Tailwind CSS v3, Lucide React, date-fns, Zod (006-guest-list)
+- Supabase PostgreSQL (`guests` and `guest_event_attendance` tables exist) (006-guest-list)
 
 - SQL (PostgreSQL 15+ via Supabase) + Supabase (PostgreSQL, Auth, Storage) (001-database-schema-foundation)
 
@@ -30,9 +32,9 @@ tests/
 SQL (PostgreSQL 15+ via Supabase): Follow standard conventions
 
 ## Recent Changes
+- 006-guest-list: Added TypeScript 5.x with React 18+ + React Router v6, TanStack Query v5, Shadcn/ui, Tailwind CSS v3, Lucide React, date-fns, Zod
 - 005-navigation-shell: Added TypeScript 5.x with React 18+ + React Router v6, Tailwind CSS v3, Shadcn/ui, Lucide React, Zustand (drawer state)
 - 004-wedding-dashboard: Added TypeScript 5.x with React 18+ + React Router v6, TanStack Query v5, Shadcn/ui, Tailwind CSS v3, date-fns, Lucide React, Zod
-- 003-events-crud: Added TypeScript 5.x with React 18+ + React Router v6, Tailwind CSS v3, Shadcn/ui, React Hook Form, Zod, TanStack Query v5, date-fns, Lucide React
 
 
 <!-- MANUAL ADDITIONS START -->

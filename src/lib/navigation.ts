@@ -16,8 +16,7 @@ export const mainNavItems: NavigationItem[] = [
     label: 'Guests',
     icon: 'Users',
     path: '/weddings/:id/guests',
-    isPlaceholder: true,
-    placeholderPhase: 'Phase 6',
+    isPlaceholder: false,
   },
   {
     id: 'vendors',
