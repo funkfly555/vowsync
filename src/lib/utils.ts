@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { format, parseISO } from "date-fns"
+import { format, parseISO, differenceInDays, formatDistanceToNow } from "date-fns"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -79,4 +79,39 @@ export function getEventGuestCount(event: {
   expected_guests_children: number;
 }): number {
   return (event.expected_guests_adults || 0) + (event.expected_guests_children || 0);
+}
+
+// Dashboard utility functions
+
+/**
+ * Calculate days until a given date from today
+ * @param dateString ISO date string (YYYY-MM-DD)
+ * @returns Number of days until the date (negative if past)
+ */
+export function calculateDaysUntil(dateString: string): number {
+  const targetDate = parseISO(dateString);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return differenceInDays(targetDate, today);
+}
+
+/**
+ * Format budget percentage for display
+ * @param spent Amount spent
+ * @param total Total budget
+ * @returns Formatted percentage string or "Not set" if total is 0
+ */
+export function formatBudgetPercentage(spent: number, total: number): string {
+  if (total <= 0) return 'Not set';
+  const percentage = Math.round((spent / total) * 100);
+  return `${percentage}%`;
+}
+
+/**
+ * Get relative time string for activity timestamps
+ * @param dateString ISO timestamp string
+ * @returns Human-readable relative time (e.g., "2 hours ago")
+ */
+export function getRelativeTimeString(dateString: string): string {
+  return formatDistanceToNow(parseISO(dateString), { addSuffix: true });
 }

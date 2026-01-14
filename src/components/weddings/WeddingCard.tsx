@@ -16,7 +16,7 @@ export function WeddingCard({ wedding, onDeleteClick }: WeddingCardProps) {
   const totalGuests = wedding.guest_count_adults + wedding.guest_count_children;
 
   const handleCardClick = () => {
-    navigate(`/weddings/${wedding.id}/edit`);
+    navigate(`/weddings/${wedding.id}`);
   };
 
   const handleDeleteClick = (e: React.MouseEvent) => {
@@ -40,7 +40,7 @@ export function WeddingCard({ wedding, onDeleteClick }: WeddingCardProps) {
         }
       }}
       role="button"
-      aria-label={`Edit wedding for ${wedding.bride_name} and ${wedding.groom_name}`}
+      aria-label={`View dashboard for ${wedding.bride_name} and ${wedding.groom_name}`}
     >
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between gap-2">
