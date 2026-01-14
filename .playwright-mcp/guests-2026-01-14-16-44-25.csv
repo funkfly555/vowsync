@@ -1,0 +1,5 @@
+﻿Name,Type,RSVP Status,RSVP Deadline,RSVP Received,Table Number
+Jack Johnson,Adult,Yes,2026-01-01,2026-01-01,1
+John Smith,Adult,Overdue,2026-01-01,,1
+Koos,Adult,Yes,2026-01-14,2026-01-14,1
+Piettie,Child,Pending,,,

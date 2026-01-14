@@ -1,6 +1,7 @@
 /**
- * useGuests Hook - TanStack Query hook for guest list data
+ * useGuests Hook - TanStack Query hooks for guest data
  * @feature 006-guest-list
+ * @feature 007-guest-crud-attendance
  */
 
 import { useQuery } from '@tanstack/react-query';
@@ -12,6 +13,8 @@ import {
   PAGE_SIZE,
   toGuestDisplayItem,
   calculateRsvpStatus,
+  GuestWithAttendance,
+  GuestEventAttendance,
 } from '@/types/guest';
 
 interface UseGuestsParams {
@@ -166,6 +169,87 @@ export function useWeddingEvents(weddingId: string) {
       const { data, error } = await supabase
         .from('events')
         .select('id, event_name')
+        .eq('wedding_id', weddingId)
+        .order('event_order', { ascending: true });
+
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!weddingId,
+  });
+}
+
+// =============================================================================
+// Single Guest Fetch (Phase 6B - Edit Mode)
+// =============================================================================
+
+interface UseGuestReturn {
+  guest: GuestWithAttendance | null;
+  isLoading: boolean;
+  isError: boolean;
+  error: Error | null;
+}
+
+/**
+ * Fetch a single guest with their event attendance records
+ * Used for edit mode in GuestModal
+ */
+export function useGuest(guestId: string | undefined): UseGuestReturn {
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ['guest', guestId],
+    queryFn: async (): Promise<GuestWithAttendance> => {
+      if (!guestId) throw new Error('Guest ID is required');
+
+      // Fetch guest
+      const { data: guest, error: guestError } = await supabase
+        .from('guests')
+        .select('*')
+        .eq('id', guestId)
+        .single();
+
+      if (guestError) {
+        console.error('Error fetching guest:', guestError);
+        throw guestError;
+      }
+
+      // Fetch attendance records
+      const { data: attendance, error: attendanceError } = await supabase
+        .from('guest_event_attendance')
+        .select('*')
+        .eq('guest_id', guestId);
+
+      if (attendanceError) {
+        console.error('Error fetching attendance:', attendanceError);
+        // Don't throw - guest exists, attendance is secondary
+      }
+
+      return {
+        ...guest,
+        event_attendance: (attendance as GuestEventAttendance[]) || [],
+      };
+    },
+    enabled: !!guestId,
+  });
+
+  return {
+    guest: data || null,
+    isLoading,
+    isError,
+    error: error as Error | null,
+  };
+}
+
+/**
+ * Fetch all events for a wedding for attendance tracking
+ * Used for Events tab in GuestModal
+ */
+export function useWeddingEventsForAttendance(weddingId: string) {
+  return useQuery({
+    queryKey: ['events-attendance', weddingId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('events')
+        .select('id, event_name, event_order, event_date')
         .eq('wedding_id', weddingId)
         .order('event_order', { ascending: true });
 

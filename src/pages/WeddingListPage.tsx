@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { SearchInput } from '@/components/weddings/SearchInput';
@@ -22,12 +23,18 @@ const defaultFilters: WeddingListFilters = {
 };
 
 export function WeddingListPage() {
+  const { user, isLoading: isAuthLoading } = useAuth();
   const [filters, setFilters] = useState<WeddingListFilters>(defaultFilters);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [weddingToDelete, setWeddingToDelete] = useState<Wedding | null>(null);
 
   const { data: weddings, isLoading, isError, error } = useWeddings(filters);
   const deleteMutation = useDeleteWedding();
+
+  // Redirect to login if not authenticated
+  if (!isAuthLoading && !user) {
+    return <Navigate to="/login" replace />;
+  }
 
   const handleSearchChange = (search: string) => {
     setFilters((prev) => ({ ...prev, search }));

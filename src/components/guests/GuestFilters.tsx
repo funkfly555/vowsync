@@ -1,7 +1,8 @@
 /**
  * GuestFilters - Container component for search and filter controls
  * @feature 006-guest-list
- * @task T021
+ * @feature 007-guest-crud-attendance
+ * @task T021, T038, T040
  *
  * Layout per PRD (05-PAGE-LAYOUTS.md):
  * - Row 1: Full-width search input
@@ -10,7 +11,7 @@
 
 import { ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
-import { GuestFilters as GuestFiltersType, GuestType, RsvpStatus } from '@/types/guest';
+import { GuestDisplayItem, GuestFilters as GuestFiltersType, GuestType, RsvpStatus } from '@/types/guest';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -22,6 +23,7 @@ import { SearchInput } from './SearchInput';
 import { TypeFilter } from './TypeFilter';
 import { RsvpFilter } from './RsvpFilter';
 import { EventFilter } from './EventFilter';
+import { exportToCsv } from '@/lib/export';
 
 interface Event {
   id: string;
@@ -32,15 +34,21 @@ interface GuestFiltersProps {
   filters: GuestFiltersType;
   onFiltersChange: (filters: Partial<GuestFiltersType>) => void;
   events: Event[];
+  guests?: GuestDisplayItem[];
 }
 
-export function GuestFilters({ filters, onFiltersChange, events }: GuestFiltersProps) {
+export function GuestFilters({ filters, onFiltersChange, events, guests = [] }: GuestFiltersProps) {
   const handleExportCsv = () => {
-    toast.info('Coming in Phase 6B');
+    if (guests.length === 0) {
+      toast.warning('No guests to export');
+      return;
+    }
+    exportToCsv(guests);
+    toast.success(`Exported ${guests.length} guests to CSV`);
   };
 
   const handleExportExcel = () => {
-    toast.info('Coming in Phase 6B');
+    toast.info('Excel export coming in a future phase');
   };
 
   return (
