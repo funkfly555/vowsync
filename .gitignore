@@ -6,6 +6,11 @@ dist/
 build/
 .next/
 out/
+.vite/
+
+# Playwright
+playwright-report/
+test-results/
 
 # Environment variables
 .env

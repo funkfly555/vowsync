@@ -15,6 +15,10 @@ Auto-generated from all feature plans. Last updated: 2026-01-13
 - Supabase PostgreSQL (`guests` and `guest_event_attendance` tables exist) (006-guest-list)
 - TypeScript 5.x with React 18+ + React Hook Form, Zod, TanStack Query v5, Shadcn/ui, date-fns, Lucide React (007-guest-crud-attendance)
 - Supabase PostgreSQL (guests, guest_event_attendance tables exist) (007-guest-crud-attendance)
+- [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION] + [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION] (008-vendor-management)
+- [if applicable, e.g., PostgreSQL, CoreData, files or N/A] (008-vendor-management)
+- TypeScript 5.x with React 18+ (strict mode) + React Router v6, TanStack Query v5, React Hook Form, Zod, Shadcn/ui, Tailwind CSS v3, date-fns, Lucide React (008-vendor-management)
+- Supabase PostgreSQL (vendors table exists with RLS enabled) (008-vendor-management)
 
 - SQL (PostgreSQL 15+ via Supabase) + Supabase (PostgreSQL, Auth, Storage) (001-database-schema-foundation)
 
@@ -34,9 +38,9 @@ tests/
 SQL (PostgreSQL 15+ via Supabase): Follow standard conventions
 
 ## Recent Changes
+- 008-vendor-management: Added TypeScript 5.x with React 18+ (strict mode) + React Router v6, TanStack Query v5, React Hook Form, Zod, Shadcn/ui, Tailwind CSS v3, date-fns, Lucide React
+- 008-vendor-management: Added [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION] + [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]
 - 007-guest-crud-attendance: Added TypeScript 5.x with React 18+ + React Hook Form, Zod, TanStack Query v5, Shadcn/ui, date-fns, Lucide React
-- 006-guest-list: Added TypeScript 5.x with React 18+ + React Router v6, TanStack Query v5, Shadcn/ui, Tailwind CSS v3, Lucide React, date-fns, Zod
-- 005-navigation-shell: Added TypeScript 5.x with React 18+ + React Router v6, Tailwind CSS v3, Shadcn/ui, Lucide React, Zustand (drawer state)
 
 
 <!-- MANUAL ADDITIONS START -->

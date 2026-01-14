@@ -23,8 +23,7 @@ export const mainNavItems: NavigationItem[] = [
     label: 'Vendors',
     icon: 'Handshake',
     path: '/weddings/:id/vendors',
-    isPlaceholder: true,
-    placeholderPhase: 'Phase 8',
+    isPlaceholder: false,
   },
   {
     id: 'events',
