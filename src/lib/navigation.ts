@@ -45,8 +45,7 @@ export const mainNavItems: NavigationItem[] = [
     label: 'Budget',
     icon: 'DollarSign',
     path: '/weddings/:id/budget',
-    isPlaceholder: true,
-    placeholderPhase: 'Phase 9',
+    isPlaceholder: false,
   },
   {
     id: 'tasks',

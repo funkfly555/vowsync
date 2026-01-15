@@ -14,6 +14,7 @@ import { WeddingDashboardPage } from './pages/WeddingDashboardPage';
 import { GuestListPage } from './pages/GuestListPage';
 import { VendorsPage } from './pages/vendors/VendorsPage';
 import { VendorDetailPage } from './pages/vendors/VendorDetailPage';
+import { BudgetPage } from './pages/budget/BudgetPage';
 import { LoginPage } from './pages/LoginPage';
 
 const queryClient = new QueryClient({
@@ -50,6 +51,7 @@ function App() {
                 <Route path="/weddings/:weddingId/guests" element={<GuestListPage />} />
                 <Route path="/weddings/:weddingId/vendors" element={<VendorsPage />} />
                 <Route path="/weddings/:weddingId/vendors/:vendorId" element={<VendorDetailPage />} />
+                <Route path="/weddings/:weddingId/budget" element={<BudgetPage />} />
               </Route>
             </Routes>
           </BrowserRouter>
