@@ -340,3 +340,172 @@ export const VENDOR_STATUS_CONFIG: Record<VendorStatus, { label: string }> = {
   inactive: { label: 'Inactive' },
   backup: { label: 'Backup' },
 };
+
+// =============================================================================
+// Phase 7B: Vendor Payment Schedule Types
+// =============================================================================
+
+/**
+ * Database entity - mirrors Supabase vendor_payment_schedule table
+ * T001: VendorPaymentSchedule interface
+ */
+export interface VendorPaymentSchedule {
+  id: string;
+  vendor_id: string;
+  milestone_name: string;
+  due_date: string;
+  amount: number;
+  percentage: number | null;
+  status: 'pending' | 'paid' | 'overdue' | 'cancelled';
+  paid_date: string | null;
+  payment_method: string | null;
+  payment_reference: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/**
+ * T002: Form data for creating/editing payment milestones
+ */
+export interface VendorPaymentScheduleFormData {
+  milestone_name: string;
+  due_date: string;
+  amount: number;
+  percentage?: number | null;
+  notes?: string;
+}
+
+/**
+ * T003: Form data for marking a payment as paid
+ */
+export interface MarkAsPaidFormData {
+  paid_date: string;
+  payment_method?: string;
+  payment_reference?: string;
+}
+
+// =============================================================================
+// Phase 7B: Vendor Invoice Types
+// =============================================================================
+
+/**
+ * Invoice status enumeration
+ */
+export type InvoiceStatus = 'unpaid' | 'paid' | 'partially_paid' | 'overdue' | 'cancelled';
+
+/**
+ * T004: Database entity - mirrors Supabase vendor_invoices table
+ */
+export interface VendorInvoice {
+  id: string;
+  vendor_id: string;
+  payment_schedule_id: string | null;
+  invoice_number: string;
+  invoice_date: string;
+  due_date: string;
+  amount: number;
+  vat_amount: number;
+  total_amount: number; // Generated column in DB
+  status: InvoiceStatus;
+  paid_date: string | null;
+  payment_method: string | null;
+  payment_reference: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/**
+ * T005: Form data for creating/editing invoices
+ */
+export interface VendorInvoiceFormData {
+  invoice_number: string;
+  invoice_date: string;
+  due_date: string;
+  amount: number;
+  vat_amount: number;
+  payment_schedule_id?: string | null;
+  notes?: string;
+}
+
+// =============================================================================
+// Phase 7B: Vendor Contact Types
+// =============================================================================
+
+/**
+ * T006: Database entity - mirrors Supabase vendor_contacts table
+ */
+export interface VendorContact {
+  id: string;
+  vendor_id: string;
+  contact_name: string;
+  contact_role: string | null;
+  contact_email: string | null;
+  contact_phone: string | null;
+  is_primary: boolean;
+  is_onsite_contact: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+/**
+ * T007: Form data for creating/editing vendor contacts
+ */
+export interface VendorContactFormData {
+  contact_name: string;
+  contact_role?: string;
+  contact_email?: string;
+  contact_phone?: string;
+  is_primary?: boolean;
+  is_onsite_contact?: boolean;
+}
+
+// =============================================================================
+// Phase 7B: Payment Display Status Types
+// =============================================================================
+
+/**
+ * Display status for payment badges (calculated at runtime)
+ */
+export type PaymentDisplayStatus = 'pending' | 'due-soon' | 'overdue' | 'paid' | 'cancelled';
+
+export interface PaymentStatusDisplay {
+  status: PaymentDisplayStatus;
+  label: string;
+  color: string;
+  bgColor: string;
+  icon: string;
+}
+
+// =============================================================================
+// Phase 7B: Invoice Display Status Types
+// =============================================================================
+
+/**
+ * Display status for invoice badges
+ */
+export type InvoiceDisplayStatus = 'unpaid' | 'overdue' | 'partial' | 'paid' | 'cancelled';
+
+export interface InvoiceStatusDisplay {
+  status: InvoiceDisplayStatus;
+  label: string;
+  color: string;
+  bgColor: string;
+  icon: string;
+}
+
+// =============================================================================
+// Phase 7B: Payment Method Options
+// =============================================================================
+
+export const PAYMENT_METHOD_OPTIONS = [
+  'EFT',
+  'Credit Card',
+  'Debit Card',
+  'Cash',
+  'Cheque',
+  'Other',
+] as const;
+
+export type PaymentMethod = (typeof PAYMENT_METHOD_OPTIONS)[number];

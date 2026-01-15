@@ -24,18 +24,18 @@
 
 **Purpose**: Types, schemas, and utility functions shared across all user stories
 
-- [ ] T001 [P] Add VendorPaymentSchedule interface to src/types/vendor.ts
-- [ ] T002 [P] Add VendorPaymentScheduleFormData interface to src/types/vendor.ts
-- [ ] T003 [P] Add MarkAsPaidFormData interface to src/types/vendor.ts
-- [ ] T004 [P] Add VendorInvoice interface to src/types/vendor.ts
-- [ ] T005 [P] Add VendorInvoiceFormData interface to src/types/vendor.ts
-- [ ] T006 [P] Add VendorContact interface to src/types/vendor.ts
-- [ ] T007 [P] Add VendorContactFormData interface to src/types/vendor.ts
-- [ ] T008 [P] Create payment status calculation utility in src/lib/vendorPaymentStatus.ts
-- [ ] T009 [P] Create invoice status calculation utility in src/lib/vendorInvoiceStatus.ts
-- [ ] T010 [P] Create Zod validation schema in src/schemas/paymentSchedule.ts
-- [ ] T011 [P] Create Zod validation schema in src/schemas/invoice.ts
-- [ ] T012 [P] Create Zod validation schema in src/schemas/vendorContact.ts
+- [x] T001 [P] Add VendorPaymentSchedule interface to src/types/vendor.ts
+- [x] T002 [P] Add VendorPaymentScheduleFormData interface to src/types/vendor.ts
+- [x] T003 [P] Add MarkAsPaidFormData interface to src/types/vendor.ts
+- [x] T004 [P] Add VendorInvoice interface to src/types/vendor.ts
+- [x] T005 [P] Add VendorInvoiceFormData interface to src/types/vendor.ts
+- [x] T006 [P] Add VendorContact interface to src/types/vendor.ts
+- [x] T007 [P] Add VendorContactFormData interface to src/types/vendor.ts
+- [x] T008 [P] Create payment status calculation utility in src/lib/vendorPaymentStatus.ts
+- [x] T009 [P] Create invoice status calculation utility in src/lib/vendorInvoiceStatus.ts
+- [x] T010 [P] Create Zod validation schema in src/schemas/paymentSchedule.ts
+- [x] T011 [P] Create Zod validation schema in src/schemas/invoice.ts
+- [x] T012 [P] Create Zod validation schema in src/schemas/vendorContact.ts
 
 **Checkpoint**: All types, schemas, and utilities ready for hook and component development
 
@@ -47,9 +47,9 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T013 Create useVendorPayments query hook in src/hooks/useVendorPayments.ts
-- [ ] T014 Create useVendorInvoices query hook in src/hooks/useVendorInvoices.ts
-- [ ] T015 Create useVendorContacts query hook in src/hooks/useVendorContacts.ts
+- [x] T013 Create useVendorPayments query hook in src/hooks/useVendorPayments.ts
+- [x] T014 Create useVendorInvoices query hook in src/hooks/useVendorInvoices.ts
+- [x] T015 Create useVendorContacts query hook in src/hooks/useVendorContacts.ts
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -63,10 +63,10 @@
 
 ### Implementation for User Story 1
 
-- [ ] T016 [P] [US1] Create PaymentStatusBadge component in src/components/vendors/PaymentStatusBadge.tsx
-- [ ] T017 [P] [US1] Create PaymentScheduleTable component in src/components/vendors/PaymentScheduleTable.tsx
-- [ ] T018 [US1] Create PaymentsTab container component in src/components/vendors/PaymentsTab.tsx
-- [ ] T019 [US1] Update VendorDetailPage to import and use PaymentsTab in src/pages/vendors/VendorDetailPage.tsx
+- [x] T016 [P] [US1] Create PaymentStatusBadge component in src/components/vendors/PaymentStatusBadge.tsx
+- [x] T017 [P] [US1] Create PaymentScheduleTable component in src/components/vendors/PaymentScheduleTable.tsx
+- [x] T018 [US1] Create PaymentsTab container component in src/components/vendors/PaymentsTab.tsx
+- [x] T019 [US1] Update VendorDetailPage to import and use PaymentsTab in src/pages/vendors/VendorDetailPage.tsx
 
 **Checkpoint**: User Story 1 complete - payments table displays with status badges, sorted by due date
 
@@ -80,9 +80,9 @@
 
 ### Implementation for User Story 2
 
-- [ ] T020 [US2] Create useVendorPaymentMutations hook (createPayment) in src/hooks/useVendorPaymentMutations.ts
-- [ ] T021 [US2] Create PaymentModal component (add mode) in src/components/vendors/PaymentModal.tsx
-- [ ] T022 [US2] Integrate PaymentModal with PaymentsTab in src/components/vendors/PaymentsTab.tsx
+- [x] T020 [US2] Create useVendorPaymentMutations hook (createPayment) in src/hooks/useVendorPaymentMutations.ts
+- [x] T021 [US2] Create PaymentModal component (add mode) in src/components/vendors/PaymentModal.tsx
+- [x] T022 [US2] Integrate PaymentModal with PaymentsTab in src/components/vendors/PaymentsTab.tsx
 
 **Checkpoint**: User Story 2 complete - can add new payment milestones via modal
 
@@ -96,9 +96,9 @@
 
 ### Implementation for User Story 3
 
-- [ ] T023 [US3] Add markAsPaid mutation to useVendorPaymentMutations in src/hooks/useVendorPaymentMutations.ts
-- [ ] T024 [US3] Create MarkAsPaidDialog component in src/components/vendors/MarkAsPaidDialog.tsx
-- [ ] T025 [US3] Integrate MarkAsPaidDialog with PaymentScheduleTable in src/components/vendors/PaymentScheduleTable.tsx
+- [x] T023 [US3] Add markAsPaid mutation to useVendorPaymentMutations in src/hooks/useVendorPaymentMutations.ts
+- [x] T024 [US3] Create MarkAsPaidDialog component in src/components/vendors/MarkAsPaidDialog.tsx
+- [x] T025 [US3] Integrate MarkAsPaidDialog with PaymentScheduleTable in src/components/vendors/PaymentScheduleTable.tsx
 
 **Checkpoint**: User Story 3 complete - can mark payments as paid, status badge updates to green "Paid"
 
@@ -112,9 +112,9 @@
 
 ### Implementation for User Story 4
 
-- [ ] T026 [US4] Add updatePayment mutation to useVendorPaymentMutations in src/hooks/useVendorPaymentMutations.ts
-- [ ] T027 [US4] Extend PaymentModal to support edit mode with pre-populated values in src/components/vendors/PaymentModal.tsx
-- [ ] T028 [US4] Add edit action to PaymentScheduleTable rows in src/components/vendors/PaymentScheduleTable.tsx
+- [x] T026 [US4] Add updatePayment mutation to useVendorPaymentMutations in src/hooks/useVendorPaymentMutations.ts
+- [x] T027 [US4] Extend PaymentModal to support edit mode with pre-populated values in src/components/vendors/PaymentModal.tsx
+- [x] T028 [US4] Add edit action to PaymentScheduleTable rows in src/components/vendors/PaymentScheduleTable.tsx
 
 **Checkpoint**: User Story 4 complete - can edit payment milestones (read-only fields for paid payments)
 
@@ -128,9 +128,9 @@
 
 ### Implementation for User Story 5
 
-- [ ] T029 [US5] Add deletePayment mutation to useVendorPaymentMutations in src/hooks/useVendorPaymentMutations.ts
-- [ ] T030 [US5] Create DeletePaymentDialog component in src/components/vendors/DeletePaymentDialog.tsx
-- [ ] T031 [US5] Add delete action to PaymentScheduleTable rows in src/components/vendors/PaymentScheduleTable.tsx
+- [x] T029 [US5] Add deletePayment mutation to useVendorPaymentMutations in src/hooks/useVendorPaymentMutations.ts
+- [x] T030 [US5] Create DeletePaymentDialog component in src/components/vendors/DeletePaymentDialog.tsx
+- [x] T031 [US5] Add delete action to PaymentScheduleTable rows in src/components/vendors/PaymentScheduleTable.tsx
 
 **Checkpoint**: User Story 5 complete - can delete payment milestones with confirmation
 
@@ -144,10 +144,10 @@
 
 ### Implementation for User Story 6
 
-- [ ] T032 [P] [US6] Create InvoiceStatusBadge component in src/components/vendors/InvoiceStatusBadge.tsx
-- [ ] T033 [P] [US6] Create InvoiceTable component in src/components/vendors/InvoiceTable.tsx
-- [ ] T034 [US6] Create InvoicesTab container component in src/components/vendors/InvoicesTab.tsx
-- [ ] T035 [US6] Update VendorDetailPage to import and use InvoicesTab in src/pages/vendors/VendorDetailPage.tsx
+- [x] T032 [P] [US6] Create InvoiceStatusBadge component in src/components/vendors/InvoiceStatusBadge.tsx
+- [x] T033 [P] [US6] Create InvoiceTable component in src/components/vendors/InvoiceTable.tsx
+- [x] T034 [US6] Create InvoicesTab container component in src/components/vendors/InvoicesTab.tsx
+- [x] T035 [US6] Update VendorDetailPage to import and use InvoicesTab in src/pages/vendors/VendorDetailPage.tsx
 
 **Checkpoint**: User Story 6 complete - invoices table displays with status badges and calculated totals
 
@@ -161,10 +161,10 @@
 
 ### Implementation for User Story 7
 
-- [ ] T036 [US7] Create useVendorInvoiceMutations hook in src/hooks/useVendorInvoiceMutations.ts
-- [ ] T037 [US7] Create InvoiceModal component with VAT calculation in src/components/vendors/InvoiceModal.tsx
-- [ ] T038 [US7] Create DeleteInvoiceDialog component in src/components/vendors/DeleteInvoiceDialog.tsx
-- [ ] T039 [US7] Integrate InvoiceModal and DeleteInvoiceDialog with InvoicesTab in src/components/vendors/InvoicesTab.tsx
+- [x] T036 [US7] Create useVendorInvoiceMutations hook in src/hooks/useVendorInvoiceMutations.ts
+- [x] T037 [US7] Create InvoiceModal component with VAT calculation in src/components/vendors/InvoiceModal.tsx
+- [x] T038 [US7] Create DeleteInvoiceDialog component in src/components/vendors/DeleteInvoiceDialog.tsx
+- [x] T039 [US7] Integrate InvoiceModal and DeleteInvoiceDialog with InvoicesTab in src/components/vendors/InvoicesTab.tsx
 
 **Checkpoint**: User Story 7 complete - can add/edit/delete invoices with VAT auto-calculation
 
@@ -178,8 +178,8 @@
 
 ### Implementation for User Story 8
 
-- [ ] T040 [US8] Create ContactsSection component in src/components/vendors/ContactsSection.tsx
-- [ ] T041 [US8] Update VendorDetailPage Overview tab to include ContactsSection in src/pages/vendors/VendorDetailPage.tsx
+- [x] T040 [US8] Create ContactsSection component in src/components/vendors/ContactsSection.tsx
+- [x] T041 [US8] Update VendorDetailPage Overview tab to include ContactsSection in src/pages/vendors/VendorDetailPage.tsx
 
 **Checkpoint**: User Story 8 complete - contacts display in vendor Overview tab
 
@@ -193,10 +193,10 @@
 
 ### Implementation for User Story 9
 
-- [ ] T042 [US9] Create useVendorContactMutations hook in src/hooks/useVendorContactMutations.ts
-- [ ] T043 [US9] Create ContactModal component in src/components/vendors/ContactModal.tsx
-- [ ] T044 [US9] Create DeleteContactDialog component in src/components/vendors/DeleteContactDialog.tsx
-- [ ] T045 [US9] Integrate ContactModal and DeleteContactDialog with ContactsSection in src/components/vendors/ContactsSection.tsx
+- [x] T042 [US9] Create useVendorContactMutations hook in src/hooks/useVendorContactMutations.ts
+- [x] T043 [US9] Create ContactModal component in src/components/vendors/ContactModal.tsx
+- [x] T044 [US9] Create DeleteContactDialog component in src/components/vendors/DeleteContactDialog.tsx
+- [x] T045 [US9] Integrate ContactModal and DeleteContactDialog with ContactsSection in src/components/vendors/ContactsSection.tsx
 
 **Checkpoint**: User Story 9 complete - full CRUD for vendor contacts
 
@@ -206,12 +206,12 @@
 
 **Purpose**: Final integration, cleanup, and validation
 
-- [ ] T046 Verify all tabs integrate correctly in VendorDetailPage in src/pages/vendors/VendorDetailPage.tsx
-- [ ] T047 Add loading states to all tab components (PaymentsTab, InvoicesTab)
-- [ ] T048 Add error handling with toast notifications to all mutations
-- [ ] T049 Verify currency formatting (ZAR with R prefix) displays correctly throughout
-- [ ] T050 Run manual E2E testing with Playwright MCP per quickstart.md checklist
-- [ ] T051 Verify no regressions in Phase 7A vendor functionality
+- [x] T046 Verify all tabs integrate correctly in VendorDetailPage in src/pages/vendors/VendorDetailPage.tsx
+- [x] T047 Add loading states to all tab components (PaymentsTab, InvoicesTab)
+- [x] T048 Add error handling with toast notifications to all mutations
+- [x] T049 Verify currency formatting (ZAR with R prefix) displays correctly throughout
+- [x] T050 Run manual E2E testing with Playwright MCP per quickstart.md checklist
+- [x] T051 Verify no regressions in Phase 7A vendor functionality
 
 ---
 

@@ -16,12 +16,14 @@ import {
   CreditCard,
 } from 'lucide-react';
 import { VendorDisplay, VENDOR_TYPE_CONFIG } from '@/types/vendor';
+import { ContactsSection } from './ContactsSection';
 
 interface VendorOverviewTabProps {
   vendor: VendorDisplay;
+  vendorId: string;
 }
 
-export function VendorOverviewTab({ vendor }: VendorOverviewTabProps) {
+export function VendorOverviewTab({ vendor, vendorId }: VendorOverviewTabProps) {
   const typeConfig = VENDOR_TYPE_CONFIG[vendor.vendor_type];
 
   return (
@@ -173,6 +175,11 @@ export function VendorOverviewTab({ vendor }: VendorOverviewTabProps) {
           )}
         </CardContent>
       </Card>
+
+      {/* Contacts Section - spans both columns */}
+      <div className="md:col-span-2">
+        <ContactsSection vendorId={vendorId} />
+      </div>
     </div>
   );
 }

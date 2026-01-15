@@ -11,7 +11,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent } from '@/components/ui/card';
 import { useVendor } from '@/hooks/useVendors';
 import { VendorModal } from '@/components/vendors/VendorModal';
 import { DeleteVendorDialog } from '@/components/vendors/DeleteVendorDialog';
@@ -19,6 +18,8 @@ import { ContractStatusBadge } from '@/components/vendors/ContractStatusBadge';
 import { PaymentStatusBadge } from '@/components/vendors/PaymentStatusBadge';
 import { VendorOverviewTab } from '@/components/vendors/VendorOverviewTab';
 import { VendorContractTabView } from '@/components/vendors/VendorContractTabView';
+import { PaymentsTab } from '@/components/vendors/PaymentsTab';
+import { InvoicesTab } from '@/components/vendors/InvoicesTab';
 import { VENDOR_TYPE_CONFIG } from '@/types/vendor';
 
 export function VendorDetailPage() {
@@ -117,7 +118,7 @@ export function VendorDetailPage() {
         </TabsList>
 
         <TabsContent value="overview" className="mt-6">
-          <VendorOverviewTab vendor={vendor} />
+          <VendorOverviewTab vendor={vendor} vendorId={vendorId || ''} />
         </TabsContent>
 
         <TabsContent value="contract" className="mt-6">
@@ -125,19 +126,11 @@ export function VendorDetailPage() {
         </TabsContent>
 
         <TabsContent value="payments" className="mt-6">
-          <Card>
-            <CardContent className="py-16 text-center">
-              <p className="text-gray-500">Payment schedule management coming in Phase 7B</p>
-            </CardContent>
-          </Card>
+          <PaymentsTab vendorId={vendorId || ''} />
         </TabsContent>
 
         <TabsContent value="invoices" className="mt-6">
-          <Card>
-            <CardContent className="py-16 text-center">
-              <p className="text-gray-500">Invoice tracking coming in Phase 7B</p>
-            </CardContent>
-          </Card>
+          <InvoicesTab vendorId={vendorId || ''} />
         </TabsContent>
       </Tabs>
 
