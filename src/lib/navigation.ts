@@ -48,6 +48,13 @@ export const mainNavItems: NavigationItem[] = [
     isPlaceholder: false,
   },
   {
+    id: 'bar-orders',
+    label: 'Bar Orders',
+    icon: 'Wine',
+    path: '/weddings/:id/bar-orders',
+    isPlaceholder: false,
+  },
+  {
     id: 'tasks',
     label: 'Tasks',
     icon: 'CheckSquare',

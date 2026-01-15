@@ -21,6 +21,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-13
 - Supabase PostgreSQL (vendors table exists with RLS enabled) (008-vendor-management)
 - Supabase PostgreSQL (tables exist: `vendor_payment_schedule`, `vendor_invoices`, `vendor_contacts`) (009-vendor-payments-invoices)
 - Supabase PostgreSQL (existing tables: `vendor_invoices`, `vendor_payment_schedule`) (010-invoice-payment-integration)
+- TypeScript 5.x with React 18+ (strict mode enabled) + React Router v6, TanStack Query v5, React Hook Form, Zod, Shadcn/ui, Tailwind CSS v3, date-fns, Lucide React (012-bar-order-management)
+- Supabase PostgreSQL (`bar_orders`, `bar_order_items` tables exist with RLS enabled) (012-bar-order-management)
 
 - SQL (PostgreSQL 15+ via Supabase) + Supabase (PostgreSQL, Auth, Storage) (001-database-schema-foundation)
 
@@ -40,9 +42,9 @@ tests/
 SQL (PostgreSQL 15+ via Supabase): Follow standard conventions
 
 ## Recent Changes
+- 012-bar-order-management: Added TypeScript 5.x with React 18+ (strict mode enabled) + React Router v6, TanStack Query v5, React Hook Form, Zod, Shadcn/ui, Tailwind CSS v3, date-fns, Lucide React
 - 010-invoice-payment-integration: Added TypeScript 5.x with React 18+ (strict mode) + React Router v6, TanStack Query v5, React Hook Form, Zod, Shadcn/ui, Tailwind CSS v3, date-fns, Lucide React
 - 009-vendor-payments-invoices: Added TypeScript 5.x with React 18+ + React Hook Form, Zod, TanStack Query v5, Shadcn/ui, date-fns, Lucide React
-- 008-vendor-management: Added TypeScript 5.x with React 18+ (strict mode) + React Router v6, TanStack Query v5, React Hook Form, Zod, Shadcn/ui, Tailwind CSS v3, date-fns, Lucide React
 
 
 <!-- MANUAL ADDITIONS START -->
