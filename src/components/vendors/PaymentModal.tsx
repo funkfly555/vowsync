@@ -43,6 +43,10 @@ interface PaymentModalProps {
   onSuccess: () => void;
   vendorId: string;
   payment?: VendorPaymentSchedule | null;
+  // T009: Optional pre-filled default values for "Pay This Invoice" workflow
+  defaultValues?: Partial<PaymentScheduleFormValues>;
+  // T010: Optional custom submit handler for invoice-linked payment creation
+  onCustomSubmit?: (data: PaymentScheduleFormValues) => Promise<void>;
 }
 
 /**
@@ -64,6 +68,8 @@ export function PaymentModal({
   onSuccess,
   vendorId,
   payment,
+  defaultValues,
+  onCustomSubmit,
 }: PaymentModalProps) {
   const isEditMode = !!payment;
   const isReadOnly = isEditMode && payment && !canEditPayment(payment);
@@ -81,14 +87,24 @@ export function PaymentModal({
     if (open) {
       if (payment) {
         form.reset(paymentToFormData(payment));
+      } else if (defaultValues) {
+        // T009: Use pre-filled values for "Pay This Invoice" workflow
+        form.reset({ ...defaultPaymentScheduleValues, ...defaultValues });
       } else {
         form.reset(defaultPaymentScheduleValues);
       }
     }
-  }, [open, payment, form]);
+  }, [open, payment, defaultValues, form]);
 
   const onSubmit = async (data: PaymentScheduleFormValues) => {
     try {
+      // T010: Use custom submit handler if provided (for invoice-linked payments)
+      if (onCustomSubmit) {
+        await onCustomSubmit(data);
+        onSuccess();
+        return;
+      }
+
       if (isEditMode && payment) {
         // Only allow editing notes for paid payments
         const updateData = isReadOnly

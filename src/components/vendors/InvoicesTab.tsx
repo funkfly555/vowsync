@@ -9,10 +9,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { InvoiceTable } from './InvoiceTable';
 import { InvoiceModal } from './InvoiceModal';
+import { PaymentModal } from './PaymentModal';
 import { DeleteInvoiceDialog } from './DeleteInvoiceDialog';
+import { VendorTotalsSummary } from './VendorTotalsSummary';
 import { useVendorInvoices, calculateInvoiceSummary } from '@/hooks/useVendorInvoices';
+import { useCreatePaymentFromInvoice } from '@/hooks/useVendorPaymentMutations';
 import { formatCurrency } from '@/lib/vendorInvoiceStatus';
 import type { VendorInvoice } from '@/types/vendor';
+import type { PaymentScheduleFormValues } from '@/schemas/paymentSchedule';
 import { Plus, FileText, DollarSign, AlertCircle, CheckCircle } from 'lucide-react';
 
 interface InvoicesTabProps {
@@ -29,8 +33,13 @@ export function InvoicesTab({ vendorId }: InvoicesTabProps) {
 
   // State for modals
   const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<VendorInvoice | null>(null);
+  const [invoiceToPayFrom, setInvoiceToPayFrom] = useState<VendorInvoice | null>(null);
+
+  // T010: Mutation for creating payment from invoice
+  const createPaymentFromInvoice = useCreatePaymentFromInvoice();
 
   const handleAddInvoice = () => {
     setSelectedInvoice(null);
@@ -67,6 +76,35 @@ export function InvoicesTab({ vendorId }: InvoicesTabProps) {
     setSelectedInvoice(null);
   };
 
+  // T009: Handle Pay This Invoice - opens PaymentModal with pre-filled values
+  const handlePayInvoice = (invoice: VendorInvoice) => {
+    setInvoiceToPayFrom(invoice);
+    setIsPaymentModalOpen(true);
+  };
+
+  const handlePaymentModalClose = () => {
+    setIsPaymentModalOpen(false);
+    setInvoiceToPayFrom(null);
+  };
+
+  // T010: Handle payment creation from invoice using dedicated mutation
+  const handlePaymentFromInvoice = async (formData: PaymentScheduleFormValues) => {
+    if (!invoiceToPayFrom) return;
+
+    await createPaymentFromInvoice.mutateAsync({
+      vendorId,
+      invoice: invoiceToPayFrom,
+      data: {
+        milestone_name: formData.milestone_name,
+        due_date: formData.due_date,
+        amount: formData.amount,
+        percentage: formData.percentage,
+        notes: formData.notes,
+      },
+    });
+    handlePaymentModalClose();
+  };
+
   if (isError) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -81,6 +119,9 @@ export function InvoicesTab({ vendorId }: InvoicesTabProps) {
 
   return (
     <div className="space-y-6">
+      {/* T011: Financial Totals Summary */}
+      <VendorTotalsSummary vendorId={vendorId} />
+
       {/* Summary Cards */}
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
@@ -163,6 +204,7 @@ export function InvoicesTab({ vendorId }: InvoicesTabProps) {
             invoices={invoices}
             onEdit={handleEdit}
             onDelete={handleDelete}
+            onPayInvoice={handlePayInvoice}
             isLoading={isLoading}
           />
         </CardContent>
@@ -184,6 +226,23 @@ export function InvoicesTab({ vendorId }: InvoicesTabProps) {
         onSuccess={handleDeleteSuccess}
         vendorId={vendorId}
         invoice={selectedInvoice}
+      />
+
+      {/* T009: PaymentModal for "Pay This Invoice" workflow */}
+      <PaymentModal
+        open={isPaymentModalOpen}
+        onClose={handlePaymentModalClose}
+        onSuccess={handlePaymentModalClose}
+        vendorId={vendorId}
+        // T009: Pre-filled default values from invoice
+        defaultValues={invoiceToPayFrom ? {
+          milestone_name: `Payment for Invoice ${invoiceToPayFrom.invoice_number}`,
+          due_date: invoiceToPayFrom.due_date,
+          amount: invoiceToPayFrom.total_amount,
+          notes: `Linked to invoice ${invoiceToPayFrom.invoice_number}`,
+        } : undefined}
+        // T010: Custom submit handler to create linked payment
+        onCustomSubmit={invoiceToPayFrom ? handlePaymentFromInvoice : undefined}
       />
     </div>
   );

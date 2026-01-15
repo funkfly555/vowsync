@@ -17,18 +17,13 @@ import { InvoiceStatusBadge } from './InvoiceStatusBadge';
 import { formatCurrency, canEditInvoice } from '@/lib/vendorInvoiceStatus';
 import type { VendorInvoice } from '@/types/vendor';
 import { format } from 'date-fns';
-import { Pencil, Trash2, FileText, MoreHorizontal } from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { Pencil, Trash2, FileText, CreditCard } from 'lucide-react';
 
 interface InvoiceTableProps {
   invoices: VendorInvoice[];
   onEdit?: (invoice: VendorInvoice) => void;
   onDelete?: (invoice: VendorInvoice) => void;
+  onPayInvoice?: (invoice: VendorInvoice) => void; // T008: Pay This Invoice callback
   isLoading?: boolean;
 }
 
@@ -36,10 +31,22 @@ interface InvoiceTableProps {
  * Table component for displaying vendor invoices
  * Shows invoice number, dates, amounts (with VAT), and status
  */
+/**
+ * Check if an invoice can be paid (not already paid/cancelled and no linked payment)
+ */
+function canPayInvoice(invoice: VendorInvoice): boolean {
+  return (
+    invoice.status !== 'paid' &&
+    invoice.status !== 'cancelled' &&
+    !invoice.payment_schedule_id // No existing linked payment
+  );
+}
+
 export function InvoiceTable({
   invoices,
   onEdit,
   onDelete,
+  onPayInvoice,
   isLoading,
 }: InvoiceTableProps) {
   if (isLoading) {
@@ -109,34 +116,42 @@ export function InvoiceTable({
                 <InvoiceStatusBadge invoice={invoice} />
               </TableCell>
               <TableCell className="text-right">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                      <MoreHorizontal className="h-4 w-4" />
-                      <span className="sr-only">Open menu</span>
+                <div className="flex items-center justify-end gap-1">
+                  {/* T008: Pay This Invoice button */}
+                  {onPayInvoice && canPayInvoice(invoice) && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onPayInvoice(invoice)}
+                      className="h-8 px-2 text-sm text-green-600 hover:text-green-700 hover:bg-green-50"
+                      aria-label={`Pay invoice ${invoice.invoice_number}`}
+                    >
+                      <CreditCard className="h-4 w-4" />
                     </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    {onEdit && (
-                      <DropdownMenuItem
-                        onClick={() => onEdit(invoice)}
-                        disabled={!canEditInvoice(invoice)}
-                      >
-                        <Pencil className="mr-2 h-4 w-4" />
-                        {canEditInvoice(invoice) ? 'Edit' : 'View'}
-                      </DropdownMenuItem>
-                    )}
-                    {onDelete && (
-                      <DropdownMenuItem
-                        onClick={() => onDelete(invoice)}
-                        className="text-red-600"
-                      >
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        Delete
-                      </DropdownMenuItem>
-                    )}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                  )}
+                  {onEdit && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onEdit(invoice)}
+                      className="h-8 px-2 text-sm"
+                      aria-label={canEditInvoice(invoice) ? `Edit invoice ${invoice.invoice_number}` : `View invoice ${invoice.invoice_number}`}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                  )}
+                  {onDelete && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onDelete(invoice)}
+                      className="h-8 px-2 text-sm text-red-600 hover:text-red-700 hover:bg-red-50"
+                      aria-label={`Delete invoice ${invoice.invoice_number}`}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
               </TableCell>
             </TableRow>
           ))}

@@ -147,3 +147,20 @@ export function canEditInvoice(invoice: { status: InvoiceStatus; paid_date: stri
 export function canMarkInvoiceAsPaid(invoice: { status: InvoiceStatus; paid_date: string | null }): boolean {
   return !invoice.paid_date && invoice.status !== 'paid' && invoice.status !== 'cancelled';
 }
+
+/**
+ * T018: Calculate invoice status based on payment amount vs invoice total
+ *
+ * Returns:
+ * - 'paid' if payment >= invoice total (fully covered)
+ * - 'partially_paid' if payment < invoice total (partial coverage)
+ */
+export function calculateInvoiceStatusFromPayment(
+  paymentAmount: number,
+  invoiceTotalAmount: number
+): InvoiceStatus {
+  if (paymentAmount >= invoiceTotalAmount) {
+    return 'paid';
+  }
+  return 'partially_paid';
+}

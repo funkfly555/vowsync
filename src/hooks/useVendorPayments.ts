@@ -6,7 +6,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
-import type { VendorPaymentSchedule } from '@/types/vendor';
+import type { VendorPaymentSchedule, PaymentWithInvoice } from '@/types/vendor';
 
 // =============================================================================
 // Fetch All Payments for Vendor
@@ -43,6 +43,86 @@ export function useVendorPayments(vendorId: string | undefined): UseVendorPaymen
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['vendor-payments', vendorId],
     queryFn: () => fetchVendorPayments(vendorId!),
+    enabled: !!vendorId,
+  });
+
+  return {
+    payments: data || [],
+    isLoading,
+    isError,
+    error: error as Error | null,
+    refetch,
+  };
+}
+
+// =============================================================================
+// T015: Fetch Payments with Linked Invoice Info (Phase 010)
+// =============================================================================
+
+interface UseVendorPaymentsWithInvoicesReturn {
+  payments: PaymentWithInvoice[];
+  isLoading: boolean;
+  isError: boolean;
+  error: Error | null;
+  refetch: () => void;
+}
+
+async function fetchVendorPaymentsWithInvoices(vendorId: string): Promise<PaymentWithInvoice[]> {
+  // Step 1: Fetch all payments for the vendor
+  const { data: payments, error: paymentsError } = await supabase
+    .from('vendor_payment_schedule')
+    .select('*')
+    .eq('vendor_id', vendorId)
+    .order('due_date', { ascending: true });
+
+  if (paymentsError) {
+    console.error('Error fetching vendor payments:', paymentsError);
+    throw paymentsError;
+  }
+
+  if (!payments || payments.length === 0) {
+    return [];
+  }
+
+  // Step 2: Get payment IDs and fetch linked invoices
+  const paymentIds = payments.map((p) => p.id);
+  const { data: invoices, error: invoicesError } = await supabase
+    .from('vendor_invoices')
+    .select('id, invoice_number, payment_schedule_id')
+    .in('payment_schedule_id', paymentIds);
+
+  if (invoicesError) {
+    console.error('Error fetching linked invoices:', invoicesError);
+    // Don't throw - just return payments without invoice info
+    return payments.map((payment) => ({ ...payment, linkedInvoice: null }));
+  }
+
+  // Step 3: Build a map of payment_schedule_id -> invoice info
+  const invoiceByPaymentId = new Map<string, { id: string; invoice_number: string }>();
+  invoices?.forEach((inv) => {
+    if (inv.payment_schedule_id) {
+      invoiceByPaymentId.set(inv.payment_schedule_id, {
+        id: inv.id,
+        invoice_number: inv.invoice_number,
+      });
+    }
+  });
+
+  // Step 4: Return payments with linked invoice info
+  return payments.map((payment) => ({
+    ...payment,
+    linkedInvoice: invoiceByPaymentId.get(payment.id) || null,
+  }));
+}
+
+/**
+ * T015: Hook to fetch all payment milestones with linked invoice info
+ * Returns payments extended with linkedInvoice for display in the table
+ */
+export function useVendorPaymentsWithInvoices(vendorId: string | undefined): UseVendorPaymentsWithInvoicesReturn {
+  const { data, isLoading, isError, error, refetch } = useQuery({
+    queryKey: ['vendor-payments-with-invoices', vendorId],
+    queryFn: () => fetchVendorPaymentsWithInvoices(vendorId!),
     enabled: !!vendorId,
   });
 

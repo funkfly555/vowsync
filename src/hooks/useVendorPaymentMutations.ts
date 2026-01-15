@@ -10,7 +10,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase';
-import type { VendorPaymentSchedule, VendorPaymentScheduleFormData, MarkAsPaidFormData } from '@/types/vendor';
+import type { VendorPaymentSchedule, VendorPaymentScheduleFormData, MarkAsPaidFormData, VendorInvoice } from '@/types/vendor';
+import { calculateInvoiceStatusFromPayment } from '@/lib/vendorInvoiceStatus';
 
 // =============================================================================
 // T020: Create Payment Mutation
@@ -51,10 +52,130 @@ export function useCreatePayment() {
     mutationFn: createPayment,
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['vendor-payments', variables.vendorId] });
+      queryClient.invalidateQueries({ queryKey: ['vendor-payments-with-invoices', variables.vendorId] });
+      // T014: Also invalidate totals when payment is created
+      queryClient.invalidateQueries({ queryKey: ['vendor-totals', variables.vendorId] });
       toast.success('Payment added successfully');
     },
     onError: (error) => {
       toast.error('Failed to add payment', {
+        description: error instanceof Error ? error.message : 'Please try again',
+      });
+    },
+  });
+}
+
+// =============================================================================
+// T004: Create Payment from Invoice Mutation (Phase 010)
+// =============================================================================
+
+interface CreatePaymentFromInvoiceVariables {
+  vendorId: string;
+  invoice: VendorInvoice;
+  data: VendorPaymentScheduleFormData;
+  markAsPaid?: boolean; // If true, auto-mark payment as paid and update invoice status
+  paidDate?: string; // Date when payment was made (required if markAsPaid is true)
+}
+
+interface CreatePaymentFromInvoiceResult {
+  payment: VendorPaymentSchedule;
+  invoice: VendorInvoice;
+}
+
+async function createPaymentFromInvoice({
+  vendorId,
+  invoice,
+  data,
+  markAsPaid = true, // Default to marking as paid for "Pay This Invoice" workflow
+  paidDate,
+}: CreatePaymentFromInvoiceVariables): Promise<CreatePaymentFromInvoiceResult> {
+  const today = new Date().toISOString().split('T')[0];
+  const paymentPaidDate = paidDate || today;
+
+  // Step 1: Create the payment (auto-mark as paid if markAsPaid is true)
+  const { data: payment, error: paymentError } = await supabase
+    .from('vendor_payment_schedule')
+    .insert({
+      vendor_id: vendorId,
+      milestone_name: data.milestone_name,
+      due_date: data.due_date,
+      amount: data.amount,
+      percentage: data.percentage || null,
+      notes: data.notes || null,
+      status: markAsPaid ? 'paid' : 'pending',
+      paid_date: markAsPaid ? paymentPaidDate : null,
+    })
+    .select()
+    .single();
+
+  if (paymentError) {
+    console.error('Error creating payment from invoice:', paymentError);
+    throw paymentError;
+  }
+
+  // Step 2: Calculate the new invoice status based on payment amount
+  // Use the existing helper to determine if payment covers full invoice or partial
+  const newInvoiceStatus = markAsPaid
+    ? calculateInvoiceStatusFromPayment(data.amount, invoice.total_amount)
+    : invoice.status; // Keep original status if not marking as paid
+
+  // Step 3: Link the invoice to the payment AND update its status
+  const { data: updatedInvoice, error: invoiceError } = await supabase
+    .from('vendor_invoices')
+    .update({
+      payment_schedule_id: payment.id,
+      status: newInvoiceStatus,
+      paid_date: newInvoiceStatus === 'paid' ? paymentPaidDate : null,
+    })
+    .eq('id', invoice.id)
+    .select()
+    .single();
+
+  if (invoiceError) {
+    console.error('Error linking invoice to payment:', invoiceError);
+    // Rollback: delete the created payment
+    await supabase.from('vendor_payment_schedule').delete().eq('id', payment.id);
+    throw invoiceError;
+  }
+
+  return { payment, invoice: updatedInvoice };
+}
+
+/**
+ * T004: Create a payment from an invoice with automatic linking
+ * - Creates a new payment with pre-filled values from invoice
+ * - Links the invoice to the newly created payment via payment_schedule_id
+ */
+export function useCreatePaymentFromInvoice() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: createPaymentFromInvoice,
+    onSuccess: (result, variables) => {
+      // Invalidate both payments and invoices queries
+      // Note: Must invalidate both 'vendor-payments' AND 'vendor-payments-with-invoices'
+      // since PaymentsTab uses the latter query key
+      queryClient.invalidateQueries({ queryKey: ['vendor-payments', variables.vendorId] });
+      queryClient.invalidateQueries({ queryKey: ['vendor-payments-with-invoices', variables.vendorId] });
+      queryClient.invalidateQueries({ queryKey: ['vendor-invoices', variables.vendorId] });
+      queryClient.invalidateQueries({ queryKey: ['vendor-totals', variables.vendorId] });
+
+      // Show appropriate success message based on whether payment was marked as paid
+      if (variables.markAsPaid !== false) {
+        const statusText = result.invoice.status === 'paid'
+          ? 'fully paid'
+          : result.invoice.status === 'partially_paid'
+            ? 'partially paid'
+            : 'payment recorded';
+        toast.success(`Invoice ${statusText}`, {
+          description: `Payment of R ${variables.data.amount.toLocaleString('en-ZA', { minimumFractionDigits: 2 })} recorded`,
+        });
+      } else {
+        toast.success('Payment scheduled and linked to invoice');
+      }
+    },
+    onError: (error) => {
+      toast.error('Failed to create payment from invoice', {
         description: error instanceof Error ? error.message : 'Please try again',
       });
     },
@@ -71,8 +192,17 @@ interface MarkAsPaidVariables {
   data: MarkAsPaidFormData;
 }
 
-async function markPaymentAsPaid({ paymentId, data }: MarkAsPaidVariables): Promise<VendorPaymentSchedule> {
-  const { data: payment, error } = await supabase
+interface MarkAsPaidResult {
+  payment: VendorPaymentSchedule;
+  updatedInvoice: VendorInvoice | null;
+}
+
+/**
+ * T006: Extended to update linked invoice status when payment is marked as paid
+ */
+async function markPaymentAsPaid({ paymentId, data }: MarkAsPaidVariables): Promise<MarkAsPaidResult> {
+  // Step 1: Mark the payment as paid
+  const { data: payment, error: paymentError } = await supabase
     .from('vendor_payment_schedule')
     .update({
       status: 'paid',
@@ -84,12 +214,46 @@ async function markPaymentAsPaid({ paymentId, data }: MarkAsPaidVariables): Prom
     .select()
     .single();
 
-  if (error) {
-    console.error('Error marking payment as paid:', error);
-    throw error;
+  if (paymentError) {
+    console.error('Error marking payment as paid:', paymentError);
+    throw paymentError;
   }
 
-  return payment;
+  // Step 2: Find any invoice linked to this payment
+  const { data: linkedInvoice } = await supabase
+    .from('vendor_invoices')
+    .select('*')
+    .eq('payment_schedule_id', paymentId)
+    .single();
+
+  let updatedInvoice: VendorInvoice | null = null;
+
+  // Step 3: If there's a linked invoice, update its status
+  if (linkedInvoice) {
+    // T019: Use helper to determine status based on payment amount vs invoice total
+    const newStatus = calculateInvoiceStatusFromPayment(payment.amount, linkedInvoice.total_amount);
+
+    const { data: invoice, error: invoiceError } = await supabase
+      .from('vendor_invoices')
+      .update({
+        status: newStatus,
+        paid_date: newStatus === 'paid' ? data.paid_date : null,
+        payment_method: data.payment_method || null,
+        payment_reference: data.payment_reference || null,
+      })
+      .eq('id', linkedInvoice.id)
+      .select()
+      .single();
+
+    if (invoiceError) {
+      console.error('Error updating linked invoice status:', invoiceError);
+      // Don't throw - payment is already marked as paid, just log the error
+    } else {
+      updatedInvoice = invoice;
+    }
+  }
+
+  return { payment, updatedInvoice };
 }
 
 export function useMarkPaymentAsPaid() {
@@ -97,9 +261,20 @@ export function useMarkPaymentAsPaid() {
 
   return useMutation({
     mutationFn: markPaymentAsPaid,
-    onSuccess: (_, variables) => {
+    onSuccess: (result, variables) => {
       queryClient.invalidateQueries({ queryKey: ['vendor-payments', variables.vendorId] });
-      toast.success('Payment marked as paid');
+      queryClient.invalidateQueries({ queryKey: ['vendor-payments-with-invoices', variables.vendorId] });
+      // T006: Also invalidate invoices and totals since invoice status may have changed
+      queryClient.invalidateQueries({ queryKey: ['vendor-invoices', variables.vendorId] });
+      queryClient.invalidateQueries({ queryKey: ['vendor-totals', variables.vendorId] });
+
+      if (result.updatedInvoice) {
+        toast.success('Payment marked as paid', {
+          description: `Invoice ${result.updatedInvoice.invoice_number} status updated to ${result.updatedInvoice.status}`,
+        });
+      } else {
+        toast.success('Payment marked as paid');
+      }
     },
     onError: (error) => {
       toast.error('Failed to mark payment as paid', {
@@ -151,6 +326,7 @@ export function useUpdatePayment() {
     mutationFn: updatePayment,
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['vendor-payments', variables.vendorId] });
+      queryClient.invalidateQueries({ queryKey: ['vendor-payments-with-invoices', variables.vendorId] });
       toast.success('Payment updated successfully');
     },
     onError: (error) => {
@@ -189,6 +365,10 @@ export function useDeletePayment() {
     mutationFn: deletePayment,
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['vendor-payments', variables.vendorId] });
+      queryClient.invalidateQueries({ queryKey: ['vendor-payments-with-invoices', variables.vendorId] });
+      // T014: Also invalidate totals and invoices when payment is deleted
+      queryClient.invalidateQueries({ queryKey: ['vendor-invoices', variables.vendorId] });
+      queryClient.invalidateQueries({ queryKey: ['vendor-totals', variables.vendorId] });
       toast.success('Payment deleted successfully');
     },
     onError: (error) => {

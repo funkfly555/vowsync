@@ -509,3 +509,27 @@ export const PAYMENT_METHOD_OPTIONS = [
 ] as const;
 
 export type PaymentMethod = (typeof PAYMENT_METHOD_OPTIONS)[number];
+
+// =============================================================================
+// Phase 010: Invoice Payment Integration Types
+// =============================================================================
+
+/**
+ * T001: Financial summary for a vendor
+ * Calculated from invoices and payments, not stored in DB
+ */
+export interface VendorTotals {
+  totalInvoiced: number;   // Sum of all invoice total_amount
+  totalPaid: number;       // Sum of all payment amounts where status = 'paid'
+  balanceDue: number;      // totalInvoiced - totalPaid
+}
+
+/**
+ * T002: Payment with linked invoice info for table display
+ */
+export interface PaymentWithInvoice extends VendorPaymentSchedule {
+  linkedInvoice: {
+    id: string;
+    invoice_number: string;
+  } | null;
+}

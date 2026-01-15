@@ -113,8 +113,8 @@ export function VendorDetailPage() {
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="contract">Contract</TabsTrigger>
-          <TabsTrigger value="payments">Payments</TabsTrigger>
           <TabsTrigger value="invoices">Invoices</TabsTrigger>
+          <TabsTrigger value="payments">Payments</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="mt-6">
@@ -125,12 +125,12 @@ export function VendorDetailPage() {
           <VendorContractTabView vendor={vendor} />
         </TabsContent>
 
-        <TabsContent value="payments" className="mt-6">
-          <PaymentsTab vendorId={vendorId || ''} />
-        </TabsContent>
-
         <TabsContent value="invoices" className="mt-6">
           <InvoicesTab vendorId={vendorId || ''} />
+        </TabsContent>
+
+        <TabsContent value="payments" className="mt-6">
+          <PaymentsTab vendorId={vendorId || ''} />
         </TabsContent>
       </Tabs>
 

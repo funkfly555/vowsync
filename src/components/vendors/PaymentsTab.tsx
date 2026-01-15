@@ -11,9 +11,10 @@ import { PaymentScheduleTable } from './PaymentScheduleTable';
 import { PaymentModal } from './PaymentModal';
 import { MarkAsPaidDialog } from './MarkAsPaidDialog';
 import { DeletePaymentDialog } from './DeletePaymentDialog';
-import { useVendorPayments, calculatePaymentSummary } from '@/hooks/useVendorPayments';
+import { VendorTotalsSummary } from './VendorTotalsSummary';
+import { useVendorPaymentsWithInvoices, calculatePaymentSummary } from '@/hooks/useVendorPayments';
 import { formatCurrency } from '@/lib/vendorInvoiceStatus';
-import type { VendorPaymentSchedule } from '@/types/vendor';
+import type { PaymentWithInvoice } from '@/types/vendor';
 import { Plus, DollarSign, Clock, AlertCircle, CheckCircle } from 'lucide-react';
 
 interface PaymentsTabProps {
@@ -25,26 +26,26 @@ interface PaymentsTabProps {
  * Shows payment summary cards and payment schedule table
  */
 export function PaymentsTab({ vendorId }: PaymentsTabProps) {
-  const { payments, isLoading, isError, error } = useVendorPayments(vendorId);
+  const { payments, isLoading, isError, error } = useVendorPaymentsWithInvoices(vendorId);
   const summary = calculatePaymentSummary(payments);
 
   // State for modals
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isMarkPaidDialogOpen, setIsMarkPaidDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [selectedPayment, setSelectedPayment] = useState<VendorPaymentSchedule | null>(null);
+  const [selectedPayment, setSelectedPayment] = useState<PaymentWithInvoice | null>(null);
 
   const handleAddPayment = () => {
     setSelectedPayment(null);
     setIsPaymentModalOpen(true);
   };
 
-  const handleMarkAsPaid = (payment: VendorPaymentSchedule) => {
+  const handleMarkAsPaid = (payment: PaymentWithInvoice) => {
     setSelectedPayment(payment);
     setIsMarkPaidDialogOpen(true);
   };
 
-  const handleEdit = (payment: VendorPaymentSchedule) => {
+  const handleEdit = (payment: PaymentWithInvoice) => {
     setSelectedPayment(payment);
     setIsPaymentModalOpen(true);
   };
@@ -69,7 +70,7 @@ export function PaymentsTab({ vendorId }: PaymentsTabProps) {
     setSelectedPayment(null);
   };
 
-  const handleDelete = (payment: VendorPaymentSchedule) => {
+  const handleDelete = (payment: PaymentWithInvoice) => {
     setSelectedPayment(payment);
     setIsDeleteDialogOpen(true);
   };
@@ -98,6 +99,9 @@ export function PaymentsTab({ vendorId }: PaymentsTabProps) {
 
   return (
     <div className="space-y-6">
+      {/* T012: Financial Totals Summary */}
+      <VendorTotalsSummary vendorId={vendorId} />
+
       {/* Summary Cards */}
       <div className="grid gap-4 md:grid-cols-4">
         <Card>

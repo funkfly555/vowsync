@@ -7,8 +7,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase';
-import type { VendorInvoice, VendorInvoiceFormData } from '@/types/vendor';
-import { calculateVAT, calculateTotal } from '@/lib/vendorInvoiceStatus';
+import type { VendorInvoice, VendorInvoiceFormData, InvoiceStatus } from '@/types/vendor';
+import { calculateVAT } from '@/lib/vendorInvoiceStatus';
 
 // =============================================================================
 // Create Invoice Mutation
@@ -54,6 +54,8 @@ export function useCreateInvoice() {
     mutationFn: createInvoice,
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['vendor-invoices', variables.vendorId] });
+      // T014: Also invalidate totals when invoice is created
+      queryClient.invalidateQueries({ queryKey: ['vendor-totals', variables.vendorId] });
       toast.success('Invoice added successfully');
     },
     onError: (error) => {
@@ -112,6 +114,8 @@ export function useUpdateInvoice() {
     mutationFn: updateInvoice,
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['vendor-invoices', variables.vendorId] });
+      // T014: Also invalidate totals when invoice amount changes
+      queryClient.invalidateQueries({ queryKey: ['vendor-totals', variables.vendorId] });
       toast.success('Invoice updated successfully');
     },
     onError: (error) => {
@@ -150,6 +154,8 @@ export function useDeleteInvoice() {
     mutationFn: deleteInvoice,
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['vendor-invoices', variables.vendorId] });
+      // T014: Also invalidate totals when invoice is deleted
+      queryClient.invalidateQueries({ queryKey: ['vendor-totals', variables.vendorId] });
       toast.success('Invoice deleted successfully');
     },
     onError: (error) => {
@@ -205,10 +211,84 @@ export function useMarkInvoicePaid() {
     mutationFn: markInvoicePaid,
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['vendor-invoices', variables.vendorId] });
+      queryClient.invalidateQueries({ queryKey: ['vendor-totals', variables.vendorId] });
       toast.success('Invoice marked as paid');
     },
     onError: (error) => {
       toast.error('Failed to mark invoice as paid', {
+        description: error instanceof Error ? error.message : 'Please try again',
+      });
+    },
+  });
+}
+
+// =============================================================================
+// T005: Update Invoice Status Mutation (Phase 010)
+// =============================================================================
+
+interface UpdateInvoiceStatusVariables {
+  invoiceId: string;
+  vendorId: string;
+  status: InvoiceStatus;
+  paidDate?: string | null;
+  paymentMethod?: string | null;
+  paymentReference?: string | null;
+}
+
+async function updateInvoiceStatus({
+  invoiceId,
+  status,
+  paidDate,
+  paymentMethod,
+  paymentReference,
+}: UpdateInvoiceStatusVariables): Promise<VendorInvoice> {
+  const updateData: Record<string, unknown> = {
+    status,
+  };
+
+  // Only set paid details if marking as paid
+  if (status === 'paid' || status === 'partially_paid') {
+    updateData.paid_date = paidDate || null;
+    updateData.payment_method = paymentMethod || null;
+    updateData.payment_reference = paymentReference || null;
+  } else {
+    // Clear paid details if reverting to unpaid/overdue
+    updateData.paid_date = null;
+    updateData.payment_method = null;
+    updateData.payment_reference = null;
+  }
+
+  const { data: invoice, error } = await supabase
+    .from('vendor_invoices')
+    .update(updateData)
+    .eq('id', invoiceId)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error updating invoice status:', error);
+    throw error;
+  }
+
+  return invoice;
+}
+
+/**
+ * T005: Update invoice status directly
+ * Used by payment mutations to sync invoice status when payment is marked as paid
+ */
+export function useUpdateInvoiceStatus() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: updateInvoiceStatus,
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['vendor-invoices', variables.vendorId] });
+      queryClient.invalidateQueries({ queryKey: ['vendor-totals', variables.vendorId] });
+      toast.success(`Invoice status updated to ${variables.status}`);
+    },
+    onError: (error) => {
+      toast.error('Failed to update invoice status', {
         description: error instanceof Error ? error.message : 'Please try again',
       });
     },

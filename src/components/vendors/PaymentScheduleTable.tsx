@@ -2,6 +2,7 @@
  * PaymentScheduleTable Component
  * @feature 009-vendor-payments-invoices
  * T017: Display payment schedule table with status badges
+ * T016/T017: Added Invoice column to show linked invoice reference
  */
 
 import {
@@ -16,21 +17,15 @@ import { Button } from '@/components/ui/button';
 import { PaymentScheduleStatusBadge } from './PaymentStatusBadge';
 import { formatCurrency } from '@/lib/vendorInvoiceStatus';
 import { canMarkAsPaid, canEditPayment } from '@/lib/vendorPaymentStatus';
-import type { VendorPaymentSchedule } from '@/types/vendor';
+import type { PaymentWithInvoice } from '@/types/vendor';
 import { format } from 'date-fns';
-import { Pencil, Trash2, CheckCircle, MoreHorizontal } from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { Pencil, Trash2, CheckCircle, FileText } from 'lucide-react';
 
 interface PaymentScheduleTableProps {
-  payments: VendorPaymentSchedule[];
-  onMarkAsPaid?: (payment: VendorPaymentSchedule) => void;
-  onEdit?: (payment: VendorPaymentSchedule) => void;
-  onDelete?: (payment: VendorPaymentSchedule) => void;
+  payments: PaymentWithInvoice[];
+  onMarkAsPaid?: (payment: PaymentWithInvoice) => void;
+  onEdit?: (payment: PaymentWithInvoice) => void;
+  onDelete?: (payment: PaymentWithInvoice) => void;
   isLoading?: boolean;
 }
 
@@ -75,6 +70,7 @@ export function PaymentScheduleTable({
             <TableHead className="w-[250px]">Description</TableHead>
             <TableHead>Due Date</TableHead>
             <TableHead className="text-right">Amount</TableHead>
+            <TableHead>Invoice</TableHead>
             <TableHead>Status</TableHead>
             <TableHead className="text-right w-[100px]">Actions</TableHead>
           </TableRow>
@@ -102,43 +98,54 @@ export function PaymentScheduleTable({
                 {formatCurrency(payment.amount)}
               </TableCell>
               <TableCell>
+                {payment.linkedInvoice ? (
+                  <span className="inline-flex items-center gap-1 text-sm text-muted-foreground">
+                    <FileText className="h-3.5 w-3.5" />
+                    Invoice #{payment.linkedInvoice.invoice_number}
+                  </span>
+                ) : (
+                  <span className="text-sm text-muted-foreground">—</span>
+                )}
+              </TableCell>
+              <TableCell>
                 <PaymentScheduleStatusBadge payment={payment} />
               </TableCell>
               <TableCell className="text-right">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                      <MoreHorizontal className="h-4 w-4" />
-                      <span className="sr-only">Open menu</span>
+                <div className="flex items-center justify-end gap-1">
+                  {canMarkAsPaid(payment) && onMarkAsPaid && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onMarkAsPaid(payment)}
+                      className="h-8 px-2 text-sm text-green-600 hover:text-green-700 hover:bg-green-50"
+                      aria-label={`Mark payment ${payment.milestone_name} as paid`}
+                    >
+                      <CheckCircle className="h-4 w-4" />
                     </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    {canMarkAsPaid(payment) && onMarkAsPaid && (
-                      <DropdownMenuItem onClick={() => onMarkAsPaid(payment)}>
-                        <CheckCircle className="mr-2 h-4 w-4" />
-                        Mark as Paid
-                      </DropdownMenuItem>
-                    )}
-                    {onEdit && (
-                      <DropdownMenuItem
-                        onClick={() => onEdit(payment)}
-                        disabled={!canEditPayment(payment)}
-                      >
-                        <Pencil className="mr-2 h-4 w-4" />
-                        {canEditPayment(payment) ? 'Edit' : 'View'}
-                      </DropdownMenuItem>
-                    )}
-                    {onDelete && (
-                      <DropdownMenuItem
-                        onClick={() => onDelete(payment)}
-                        className="text-red-600"
-                      >
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        Delete
-                      </DropdownMenuItem>
-                    )}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                  )}
+                  {onEdit && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onEdit(payment)}
+                      className="h-8 px-2 text-sm"
+                      aria-label={canEditPayment(payment) ? `Edit payment ${payment.milestone_name}` : `View payment ${payment.milestone_name}`}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                  )}
+                  {onDelete && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onDelete(payment)}
+                      className="h-8 px-2 text-sm text-red-600 hover:text-red-700 hover:bg-red-50"
+                      aria-label={`Delete payment ${payment.milestone_name}`}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
               </TableCell>
             </TableRow>
           ))}
