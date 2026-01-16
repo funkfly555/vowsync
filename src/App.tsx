@@ -18,6 +18,7 @@ import { BudgetPage } from './pages/budget/BudgetPage';
 import { BarOrdersPage } from './pages/bar-orders/BarOrdersPage';
 import { BarOrderDetailPage } from './pages/bar-orders/BarOrderDetailPage';
 import { WeddingItemsPage } from './pages/wedding-items/WeddingItemsPage';
+import { RepurposingPage } from './pages/RepurposingPage';
 import { LoginPage } from './pages/LoginPage';
 
 const queryClient = new QueryClient({
@@ -56,6 +57,7 @@ function App() {
                 <Route path="/weddings/:weddingId/vendors/:vendorId" element={<VendorDetailPage />} />
                 <Route path="/weddings/:weddingId/budget" element={<BudgetPage />} />
                 <Route path="/weddings/:weddingId/items" element={<WeddingItemsPage />} />
+                <Route path="/weddings/:weddingId/repurposing" element={<RepurposingPage />} />
                 <Route path="/weddings/:weddingId/bar-orders" element={<BarOrdersPage />} />
                 <Route path="/weddings/:weddingId/bar-orders/:orderId" element={<BarOrderDetailPage />} />
               </Route>

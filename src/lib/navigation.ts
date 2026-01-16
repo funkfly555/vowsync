@@ -40,6 +40,13 @@ export const mainNavItems: NavigationItem[] = [
     isPlaceholder: false,
   },
   {
+    id: 'repurposing',
+    label: 'Repurposing',
+    icon: 'ArrowLeftRight',
+    path: '/weddings/:id/repurposing',
+    isPlaceholder: false,
+  },
+  {
     id: 'budget',
     label: 'Budget',
     icon: 'DollarSign',
