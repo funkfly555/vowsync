@@ -19,6 +19,7 @@ import { BarOrdersPage } from './pages/bar-orders/BarOrdersPage';
 import { BarOrderDetailPage } from './pages/bar-orders/BarOrderDetailPage';
 import { WeddingItemsPage } from './pages/wedding-items/WeddingItemsPage';
 import { RepurposingPage } from './pages/RepurposingPage';
+import { TasksPage } from './pages/TasksPage';
 import { LoginPage } from './pages/LoginPage';
 
 const queryClient = new QueryClient({
@@ -52,6 +53,7 @@ function App() {
                 <Route path="/weddings/:weddingId/events" element={<EventTimelinePage />} />
                 <Route path="/weddings/:weddingId/events/new" element={<CreateEventPage />} />
                 <Route path="/weddings/:weddingId/events/:eventId/edit" element={<EditEventPage />} />
+                <Route path="/weddings/:weddingId/tasks" element={<TasksPage />} />
                 <Route path="/weddings/:weddingId/guests" element={<GuestListPage />} />
                 <Route path="/weddings/:weddingId/vendors" element={<VendorsPage />} />
                 <Route path="/weddings/:weddingId/vendors/:vendorId" element={<VendorDetailPage />} />

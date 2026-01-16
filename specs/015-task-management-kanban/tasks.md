@@ -52,13 +52,13 @@
 
 ### Implementation for User Story 1
 
-- [ ] T008 [P] [US1] Create TaskPriorityBadge component in `src/components/tasks/TaskPriorityBadge.tsx` - color-coded priority display (low/medium/high/critical)
-- [ ] T009 [P] [US1] Create TaskTypeBadge component in `src/components/tasks/TaskTypeBadge.tsx` - icon + label for task types (Package/Truck/CalendarClock/ClipboardList/Target)
-- [ ] T010 [US1] Create TaskForm component in `src/components/tasks/TaskForm.tsx` - 3-tab form (Details, Assignment, Contact) with React Hook Form + Zod
-- [ ] T011 [US1] Create TaskModal component in `src/components/tasks/TaskModal.tsx` - Shadcn Dialog wrapper for create/edit with form integration
-- [ ] T012 [US1] Create minimal TasksPageContent in `src/components/tasks/TasksPageContent.tsx` - header with "+ Add Task" button and modal trigger (list view placeholder)
-- [ ] T013 [US1] Create TasksPage route wrapper in `src/pages/TasksPage.tsx` - useParams for weddingId, useWedding for wedding date
-- [ ] T014 [US1] Add route to App.tsx: `/weddings/:weddingId/tasks` element={<TasksPage />}
+- [x] T008 [P] [US1] Create TaskPriorityBadge component in `src/components/tasks/TaskPriorityBadge.tsx` - color-coded priority display (low/medium/high/critical)
+- [x] T009 [P] [US1] Create TaskTypeBadge component in `src/components/tasks/TaskTypeBadge.tsx` - icon + label for task types (Package/Truck/CalendarClock/ClipboardList/Target)
+- [x] T010 [US1] Create TaskForm component in `src/components/tasks/TaskForm.tsx` - 3-tab form (Details, Assignment, Contact) with React Hook Form + Zod
+- [x] T011 [US1] Create TaskModal component in `src/components/tasks/TaskModal.tsx` - Shadcn Dialog wrapper for create/edit with form integration
+- [x] T012 [US1] Create minimal TasksPageContent in `src/components/tasks/TasksPageContent.tsx` - header with "+ Add Task" button and modal trigger (list view placeholder)
+- [x] T013 [US1] Create TasksPage route wrapper in `src/pages/TasksPage.tsx` - useParams for weddingId, useWedding for wedding date
+- [x] T014 [US1] Add route to App.tsx: `/weddings/:weddingId/tasks` element={<TasksPage />}
 
 **Checkpoint**: User Story 1 complete - users can create tasks via modal form. Tasks save to database with all fields.
 
