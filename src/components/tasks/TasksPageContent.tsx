@@ -1,16 +1,16 @@
 /**
  * TasksPageContent Component
  * @feature 015-task-management-kanban
- * @task T012
+ * @task T012, T019
  *
- * Main page content with header and task views
- * Phase 3: Minimal version with header and modal trigger
+ * Main page content with header and Kanban view
  */
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { TaskModal } from './TaskModal';
+import { TaskKanbanView } from './TaskKanbanView';
 import { TaskWithVendor } from '@/types/task';
 import { useTasks } from '@/hooks/useTasks';
 
@@ -35,6 +35,11 @@ export function TasksPageContent({ weddingId, weddingDate }: TasksPageContentPro
     setModalOpen(true);
   };
 
+  const handleDeleteTask = (task: TaskWithVendor) => {
+    // Will be implemented in Phase 7 with DeleteTaskDialog
+    console.log('Delete task:', task.id);
+  };
+
   const handleCloseModal = () => {
     setModalOpen(false);
     setSelectedTask(null);
@@ -56,43 +61,28 @@ export function TasksPageContent({ weddingId, weddingDate }: TasksPageContentPro
         </Button>
       </div>
 
-      {/* Task List Placeholder - will be replaced with Kanban in Phase 4 */}
-      <div className="border rounded-lg p-8 text-center text-gray-500">
-        {isLoading ? (
+      {/* Kanban View */}
+      {isLoading ? (
+        <div className="border rounded-lg p-8 text-center text-gray-500">
           <p>Loading tasks...</p>
-        ) : tasks.length === 0 ? (
-          <div>
-            <p className="mb-4">No tasks yet. Create your first task to get started.</p>
-            <Button variant="outline" onClick={handleAddTask}>
-              <Plus className="h-4 w-4 mr-2" />
-              Add Your First Task
-            </Button>
-          </div>
-        ) : (
-          <div className="text-left">
-            <p className="mb-4 text-center text-gray-500">
-              {tasks.length} task{tasks.length === 1 ? '' : 's'} found. Kanban view coming in Phase 4.
-            </p>
-            <ul className="space-y-2">
-              {tasks.map((task) => (
-                <li
-                  key={task.id}
-                  className="p-3 border rounded cursor-pointer hover:bg-gray-50"
-                  onClick={() => handleEditTask(task)}
-                >
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium">{task.title}</span>
-                    <span className="text-sm text-gray-500">{task.due_date}</span>
-                  </div>
-                  <div className="text-sm text-gray-500 mt-1">
-                    {task.task_type} • {task.priority} • {task.status}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
+        </div>
+      ) : tasks.length === 0 ? (
+        <div className="border rounded-lg p-8 text-center text-gray-500">
+          <p className="mb-4">No tasks yet. Create your first task to get started.</p>
+          <Button variant="outline" onClick={handleAddTask}>
+            <Plus className="h-4 w-4 mr-2" />
+            Add Your First Task
+          </Button>
+        </div>
+      ) : (
+        <TaskKanbanView
+          tasks={tasks}
+          weddingId={weddingId}
+          weddingDate={weddingDate}
+          onEditTask={handleEditTask}
+          onDeleteTask={handleDeleteTask}
+        />
+      )}
 
       {/* Task Modal */}
       <TaskModal

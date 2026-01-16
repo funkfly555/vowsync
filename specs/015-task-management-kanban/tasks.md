@@ -72,11 +72,11 @@
 
 ### Implementation for User Story 2
 
-- [ ] T015 [P] [US2] Create TaskStatusBadge component in `src/components/tasks/TaskStatusBadge.tsx` - icon + color for status (pending/in_progress/completed/cancelled/overdue)
-- [ ] T016 [P] [US2] Create TaskCard component in `src/components/tasks/TaskCard.tsx` - draggable card with priority badge, type icon, title, due date, assignee, dropdown menu
-- [ ] T017 [US2] Create KanbanColumn component in `src/components/tasks/KanbanColumn.tsx` - useDroppable from @dnd-kit, column header with count, scrollable task list
-- [ ] T018 [US2] Create TaskKanbanView component in `src/components/tasks/TaskKanbanView.tsx` - DndContext with sensors, 5 columns (pending/in_progress/completed/cancelled/overdue), handleDragEnd with status mutation
-- [ ] T019 [US2] Update TasksPageContent to include Kanban view as default in `src/components/tasks/TasksPageContent.tsx` - add view state, render TaskKanbanView
+- [x] T015 [P] [US2] Create TaskStatusBadge component in `src/components/tasks/TaskStatusBadge.tsx` - icon + color for status (pending/in_progress/completed/cancelled/overdue)
+- [x] T016 [P] [US2] Create TaskCard component in `src/components/tasks/TaskCard.tsx` - draggable card with priority badge, type icon, title, due date, assignee, dropdown menu
+- [x] T017 [US2] Create KanbanColumn component in `src/components/tasks/KanbanColumn.tsx` - useDroppable from @dnd-kit, column header with count, scrollable task list
+- [x] T018 [US2] Create TaskKanbanView component in `src/components/tasks/TaskKanbanView.tsx` - DndContext with sensors, 5 columns (pending/in_progress/completed/cancelled/overdue), handleDragEnd with status mutation
+- [x] T019 [US2] Update TasksPageContent to include Kanban view as default in `src/components/tasks/TasksPageContent.tsx` - add view state, render TaskKanbanView
 
 **Checkpoint**: User Story 2 complete - Kanban board displays tasks by status, drag-drop updates status, overdue tasks show in red column
 
