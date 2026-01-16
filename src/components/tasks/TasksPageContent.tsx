@@ -1,17 +1,20 @@
 /**
  * TasksPageContent Component
  * @feature 015-task-management-kanban
- * @task T012, T019
+ * @task T012, T019, T022
  *
- * Main page content with header and Kanban view
+ * Main page content with header, filters, and Kanban/List views
  */
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Plus, LayoutGrid, List } from 'lucide-react';
 import { TaskModal } from './TaskModal';
 import { TaskKanbanView } from './TaskKanbanView';
-import { TaskWithVendor } from '@/types/task';
+import { TaskListView } from './TaskListView';
+import { TaskFilters } from './TaskFilters';
+import { TaskWithVendor, TaskFilters as TaskFiltersType } from '@/types/task';
 import { useTasks } from '@/hooks/useTasks';
 
 interface TasksPageContentProps {
@@ -19,11 +22,28 @@ interface TasksPageContentProps {
   weddingDate?: string;
 }
 
+type ViewMode = 'kanban' | 'list';
+
 export function TasksPageContent({ weddingId, weddingDate }: TasksPageContentProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<TaskWithVendor | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>('kanban');
+  const [filters, setFilters] = useState<TaskFiltersType>({
+    search: '',
+    status: undefined,
+    priority: undefined,
+    task_type: undefined,
+    assigned_to: undefined,
+  });
 
   const { tasks, isLoading } = useTasks({ weddingId });
+
+  // Get unique assignees for filter dropdown
+  const assignees = useMemo(() => {
+    return tasks
+      .map((t) => t.assigned_to)
+      .filter((a): a is string => Boolean(a));
+  }, [tasks]);
 
   const handleAddTask = () => {
     setSelectedTask(null);
@@ -61,7 +81,29 @@ export function TasksPageContent({ weddingId, weddingDate }: TasksPageContentPro
         </Button>
       </div>
 
-      {/* Kanban View */}
+      {/* Filters and View Toggle */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <TaskFilters
+          filters={filters}
+          onFiltersChange={setFilters}
+          assignees={assignees}
+        />
+
+        <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as ViewMode)}>
+          <TabsList>
+            <TabsTrigger value="kanban" className="gap-2">
+              <LayoutGrid className="h-4 w-4" />
+              <span className="hidden sm:inline">Kanban</span>
+            </TabsTrigger>
+            <TabsTrigger value="list" className="gap-2">
+              <List className="h-4 w-4" />
+              <span className="hidden sm:inline">List</span>
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+
+      {/* Content */}
       {isLoading ? (
         <div className="border rounded-lg p-8 text-center text-gray-500">
           <p>Loading tasks...</p>
@@ -74,9 +116,18 @@ export function TasksPageContent({ weddingId, weddingDate }: TasksPageContentPro
             Add Your First Task
           </Button>
         </div>
-      ) : (
+      ) : viewMode === 'kanban' ? (
         <TaskKanbanView
           tasks={tasks}
+          weddingId={weddingId}
+          weddingDate={weddingDate}
+          onEditTask={handleEditTask}
+          onDeleteTask={handleDeleteTask}
+        />
+      ) : (
+        <TaskListView
+          tasks={tasks}
+          filters={filters}
           weddingId={weddingId}
           weddingDate={weddingDate}
           onEditTask={handleEditTask}

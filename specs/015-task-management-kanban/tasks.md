@@ -90,9 +90,9 @@
 
 ### Implementation for User Story 3
 
-- [ ] T020 [P] [US3] Create TaskFilters component in `src/components/tasks/TaskFilters.tsx` - status, priority, type, assignee filters with Shadcn Select, search input, clear button
-- [ ] T021 [US3] Create TaskListView component in `src/components/tasks/TaskListView.tsx` - Shadcn Table with sortable columns (title, type, due date, priority, status, assignee), row click to edit, overdue highlighting
-- [ ] T022 [US3] Update TasksPageContent with view toggle in `src/components/tasks/TasksPageContent.tsx` - add Tabs for Kanban/List, pass filters to both views, filter state management
+- [x] T020 [P] [US3] Create TaskFilters component in `src/components/tasks/TaskFilters.tsx` - status, priority, type, assignee filters with Shadcn Select, search input, clear button
+- [x] T021 [US3] Create TaskListView component in `src/components/tasks/TaskListView.tsx` - Shadcn Table with sortable columns (title, type, due date, priority, status, assignee), row click to edit, overdue highlighting
+- [x] T022 [US3] Update TasksPageContent with view toggle in `src/components/tasks/TasksPageContent.tsx` - add Tabs for Kanban/List, pass filters to both views, filter state management
 
 **Checkpoint**: User Story 3 complete - list view with sorting and filtering works alongside Kanban view
 
