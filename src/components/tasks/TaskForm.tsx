@@ -212,8 +212,8 @@ export function TaskForm({ form, vendors, weddingDate }: TaskFormProps) {
             <FormItem>
               <FormLabel>Vendor</FormLabel>
               <Select
-                onValueChange={field.onChange}
-                value={field.value || ''}
+                onValueChange={(value) => field.onChange(value === 'none' ? null : value)}
+                value={field.value || 'none'}
               >
                 <FormControl>
                   <SelectTrigger>
@@ -221,7 +221,7 @@ export function TaskForm({ form, vendors, weddingDate }: TaskFormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="">No vendor</SelectItem>
+                  <SelectItem value="none">No vendor</SelectItem>
                   {vendors.map((vendor) => (
                     <SelectItem key={vendor.id} value={vendor.id}>
                       {vendor.company_name}
