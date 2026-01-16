@@ -37,8 +37,7 @@ export const mainNavItems: NavigationItem[] = [
     label: 'Items',
     icon: 'Armchair',
     path: '/weddings/:id/items',
-    isPlaceholder: true,
-    placeholderPhase: 'Phase 7',
+    isPlaceholder: false,
   },
   {
     id: 'budget',
