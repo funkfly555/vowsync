@@ -14,6 +14,7 @@ import { TaskModal } from './TaskModal';
 import { TaskKanbanView } from './TaskKanbanView';
 import { TaskListView } from './TaskListView';
 import { TaskFilters } from './TaskFilters';
+import { DeleteTaskDialog } from './DeleteTaskDialog';
 import { TaskWithVendor, TaskFilters as TaskFiltersType } from '@/types/task';
 import { useTasks } from '@/hooks/useTasks';
 
@@ -26,7 +27,9 @@ type ViewMode = 'kanban' | 'list';
 
 export function TasksPageContent({ weddingId, weddingDate }: TasksPageContentProps) {
   const [modalOpen, setModalOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<TaskWithVendor | null>(null);
+  const [taskToDelete, setTaskToDelete] = useState<TaskWithVendor | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('kanban');
   const [filters, setFilters] = useState<TaskFiltersType>({
     search: '',
@@ -56,13 +59,18 @@ export function TasksPageContent({ weddingId, weddingDate }: TasksPageContentPro
   };
 
   const handleDeleteTask = (task: TaskWithVendor) => {
-    // Will be implemented in Phase 7 with DeleteTaskDialog
-    console.log('Delete task:', task.id);
+    setTaskToDelete(task);
+    setDeleteDialogOpen(true);
   };
 
   const handleCloseModal = () => {
     setModalOpen(false);
     setSelectedTask(null);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setDeleteDialogOpen(false);
+    setTaskToDelete(null);
   };
 
   return (
@@ -140,6 +148,15 @@ export function TasksPageContent({ weddingId, weddingDate }: TasksPageContentPro
         open={modalOpen}
         onClose={handleCloseModal}
         task={selectedTask}
+        weddingId={weddingId}
+        weddingDate={weddingDate}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteTaskDialog
+        open={deleteDialogOpen}
+        onClose={handleCloseDeleteDialog}
+        task={taskToDelete}
         weddingId={weddingId}
         weddingDate={weddingDate}
       />

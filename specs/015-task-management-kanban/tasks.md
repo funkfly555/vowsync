@@ -122,9 +122,9 @@
 
 ### Implementation for User Story 5
 
-- [ ] T026 [US5] Create DeleteTaskDialog component in `src/components/tasks/DeleteTaskDialog.tsx` - Shadcn AlertDialog with task title, confirm/cancel buttons
-- [ ] T027 [US5] Add edit mode to TaskModal in `src/components/tasks/TaskModal.tsx` - load existing task data, update title to "Edit Task", call useUpdateTask on save
-- [ ] T028 [US5] Wire up edit/delete in TaskCard and TaskListView - edit opens modal with task data, delete opens DeleteTaskDialog
+- [x] T026 [US5] Create DeleteTaskDialog component in `src/components/tasks/DeleteTaskDialog.tsx` - Shadcn AlertDialog with task title, confirm/cancel buttons
+- [x] T027 [US5] Add edit mode to TaskModal in `src/components/tasks/TaskModal.tsx` - load existing task data, update title to "Edit Task", call useUpdateTask on save
+- [x] T028 [US5] Wire up edit/delete in TaskCard and TaskListView - edit opens modal with task data, delete opens DeleteTaskDialog
 
 **Checkpoint**: User Story 5 complete - full CRUD operations working on tasks
 
