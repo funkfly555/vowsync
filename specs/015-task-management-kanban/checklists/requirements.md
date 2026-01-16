@@ -77,7 +77,7 @@
 - [x] Design system colors available
 
 ### Dependencies Identified
-- [ ] Drag-and-drop library selection needed (react-beautiful-dnd or @dnd-kit)
+- [x] Drag-and-drop library selected: @dnd-kit/core (per research.md)
 - [x] TanStack Query for data fetching
 - [x] React Hook Form + Zod for forms
 - [x] Shadcn/ui components

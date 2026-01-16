@@ -23,8 +23,8 @@
 
 **Purpose**: Install dependencies and create directory structure
 
-- [ ] T001 Install @dnd-kit dependencies: `npm install @dnd-kit/core @dnd-kit/sortable`
-- [ ] T002 Create tasks component directory: `src/components/tasks/`
+- [x] T001 Install @dnd-kit dependencies: `npm install @dnd-kit/core @dnd-kit/sortable`
+- [x] T002 Create tasks component directory: `src/components/tasks/`
 
 ---
 
@@ -34,11 +34,11 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 [P] Create TypeScript interfaces in `src/types/task.ts` - TaskType, TaskPriority, TaskStatus, PrePostWeddingTask, TaskFormData, TaskFilters, TaskWithVendor
-- [ ] T004 [P] Create Zod validation schemas in `src/schemas/task.ts` - taskFormSchema, taskDbSchema with all field validations
-- [ ] T005 [P] Create utility functions in `src/lib/taskUtils.ts` - isTaskOverdue, getDaysOverdue, getDueSoonStatus, calculateDaysRelativeToWedding, STATUS_COLORS, PRIORITY_COLORS, TASK_TYPE_ICONS
-- [ ] T006 Create TanStack Query hook in `src/hooks/useTasks.ts` - taskKeys factory, useTasks hook with vendor join, useVendorsForDropdown helper
-- [ ] T007 Create mutation hooks in `src/hooks/useTaskMutations.ts` - useCreateTask, useUpdateTask, useDeleteTask, useUpdateTaskStatus with optimistic updates
+- [x] T003 [P] Create TypeScript interfaces in `src/types/task.ts` - TaskType, TaskPriority, TaskStatus, PrePostWeddingTask, TaskFormData, TaskFilters, TaskWithVendor
+- [x] T004 [P] Create Zod validation schemas in `src/schemas/task.ts` - taskFormSchema, taskDbSchema with all field validations
+- [x] T005 [P] Create utility functions in `src/lib/taskUtils.ts` - isTaskOverdue, getDaysOverdue, getDueSoonStatus, calculateDaysRelativeToWedding, STATUS_COLORS, PRIORITY_COLORS, TASK_TYPE_ICONS
+- [x] T006 Create TanStack Query hook in `src/hooks/useTasks.ts` - taskKeys factory, useTasks hook with vendor join, useVendorsForDropdown helper
+- [x] T007 Create mutation hooks in `src/hooks/useTaskMutations.ts` - useCreateTask, useUpdateTask, useDeleteTask, useUpdateTaskStatus with optimistic updates
 
 **Checkpoint**: Foundation ready - types, schemas, hooks complete. User story implementation can now begin.
 
