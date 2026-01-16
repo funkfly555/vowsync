@@ -1,9 +1,9 @@
 /**
  * TaskCard Component
  * @feature 015-task-management-kanban
- * @task T016
+ * @task T016, T023
  *
- * Draggable card for Kanban board
+ * Draggable card for Kanban board with quick status actions
  */
 
 import { useDraggable } from '@dnd-kit/core';
@@ -33,16 +33,24 @@ import {
   User,
   Building2,
   Calendar,
+  Play,
+  Check,
+  Ban,
 } from 'lucide-react';
+import { useTaskMutations } from '@/hooks/useTaskMutations';
 
 interface TaskCardProps {
   task: TaskWithVendor;
+  weddingId?: string;
+  weddingDate?: string;
   onEdit?: (task: TaskWithVendor) => void;
   onDelete?: (task: TaskWithVendor) => void;
   isDragging?: boolean;
 }
 
-export function TaskCard({ task, onEdit, onDelete, isDragging }: TaskCardProps) {
+export function TaskCard({ task, weddingId, weddingDate, onEdit, onDelete, isDragging }: TaskCardProps) {
+  const { updateTaskStatus } = useTaskMutations({ weddingId: weddingId || '', weddingDate });
+
   const {
     attributes,
     listeners,
@@ -60,6 +68,19 @@ export function TaskCard({ task, onEdit, onDelete, isDragging }: TaskCardProps) 
 
   // Check for due soon status
   const dueSoonStatus = getDueSoonStatus(task);
+
+  // Status action handlers
+  const handleStart = () => {
+    updateTaskStatus.mutate({ id: task.id, status: 'in_progress' });
+  };
+
+  const handleComplete = () => {
+    updateTaskStatus.mutate({ id: task.id, status: 'completed' });
+  };
+
+  const handleCancel = () => {
+    updateTaskStatus.mutate({ id: task.id, status: 'cancelled' });
+  };
 
   // Format due date
   const formattedDueDate = format(new Date(task.due_date), 'MMM d');
@@ -107,6 +128,25 @@ export function TaskCard({ task, onEdit, onDelete, isDragging }: TaskCardProps) 
               <Pencil className="h-4 w-4 mr-2" />
               Edit
             </DropdownMenuItem>
+            {/* Quick Status Actions */}
+            {task.status === 'pending' && (
+              <DropdownMenuItem onClick={handleStart}>
+                <Play className="h-4 w-4 mr-2" />
+                Start
+              </DropdownMenuItem>
+            )}
+            {(task.status === 'pending' || task.status === 'in_progress') && (
+              <>
+                <DropdownMenuItem onClick={handleComplete}>
+                  <Check className="h-4 w-4 mr-2" />
+                  Complete
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleCancel}>
+                  <Ban className="h-4 w-4 mr-2" />
+                  Cancel
+                </DropdownMenuItem>
+              </>
+            )}
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="text-red-600"

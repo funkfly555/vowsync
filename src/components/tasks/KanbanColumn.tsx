@@ -17,6 +17,8 @@ interface KanbanColumnProps {
   title: string;
   tasks: TaskWithVendor[];
   allowDrop: boolean;
+  weddingId?: string;
+  weddingDate?: string;
   onEditTask?: (task: TaskWithVendor) => void;
   onDeleteTask?: (task: TaskWithVendor) => void;
 }
@@ -26,6 +28,8 @@ export function KanbanColumn({
   title,
   tasks,
   allowDrop,
+  weddingId,
+  weddingDate,
   onEditTask,
   onDeleteTask,
 }: KanbanColumnProps) {
@@ -89,6 +93,8 @@ export function KanbanColumn({
             <TaskCard
               key={task.id}
               task={task}
+              weddingId={weddingId}
+              weddingDate={weddingDate}
               onEdit={onEditTask}
               onDelete={onDeleteTask}
             />

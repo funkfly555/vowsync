@@ -106,9 +106,9 @@
 
 ### Implementation for User Story 4
 
-- [ ] T023 [US4] Add quick status actions to TaskCard in `src/components/tasks/TaskCard.tsx` - dropdown menu with "Start", "Complete", "Cancel" actions using useUpdateTaskStatus
-- [ ] T024 [US4] Add quick complete button to TaskListView rows in `src/components/tasks/TaskListView.tsx` - checkmark icon button for marking complete
-- [ ] T025 [US4] Verify completion timestamp capture in useUpdateTaskStatus in `src/hooks/useTaskMutations.ts` - set completed_date and completed_by on completion
+- [x] T023 [US4] Add quick status actions to TaskCard in `src/components/tasks/TaskCard.tsx` - dropdown menu with "Start", "Complete", "Cancel" actions using useUpdateTaskStatus
+- [x] T024 [US4] Add quick complete button to TaskListView rows in `src/components/tasks/TaskListView.tsx` - checkmark icon button for marking complete
+- [x] T025 [US4] Verify completion timestamp capture in useUpdateTaskStatus in `src/hooks/useTaskMutations.ts` - set completed_date and completed_by on completion
 
 **Checkpoint**: User Story 4 complete - status can be updated via drag-drop, menu, or quick buttons with proper tracking
 

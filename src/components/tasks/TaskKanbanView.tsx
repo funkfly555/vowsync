@@ -118,6 +118,8 @@ export function TaskKanbanView({
             title={column.title}
             tasks={tasksByStatus[column.id]}
             allowDrop={column.allowDrop}
+            weddingId={weddingId}
+            weddingDate={weddingDate}
             onEditTask={onEditTask}
             onDeleteTask={onDeleteTask}
           />
