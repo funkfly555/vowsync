@@ -138,9 +138,9 @@
 
 ### Implementation for User Story 6
 
-- [ ] T029 [US6] Add due soon/urgent indicators to TaskCard in `src/components/tasks/TaskCard.tsx` - call getDueSoonStatus, show badge if urgent/due_soon
-- [ ] T030 [US6] Add due soon/urgent indicators to TaskListView in `src/components/tasks/TaskListView.tsx` - badge in due date column for upcoming tasks
-- [ ] T031 [US6] Add overdue count badge to Kanban column header in `src/components/tasks/KanbanColumn.tsx` - highlight overdue column with count
+- [x] T029 [US6] Add due soon/urgent indicators to TaskCard in `src/components/tasks/TaskCard.tsx` - call getDueSoonStatus, show badge if urgent/due_soon
+- [x] T030 [US6] Add due soon/urgent indicators to TaskListView in `src/components/tasks/TaskListView.tsx` - badge in due date column for upcoming tasks
+- [x] T031 [US6] Add overdue count badge to Kanban column header in `src/components/tasks/KanbanColumn.tsx` - highlight overdue column with count
 
 **Checkpoint**: User Story 6 complete - visual reminders surface time-sensitive tasks
 
