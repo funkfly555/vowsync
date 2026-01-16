@@ -150,12 +150,12 @@
 
 **Purpose**: Final integration, error handling, and manual testing
 
-- [ ] T032 Add loading states to TasksPageContent in `src/components/tasks/TasksPageContent.tsx` - skeleton loading for Kanban/List views
-- [ ] T033 Add error handling with toast notifications in all mutation hooks in `src/hooks/useTaskMutations.ts` - show toast on success/error
-- [ ] T034 Add empty states to Kanban and List views - "No tasks yet" with create button
-- [ ] T035 Verify responsive design - mobile list view as default, test on narrow screens
-- [ ] T036 Add navigation link to tasks page in wedding navigation sidebar
-- [ ] T037 Run quickstart.md validation with Playwright MCP - test all acceptance scenarios
+- [x] T032 Add loading states to TasksPageContent in `src/components/tasks/TasksPageContent.tsx` - skeleton loading for Kanban/List views
+- [x] T033 Add error handling with toast notifications in all mutation hooks in `src/hooks/useTaskMutations.ts` - show toast on success/error
+- [x] T034 Add empty states to Kanban and List views - "No tasks yet" with create button
+- [x] T035 Verify responsive design - mobile list view as default, test on narrow screens
+- [x] T036 Add navigation link to tasks page in wedding navigation sidebar
+- [x] T037 Run quickstart.md validation with Playwright MCP - test all acceptance scenarios
 
 ---
 

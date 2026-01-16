@@ -65,8 +65,7 @@ export const mainNavItems: NavigationItem[] = [
     label: 'Tasks',
     icon: 'CheckSquare',
     path: '/weddings/:id/tasks',
-    isPlaceholder: true,
-    placeholderPhase: 'Phase 12',
+    isPlaceholder: false,
   },
   {
     id: 'docs',
