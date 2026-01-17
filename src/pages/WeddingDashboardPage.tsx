@@ -105,7 +105,10 @@ export function WeddingDashboardPage() {
               <h2 id="actions-heading" className="sr-only">
                 Quick Actions
               </h2>
-              <DashboardQuickActions weddingId={weddingId} />
+              <DashboardQuickActions
+                weddingId={weddingId}
+                weddingTitle={wedding ? `${wedding.bride_name} & ${wedding.groom_name}` : undefined}
+              />
             </section>
           </div>
         )}

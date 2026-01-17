@@ -27,6 +27,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-13
 - Supabase PostgreSQL (`repurposing_instructions` table exists with RLS enabled) (014-repurposing-timeline)
 - TypeScript 5.x with React 18+ (strict mode enabled) + React Router v6, TanStack Query v5, React Hook Form, Zod, Shadcn/ui, @dnd-kit/core, @dnd-kit/sortable, Tailwind CSS v3, date-fns, Lucide React (015-task-management-kanban)
 - Supabase PostgreSQL (`pre_post_wedding_tasks` table exists) (015-task-management-kanban)
+- TypeScript 5.x with React 19+ + jsPDF, jspdf-autotable, docx, file-saver (new), existing stack (React, Vite, Tailwind, Shadcn/ui) (017-document-generation)
+- Supabase PostgreSQL (read-only queries to 16 existing tables) (017-document-generation)
 
 - SQL (PostgreSQL 15+ via Supabase) + Supabase (PostgreSQL, Auth, Storage) (001-database-schema-foundation)
 
@@ -46,9 +48,9 @@ tests/
 SQL (PostgreSQL 15+ via Supabase): Follow standard conventions
 
 ## Recent Changes
+- 017-document-generation: Added TypeScript 5.x with React 19+ + jsPDF, jspdf-autotable, docx, file-saver (new), existing stack (React, Vite, Tailwind, Shadcn/ui)
 - 015-task-management-kanban: Added TypeScript 5.x with React 18+ (strict mode enabled) + React Router v6, TanStack Query v5, React Hook Form, Zod, Shadcn/ui, @dnd-kit/core, @dnd-kit/sortable, Tailwind CSS v3, date-fns, Lucide React
 - 014-repurposing-timeline: Added TypeScript 5.x with React 18+ (strict mode enabled) + React Router v6, TanStack Query v5, React Hook Form, Zod, Shadcn/ui, Tailwind CSS v3, date-fns, Lucide React
-- 013-wedding-items: Added TypeScript 5.x with React 18+ (strict mode enabled) + React Router v6, TanStack Query v5, React Hook Form, Zod, Shadcn/ui, Tailwind CSS v3, date-fns, Lucide React
 
 
 <!-- MANUAL ADDITIONS START -->
