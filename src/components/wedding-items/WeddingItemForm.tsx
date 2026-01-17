@@ -81,10 +81,6 @@ export function WeddingItemForm({
   });
 
   const handleFormSubmit = (data: WeddingItemFormSchemaType) => {
-    // Debug: Log what's being submitted
-    console.log('[WeddingItemForm] Submitting data:', JSON.stringify(data, null, 2));
-    console.log('[WeddingItemForm] event_quantities:', data.event_quantities);
-
     // Transform to WeddingItemFormData format
     const formData: WeddingItemFormData = {
       category: data.category,

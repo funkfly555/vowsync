@@ -42,7 +42,17 @@ export function WeddingDashboardPage() {
                   <h1 className="font-semibold text-xl text-gray-900">
                     {wedding.bride_name} & {wedding.groom_name}
                   </h1>
-                  <p className="text-sm text-gray-500">{formatDate(wedding.wedding_date, 'MMMM d, yyyy')}</p>
+                  <p className="text-sm text-gray-500">
+                    {wedding.venue_name && (
+                      <>
+                        <span className="truncate max-w-[180px] md:max-w-none inline-block align-bottom">
+                          {wedding.venue_name}
+                        </span>
+                        <span className="mx-1 text-gray-400">•</span>
+                      </>
+                    )}
+                    {formatDate(wedding.wedding_date, 'MMMM d, yyyy')}
+                  </p>
                 </>
               ) : null}
             </div>

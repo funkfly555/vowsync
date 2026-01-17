@@ -13,6 +13,7 @@ import {
   useDeleteEvent,
   useUsedEventOrders,
   useEventHasGuests,
+  useEvents,
 } from '@/hooks/useEvents';
 import type { EventFormValues } from '@/schemas/event';
 
@@ -23,6 +24,7 @@ export function EditEventPage() {
 
   const { data: event, isLoading: eventLoading } = useEvent(eventId!);
   const { data: usedOrders, isLoading: ordersLoading } = useUsedEventOrders(weddingId!);
+  const { data: allEvents } = useEvents(weddingId!);
   const { data: hasGuests } = useEventHasGuests(eventId!);
   const updateEvent = useUpdateEvent();
   const deleteEvent = useDeleteEvent();
@@ -128,6 +130,7 @@ export function EditEventPage() {
               usedOrders={usedOrders ?? []}
               weddingDate={event.wedding.wedding_date}
               currentEventId={eventId}
+              allEvents={allEvents}
             />
           </CardContent>
         </Card>

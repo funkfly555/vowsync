@@ -117,8 +117,6 @@ export function useWeddingItemMutations({ weddingId }: UseWeddingItemMutationsPa
    */
   const updateItem = useMutation({
     mutationFn: async ({ itemId, data }: UpdateItemData) => {
-      console.log('[updateItem] Received data:', JSON.stringify(data, null, 2));
-      console.log('[updateItem] event_quantities:', data.event_quantities);
       const { event_quantities, ...itemData } = data;
 
       // If aggregation method or cost_per_unit changed, we need to recalculate
@@ -129,8 +127,6 @@ export function useWeddingItemMutations({ weddingId }: UseWeddingItemMutationsPa
 
       // If event_quantities are provided, update them and recalculate totals
       if (event_quantities !== undefined) {
-        console.log('[updateItem] Processing event_quantities:', event_quantities);
-
         // Get current item to know aggregation method
         const { data: currentItem, error: getError } = await supabase
           .from('wedding_items')
@@ -139,9 +135,8 @@ export function useWeddingItemMutations({ weddingId }: UseWeddingItemMutationsPa
           .single();
 
         if (getError) {
-          console.error('[updateItem] Error getting current item:', getError);
+          throw new Error(`Failed to get current item: ${getError.message}`);
         }
-        console.log('[updateItem] Current item:', currentItem);
 
         const aggMethod = (itemData.aggregation_method || currentItem?.aggregation_method || 'MAX') as AggregationMethod;
         const costPerUnit = itemData.cost_per_unit !== undefined ? itemData.cost_per_unit : currentItem?.cost_per_unit;
@@ -153,9 +148,7 @@ export function useWeddingItemMutations({ weddingId }: UseWeddingItemMutationsPa
           .eq('wedding_item_id', itemId);
 
         if (deleteError) {
-          console.error('[updateItem] Error deleting event quantities:', deleteError);
-        } else {
-          console.log('[updateItem] Deleted existing event quantities');
+          throw new Error(`Failed to delete event quantities: ${deleteError.message}`);
         }
 
         const quantityRows = Object.entries(event_quantities)
@@ -166,17 +159,13 @@ export function useWeddingItemMutations({ weddingId }: UseWeddingItemMutationsPa
             quantity_required: qty,
           }));
 
-        console.log('[updateItem] Inserting quantity rows:', quantityRows);
-
         if (quantityRows.length > 0) {
           const { error: insertError } = await supabase
             .from('wedding_item_event_quantities')
             .insert(quantityRows);
 
           if (insertError) {
-            console.error('[updateItem] Error inserting event quantities:', insertError);
-          } else {
-            console.log('[updateItem] Inserted event quantities successfully');
+            throw new Error(`Failed to insert event quantities: ${insertError.message}`);
           }
         }
 
@@ -184,8 +173,6 @@ export function useWeddingItemMutations({ weddingId }: UseWeddingItemMutationsPa
         const quantities = Object.values(event_quantities).filter(q => q > 0);
         const totalRequired = calculateTotalRequired(aggMethod, quantities);
         const totalCost = calculateTotalCost(totalRequired, costPerUnit);
-
-        console.log('[updateItem] Calculated totals:', { totalRequired, totalCost });
 
         updateData.total_required = totalRequired;
         updateData.total_cost = totalCost;
@@ -199,7 +186,6 @@ export function useWeddingItemMutations({ weddingId }: UseWeddingItemMutationsPa
         .single();
 
       if (error) {
-        console.error('Error updating wedding item:', error);
         throw error;
       }
 

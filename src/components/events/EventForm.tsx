@@ -1,8 +1,11 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { differenceInDays, parseISO } from 'date-fns';
 import { AlertTriangle } from 'lucide-react';
+import type { Event } from '@/types/event';
+import { findOverlappingEvents } from '@/lib/eventUtils';
+import { EventOverlapBadge } from '@/components/events/EventOverlapBadge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -34,6 +37,11 @@ interface EventFormProps {
   usedOrders?: number[];
   weddingDate?: string;
   currentEventId?: string; // For edit mode - exclude current event's order from validation
+  /**
+   * All events for the current wedding
+   * Used to check for time overlaps when creating/editing events
+   */
+  allEvents?: Event[];
 }
 
 export function EventForm({
@@ -44,6 +52,7 @@ export function EventForm({
   usedOrders = [],
   weddingDate,
   currentEventId,
+  allEvents,
 }: EventFormProps) {
   const form = useForm<EventFormValues>({
     resolver: zodResolver(eventFormSchema),
@@ -63,6 +72,27 @@ export function EventForm({
   const watchEndTime = form.watch('event_end_time');
   const watchEventDate = form.watch('event_date');
   const watchEventOrder = form.watch('event_order');
+
+  // Track overlapping events for badge display
+  const [overlappingEvents, setOverlappingEvents] = useState<Event[]>([]);
+
+  // Check for overlaps when date/time fields change
+  useEffect(() => {
+    if (!allEvents || allEvents.length === 0) {
+      setOverlappingEvents([]);
+      return;
+    }
+
+    const currentEvent: Partial<Event> = {
+      id: currentEventId,
+      event_date: watchEventDate?.toISOString().split('T')[0],
+      event_start_time: watchStartTime,
+      event_end_time: watchEndTime,
+    };
+
+    const overlaps = findOverlappingEvents(currentEvent, allEvents);
+    setOverlappingEvents(overlaps);
+  }, [watchEventDate, watchStartTime, watchEndTime, allEvents, currentEventId]);
 
   // Calculate duration preview
   const durationPreview = useMemo(() => {
@@ -276,6 +306,11 @@ export function EventForm({
             </div>
           </div>
         </div>
+
+        {/* Overlap warning badge */}
+        {overlappingEvents.length > 0 && (
+          <EventOverlapBadge overlappingEvents={overlappingEvents} />
+        )}
 
         {/* Notes */}
         <FormField

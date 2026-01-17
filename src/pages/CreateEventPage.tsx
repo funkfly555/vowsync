@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { EventForm } from '@/components/events/EventForm';
-import { useCreateEvent, useUsedEventOrders, getNextAvailableOrder } from '@/hooks/useEvents';
+import { useCreateEvent, useUsedEventOrders, getNextAvailableOrder, useEvents } from '@/hooks/useEvents';
 import { useWedding } from '@/hooks/useWeddings';
 import type { EventFormValues } from '@/schemas/event';
 
@@ -13,6 +13,7 @@ export function CreateEventPage() {
   const navigate = useNavigate();
   const { data: wedding, isLoading: weddingLoading } = useWedding(weddingId!);
   const { data: usedOrders, isLoading: ordersLoading } = useUsedEventOrders(weddingId!);
+  const { data: allEvents } = useEvents(weddingId!);
   const createEvent = useCreateEvent();
 
   const isLoading = weddingLoading || ordersLoading;
@@ -111,6 +112,7 @@ export function CreateEventPage() {
               }}
               usedOrders={usedOrders ?? []}
               weddingDate={wedding.wedding_date}
+              allEvents={allEvents}
             />
           </CardContent>
         </Card>
