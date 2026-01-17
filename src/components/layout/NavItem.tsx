@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import {
   Home,
   Users,
+  Mail,
   Handshake,
   Calendar,
   Armchair,
@@ -22,6 +23,7 @@ import { getNavPath } from '@/lib/navigation';
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Home,
   Users,
+  Mail,
   Handshake,
   Calendar,
   Armchair,

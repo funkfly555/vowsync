@@ -21,6 +21,10 @@ import { WeddingItemsPage } from './pages/wedding-items/WeddingItemsPage';
 import { RepurposingPage } from './pages/RepurposingPage';
 import { TasksPage } from './pages/TasksPage';
 import { LoginPage } from './pages/LoginPage';
+import { EmailTemplatesPage } from './pages/email/EmailTemplatesPage';
+import { EmailCampaignsPage } from './pages/email/EmailCampaignsPage';
+import { CreateEmailCampaignPage } from './pages/email/CreateEmailCampaignPage';
+import { EmailCampaignDetailPage } from './pages/email/EmailCampaignDetailPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -62,6 +66,11 @@ function App() {
                 <Route path="/weddings/:weddingId/repurposing" element={<RepurposingPage />} />
                 <Route path="/weddings/:weddingId/bar-orders" element={<BarOrdersPage />} />
                 <Route path="/weddings/:weddingId/bar-orders/:orderId" element={<BarOrderDetailPage />} />
+                {/* Email routes - 016-email-campaigns */}
+                <Route path="/weddings/:weddingId/emails" element={<EmailCampaignsPage />} />
+                <Route path="/weddings/:weddingId/emails/templates" element={<EmailTemplatesPage />} />
+                <Route path="/weddings/:weddingId/emails/new" element={<CreateEmailCampaignPage />} />
+                <Route path="/weddings/:weddingId/emails/:campaignId" element={<EmailCampaignDetailPage />} />
               </Route>
             </Routes>
           </BrowserRouter>

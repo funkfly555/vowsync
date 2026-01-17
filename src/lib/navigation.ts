@@ -19,6 +19,13 @@ export const mainNavItems: NavigationItem[] = [
     isPlaceholder: false,
   },
   {
+    id: 'emails',
+    label: 'Emails',
+    icon: 'Mail',
+    path: '/weddings/:id/emails',
+    isPlaceholder: false,
+  },
+  {
     id: 'vendors',
     label: 'Vendors',
     icon: 'Handshake',
