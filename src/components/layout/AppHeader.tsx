@@ -1,5 +1,5 @@
 import { Menu } from 'lucide-react';
-import { NotificationBadge } from './NotificationBadge';
+import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { ProfileDropdown } from './ProfileDropdown';
 import { useNavigation } from '@/hooks/useNavigation';
 
@@ -36,7 +36,7 @@ export function AppHeader({ weddingId: _weddingId }: AppHeaderProps) {
 
         {/* Right side: Notifications + Profile */}
         <div className="flex items-center gap-2">
-          <NotificationBadge count={3} />
+          <NotificationBell />
           <ProfileDropdown />
         </div>
       </div>

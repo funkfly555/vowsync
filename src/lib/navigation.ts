@@ -79,8 +79,7 @@ export const mainNavItems: NavigationItem[] = [
     label: 'Docs',
     icon: 'FileText',
     path: '/weddings/:id/docs',
-    isPlaceholder: true,
-    placeholderPhase: 'Phase 14',
+    isPlaceholder: false,
   },
 ];
 

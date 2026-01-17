@@ -25,6 +25,8 @@ import { EmailTemplatesPage } from './pages/email/EmailTemplatesPage';
 import { EmailCampaignsPage } from './pages/email/EmailCampaignsPage';
 import { CreateEmailCampaignPage } from './pages/email/CreateEmailCampaignPage';
 import { EmailCampaignDetailPage } from './pages/email/EmailCampaignDetailPage';
+import { NotificationsPage } from './pages/NotificationsPage';
+import { DocumentsPage } from './pages/DocumentsPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -71,6 +73,10 @@ function App() {
                 <Route path="/weddings/:weddingId/emails/templates" element={<EmailTemplatesPage />} />
                 <Route path="/weddings/:weddingId/emails/new" element={<CreateEmailCampaignPage />} />
                 <Route path="/weddings/:weddingId/emails/:campaignId" element={<EmailCampaignDetailPage />} />
+                {/* Notifications - 018-notifications */}
+                <Route path="/weddings/:weddingId/notifications" element={<NotificationsPage />} />
+                {/* Documents - 017-document-generation */}
+                <Route path="/weddings/:weddingId/docs" element={<DocumentsPage />} />
               </Route>
             </Routes>
           </BrowserRouter>
