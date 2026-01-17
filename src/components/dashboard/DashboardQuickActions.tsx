@@ -1,9 +1,12 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { UserPlus, Store, Calendar, Clock, DollarSign, FileText } from 'lucide-react';
+import { GenerateFunctionSheetModal } from '@/components/documents';
 
 interface DashboardQuickActionsProps {
   weddingId: string;
+  weddingTitle?: string;
 }
 
 /**
@@ -12,8 +15,9 @@ interface DashboardQuickActionsProps {
  * - Only "Create Event" is functional
  * - Other buttons show toast: "Coming in Phase X"
  */
-export function DashboardQuickActions({ weddingId }: DashboardQuickActionsProps) {
+export function DashboardQuickActions({ weddingId, weddingTitle }: DashboardQuickActionsProps) {
   const navigate = useNavigate();
+  const [showDocModal, setShowDocModal] = useState(false);
 
   const showComingSoon = (feature: string, phase: string) => {
     toast(`${feature} coming in ${phase}`);
@@ -54,7 +58,7 @@ export function DashboardQuickActions({ weddingId }: DashboardQuickActionsProps)
       id: 'generate-docs',
       label: 'Generate Docs',
       icon: FileText,
-      onClick: () => showComingSoon('Generate Docs', 'Phase 14'),
+      onClick: () => setShowDocModal(true),
     },
   ];
 
@@ -77,6 +81,14 @@ export function DashboardQuickActions({ weddingId }: DashboardQuickActionsProps)
           );
         })}
       </div>
+
+      {/* Generate Function Sheet Modal */}
+      <GenerateFunctionSheetModal
+        open={showDocModal}
+        onOpenChange={setShowDocModal}
+        weddingId={weddingId}
+        weddingTitle={weddingTitle}
+      />
     </div>
   );
 }
