@@ -31,6 +31,7 @@ Auto-generated from all feature plans. Last updated: 2026-01-13
 - Supabase PostgreSQL (read-only queries to 16 existing tables) (017-document-generation)
 - TypeScript 5.x with React 18+ (strict mode enabled) + React Router v6, TanStack Query v5, Shadcn/ui, Tailwind CSS v3, Lucide React, date-fns (018-notifications)
 - Supabase PostgreSQL (`notifications` table already exists from Phase 1) (018-notifications)
+- Supabase PostgreSQL (existing `events` and `weddings` tables) (019-final-polish-integration)
 
 - SQL (PostgreSQL 15+ via Supabase) + Supabase (PostgreSQL, Auth, Storage) (001-database-schema-foundation)
 
@@ -50,9 +51,9 @@ tests/
 SQL (PostgreSQL 15+ via Supabase): Follow standard conventions
 
 ## Recent Changes
+- 019-final-polish-integration: Added TypeScript 5.x with React 18+ (strict mode enabled) + React Router v6, TanStack Query v5, React Hook Form, Zod, Shadcn/ui, Tailwind CSS v3, date-fns, Lucide React
 - 018-notifications: Added TypeScript 5.x with React 18+ (strict mode enabled) + React Router v6, TanStack Query v5, Shadcn/ui, Tailwind CSS v3, Lucide React, date-fns
 - 017-document-generation: Added TypeScript 5.x with React 19+ + jsPDF, jspdf-autotable, docx, file-saver (new), existing stack (React, Vite, Tailwind, Shadcn/ui)
-- 015-task-management-kanban: Added TypeScript 5.x with React 18+ (strict mode enabled) + React Router v6, TanStack Query v5, React Hook Form, Zod, Shadcn/ui, @dnd-kit/core, @dnd-kit/sortable, Tailwind CSS v3, date-fns, Lucide React
 
 
 <!-- MANUAL ADDITIONS START -->
