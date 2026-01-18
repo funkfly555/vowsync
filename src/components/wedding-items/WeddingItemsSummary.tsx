@@ -5,7 +5,7 @@
  */
 
 import { useMemo } from 'react';
-import { Package, DollarSign, AlertTriangle, CheckCircle, HelpCircle } from 'lucide-react';
+import { Package, PiggyBank, AlertTriangle, CheckCircle, HelpCircle } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import type { WeddingItemWithQuantities } from '@/types/weddingItem';
 import { calculateSummary, formatCurrency } from '@/types/weddingItem';
@@ -50,7 +50,7 @@ export function WeddingItemsSummary({ items }: WeddingItemsSummaryProps) {
         <CardContent className="p-4">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-emerald-100 rounded-lg">
-              <DollarSign className="h-5 w-5 text-emerald-600" />
+              <PiggyBank className="h-5 w-5 text-emerald-600" />
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Total Cost</p>

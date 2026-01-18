@@ -111,7 +111,7 @@ export interface EmailLog {
 // =============================================================================
 
 export interface GuestFilter {
-  rsvp_status?: 'pending' | 'accepted' | 'declined';
+  invitation_status?: 'pending' | 'invited' | 'confirmed' | 'declined';
   event_id?: string;
   has_dietary_restrictions?: boolean;
   table_assigned?: boolean;

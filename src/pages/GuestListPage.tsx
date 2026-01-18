@@ -17,7 +17,7 @@ function hasActiveFilters(filters: GuestFilters): boolean {
   return (
     filters.search !== '' ||
     filters.type !== 'all' ||
-    filters.rsvpStatus !== 'all' ||
+    filters.invitationStatus !== 'all' ||
     filters.eventId !== null
   );
 }

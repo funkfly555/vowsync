@@ -11,7 +11,7 @@
 
 import { ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
-import { GuestDisplayItem, GuestFilters as GuestFiltersType, GuestType, RsvpStatus } from '@/types/guest';
+import { GuestDisplayItem, GuestFilters as GuestFiltersType, GuestType, InvitationStatus } from '@/types/guest';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { SearchInput } from './SearchInput';
 import { TypeFilter } from './TypeFilter';
-import { RsvpFilter } from './RsvpFilter';
+import { InvitationStatusFilter } from './InvitationStatusFilter';
 import { EventFilter } from './EventFilter';
 import { exportToCsv } from '@/lib/export';
 
@@ -67,9 +67,9 @@ export function GuestFilters({ filters, onFiltersChange, events, guests = [] }: 
             value={filters.type}
             onChange={(type: GuestType | 'all') => onFiltersChange({ type })}
           />
-          <RsvpFilter
-            value={filters.rsvpStatus}
-            onChange={(rsvpStatus: RsvpStatus | 'all') => onFiltersChange({ rsvpStatus })}
+          <InvitationStatusFilter
+            value={filters.invitationStatus}
+            onChange={(invitationStatus: InvitationStatus | 'all') => onFiltersChange({ invitationStatus })}
           />
           <EventFilter
             value={filters.eventId}

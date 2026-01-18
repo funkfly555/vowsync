@@ -4,7 +4,7 @@
  * @task T042, T043, T044
  */
 
-import { Package, DollarSign, Percent, ListChecks } from 'lucide-react';
+import { Package, PiggyBank, Percent, ListChecks } from 'lucide-react';
 import { calculateBarOrderSummary, formatCurrency, formatPercentage } from '@/lib/barOrderCalculations';
 import type { BarOrderItem } from '@/types/barOrder';
 
@@ -59,7 +59,7 @@ export function BarOrderSummary({ items }: BarOrderSummaryProps) {
         {/* Total Cost */}
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-md bg-background">
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <PiggyBank className="h-4 w-4 text-muted-foreground" />
           </div>
           <div>
             <p className="text-xs text-muted-foreground">Est. Total</p>

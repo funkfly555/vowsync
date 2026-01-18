@@ -12,7 +12,6 @@ import {
   GuestFilters,
   PAGE_SIZE,
   toGuestDisplayItem,
-  calculateRsvpStatus,
   GuestWithAttendance,
   GuestEventAttendance,
 } from '@/types/guest';
@@ -126,7 +125,7 @@ export function useGuests({ weddingId, page, filters }: UseGuestsParams): UseGue
     enabled: !!weddingId,
   });
 
-  // Transform guests and apply client-side filters (search, RSVP status)
+  // Transform guests and apply client-side filters (search, invitation status)
   const transformedGuests: GuestDisplayItem[] = (data?.guests || [])
     .map(toGuestDisplayItem)
     .filter((guest) => {
@@ -138,10 +137,9 @@ export function useGuests({ weddingId, page, filters }: UseGuestsParams): UseGue
         }
       }
 
-      // Apply RSVP status filter (client-side since it's calculated)
-      if (filters.rsvpStatus !== 'all') {
-        const status = calculateRsvpStatus(guest.rsvp_received_date, guest.rsvp_deadline);
-        if (status !== filters.rsvpStatus) {
+      // Apply invitation status filter
+      if (filters.invitationStatus !== 'all') {
+        if (guest.invitation_status !== filters.invitationStatus) {
           return false;
         }
       }

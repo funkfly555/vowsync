@@ -4,40 +4,51 @@ import type { GuestStats } from '@/types/dashboard';
 
 /**
  * Hook to fetch guest statistics for RSVP progress display
- * Uses Supabase count aggregation queries for efficiency
+ * Fetches all guests and calculates stats locally for reliability
+ * @feature 020-dashboard-settings-fix - All 4 invitation statuses counted
  */
 export function useGuestStats(weddingId: string) {
   return useQuery({
     queryKey: ['guestStats', weddingId],
     queryFn: async (): Promise<GuestStats> => {
-      // Fetch all counts in parallel for better performance
-      const [totalResult, confirmedResult, declinedResult] = await Promise.all([
-        supabase
-          .from('guests')
-          .select('*', { count: 'exact', head: true })
-          .eq('wedding_id', weddingId),
-        supabase
-          .from('guests')
-          .select('*', { count: 'exact', head: true })
-          .eq('wedding_id', weddingId)
-          .eq('invitation_status', 'confirmed'),
-        supabase
-          .from('guests')
-          .select('*', { count: 'exact', head: true })
-          .eq('wedding_id', weddingId)
-          .eq('invitation_status', 'declined'),
-      ]);
+      // Fetch all guests with relevant fields
+      const { data: guests, error } = await supabase
+        .from('guests')
+        .select('invitation_status, guest_type')
+        .eq('wedding_id', weddingId);
 
-      // Check for errors
-      if (totalResult.error) throw totalResult.error;
-      if (confirmedResult.error) throw confirmedResult.error;
-      if (declinedResult.error) throw declinedResult.error;
+      if (error) throw error;
 
-      const total = totalResult.count ?? 0;
-      const confirmed = confirmedResult.count ?? 0;
-      const declined = declinedResult.count ?? 0;
+      const guestList = guests ?? [];
+
+      // Calculate guest counts
+      const total = guestList.length;
+      const adults = guestList.filter(
+        (g) => g.guest_type === 'adult' || g.guest_type === null
+      ).length;
+      const children = guestList.filter((g) => g.guest_type === 'child').length;
+
+      // Calculate RSVP stats based on invitation_status
+      // All 4 statuses: pending (to be sent), invited (awaiting response), confirmed, declined
+      const rsvpNotInvited = guestList.filter(
+        (g) => g.invitation_status === 'pending' || !g.invitation_status
+      ).length;
+      const rsvpInvited = guestList.filter(
+        (g) => g.invitation_status === 'invited'
+      ).length;
+      const rsvpConfirmed = guestList.filter(
+        (g) => g.invitation_status === 'confirmed'
+      ).length;
+      const rsvpDeclined = guestList.filter(
+        (g) => g.invitation_status === 'declined'
+      ).length;
+
+      // Legacy fields for backwards compatibility
+      const confirmed = rsvpConfirmed;
+      const declined = rsvpDeclined;
       const pending = total - confirmed - declined;
-      const responseRate = total > 0 ? Math.round(((confirmed + declined) / total) * 100) : 0;
+      const responseRate =
+        total > 0 ? Math.round(((confirmed + declined) / total) * 100) : 0;
 
       return {
         total,
@@ -45,6 +56,12 @@ export function useGuestStats(weddingId: string) {
         declined,
         pending,
         responseRate,
+        adults,
+        children,
+        rsvpNotInvited,
+        rsvpInvited,
+        rsvpConfirmed,
+        rsvpDeclined,
       };
     },
     enabled: !!weddingId,

@@ -56,7 +56,7 @@ export const mainNavItems: NavigationItem[] = [
   {
     id: 'budget',
     label: 'Budget',
-    icon: 'DollarSign',
+    icon: 'PiggyBank',
     path: '/weddings/:id/budget',
     isPlaceholder: false,
   },
@@ -72,6 +72,13 @@ export const mainNavItems: NavigationItem[] = [
     label: 'Tasks',
     icon: 'CheckSquare',
     path: '/weddings/:id/tasks',
+    isPlaceholder: false,
+  },
+  {
+    id: 'activity',
+    label: 'Activity',
+    icon: 'Activity',
+    path: '/weddings/:id/activity',
     isPlaceholder: false,
   },
   {
@@ -92,8 +99,8 @@ export const bottomNavItems: NavigationItem[] = [
     label: 'Settings',
     icon: 'Settings',
     path: '/settings',
-    isPlaceholder: true,
-    placeholderPhase: 'Phase 15',
+    isPlaceholder: false,
+    // @feature 020-dashboard-settings-fix - Settings page implemented
   },
   {
     id: 'logout',

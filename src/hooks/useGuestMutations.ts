@@ -14,6 +14,7 @@ import {
   BulkTableAssignmentRequest,
   AttendanceUpdatePayload,
 } from '@/types/guest';
+import { logActivity, activityDescriptions } from '@/lib/activityLog';
 
 /**
  * Transform form data to database insert format
@@ -30,7 +31,6 @@ function transformFormDataForInsert(
     email: data.email || null,
     phone: data.phone || null,
     invitation_status: data.invitation_status,
-    attendance_confirmed: data.attendance_confirmed,
     rsvp_deadline: data.rsvp_deadline?.toISOString().split('T')[0] || null,
     rsvp_received_date: data.rsvp_received_date?.toISOString().split('T')[0] || null,
     rsvp_method: data.rsvp_method,
@@ -61,7 +61,6 @@ function transformFormDataForUpdate(
   if (data.email !== undefined) result.email = data.email || null;
   if (data.phone !== undefined) result.phone = data.phone || null;
   if (data.invitation_status !== undefined) result.invitation_status = data.invitation_status;
-  if (data.attendance_confirmed !== undefined) result.attendance_confirmed = data.attendance_confirmed;
   if (data.rsvp_deadline !== undefined) {
     result.rsvp_deadline = data.rsvp_deadline?.toISOString().split('T')[0] || null;
   }
@@ -125,6 +124,15 @@ async function createGuest(request: CreateGuestRequest): Promise<Guest> {
     }
   }
 
+  // Log activity (fire-and-forget)
+  logActivity({
+    weddingId: wedding_id,
+    actionType: 'created',
+    entityType: 'guest',
+    entityId: guest.id,
+    description: activityDescriptions.guest.created(guest.name),
+  });
+
   return guest;
 }
 
@@ -184,6 +192,16 @@ async function updateGuest(request: UpdateGuestRequest): Promise<Guest> {
     throw new Error(fetchError.message);
   }
 
+  // Log activity (fire-and-forget)
+  logActivity({
+    weddingId: updatedGuest.wedding_id,
+    actionType: 'updated',
+    entityType: 'guest',
+    entityId: guest_id,
+    description: activityDescriptions.guest.updated(updatedGuest.name),
+    changes: guestData,
+  });
+
   return updatedGuest;
 }
 
@@ -193,11 +211,29 @@ async function updateGuest(request: UpdateGuestRequest): Promise<Guest> {
 async function deleteGuest(request: DeleteGuestRequest): Promise<void> {
   const { guest_id } = request;
 
+  // Fetch guest info before deleting for activity log
+  const { data: guest } = await supabase
+    .from('guests')
+    .select('name, wedding_id')
+    .eq('id', guest_id)
+    .single();
+
   const { error } = await supabase.from('guests').delete().eq('id', guest_id);
 
   if (error) {
     console.error('Error deleting guest:', error);
     throw new Error(error.message);
+  }
+
+  // Log activity (fire-and-forget)
+  if (guest) {
+    logActivity({
+      weddingId: guest.wedding_id,
+      actionType: 'deleted',
+      entityType: 'guest',
+      entityId: guest_id,
+      description: activityDescriptions.guest.deleted(guest.name),
+    });
   }
 }
 
@@ -256,6 +292,9 @@ export function useGuestMutations(weddingId: string) {
   const invalidateQueries = () => {
     queryClient.invalidateQueries({ queryKey: ['guests', weddingId] });
     queryClient.invalidateQueries({ queryKey: ['guest'] });
+    // Invalidate dashboard stats so they refresh when navigating back
+    queryClient.invalidateQueries({ queryKey: ['guestStats', weddingId] });
+    queryClient.invalidateQueries({ queryKey: ['dashboardMetrics', weddingId] });
   };
 
   const createGuestMutation = useMutation({

@@ -9,6 +9,7 @@ import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import type { BarOrderFormData, BarOrderItemFormData } from '@/types/barOrder';
 import { barOrderKeys } from './useBarOrders';
+import { logActivity, activityDescriptions } from '@/lib/activityLog';
 
 // =============================================================================
 // Types
@@ -55,6 +56,15 @@ export function useBarOrderMutations({ weddingId }: UseBarOrderMutationsParams) 
         throw error;
       }
 
+      // Log activity (fire-and-forget)
+      logActivity({
+        weddingId,
+        actionType: 'created',
+        entityType: 'bar_order',
+        entityId: order.id,
+        description: activityDescriptions.bar_order.created(order.name),
+      });
+
       return order;
     },
     onSuccess: () => {
@@ -83,6 +93,16 @@ export function useBarOrderMutations({ weddingId }: UseBarOrderMutationsParams) 
         throw error;
       }
 
+      // Log activity (fire-and-forget)
+      logActivity({
+        weddingId,
+        actionType: 'updated',
+        entityType: 'bar_order',
+        entityId: orderId,
+        description: activityDescriptions.bar_order.updated(order.name),
+        changes: data as Record<string, unknown>,
+      });
+
       return order;
     },
     onSuccess: (_, variables) => {
@@ -99,6 +119,13 @@ export function useBarOrderMutations({ weddingId }: UseBarOrderMutationsParams) 
    */
   const deleteBarOrder = useMutation({
     mutationFn: async (orderId: string) => {
+      // Fetch order info before deleting for activity log
+      const { data: order } = await supabase
+        .from('bar_orders')
+        .select('name')
+        .eq('id', orderId)
+        .single();
+
       const { error } = await supabase
         .from('bar_orders')
         .delete()
@@ -107,6 +134,17 @@ export function useBarOrderMutations({ weddingId }: UseBarOrderMutationsParams) 
       if (error) {
         console.error('Error deleting bar order:', error);
         throw error;
+      }
+
+      // Log activity (fire-and-forget)
+      if (order) {
+        logActivity({
+          weddingId,
+          actionType: 'deleted',
+          entityType: 'bar_order',
+          entityId: orderId,
+          description: activityDescriptions.bar_order.deleted(order.name),
+        });
       }
     },
     onSuccess: () => {

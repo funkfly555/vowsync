@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { GuestDisplayItem } from '@/types/guest';
-import { RsvpBadge } from './RsvpBadge';
+import { InvitationStatusBadge } from './InvitationStatusBadge';
 import { GuestTypeBadge } from './GuestTypeBadge';
 
 interface GuestCardProps {
@@ -30,7 +30,7 @@ export function GuestCard({ guest, onEdit, onDelete }: GuestCardProps) {
           <h3 className="font-medium text-gray-900">{guest.name}</h3>
           <div className="flex gap-2 mt-1">
             <GuestTypeBadge type={guest.guest_type} />
-            <RsvpBadge status={guest.rsvpStatus} />
+            <InvitationStatusBadge status={guest.invitation_status} />
           </div>
         </div>
         <DropdownMenu>

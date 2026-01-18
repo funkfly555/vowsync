@@ -6,7 +6,7 @@
 
 import {
   Bell,
-  DollarSign,
+  PiggyBank,
   CheckSquare,
   Users,
   Briefcase,
@@ -32,7 +32,7 @@ interface NotificationIconProps {
 // =============================================================================
 
 const iconMap = {
-  DollarSign,
+  PiggyBank,
   CheckSquare,
   Users,
   Briefcase,

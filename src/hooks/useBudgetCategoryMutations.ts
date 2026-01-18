@@ -13,6 +13,7 @@ import {
   toBudgetCategoryUpdate,
   type BudgetCategoryFormValues,
 } from '@/schemas/budgetCategory';
+import { logActivity, activityDescriptions } from '@/lib/activityLog';
 
 // =============================================================================
 // Wedding Totals Sync Helper (T034-T038)
@@ -76,6 +77,15 @@ async function createCategory({ weddingId, data }: CreateCategoryVariables): Pro
   // Sync wedding totals after create
   await updateWeddingBudgetTotals(weddingId);
 
+  // Log activity (fire-and-forget)
+  logActivity({
+    weddingId,
+    actionType: 'created',
+    entityType: 'budget',
+    entityId: category.id,
+    description: activityDescriptions.budget.created(category.category_name),
+  });
+
   return category;
 }
 
@@ -132,6 +142,16 @@ async function updateCategory({
   // Sync wedding totals after update
   await updateWeddingBudgetTotals(weddingId);
 
+  // Log activity (fire-and-forget)
+  logActivity({
+    weddingId,
+    actionType: 'updated',
+    entityType: 'budget',
+    entityId: categoryId,
+    description: activityDescriptions.budget.updated(category.category_name),
+    changes: data as unknown as Record<string, unknown>,
+  });
+
   return category;
 }
 
@@ -168,6 +188,13 @@ interface DeleteCategoryVariables {
 }
 
 async function deleteCategory({ categoryId, weddingId }: DeleteCategoryVariables): Promise<void> {
+  // Fetch category info before deleting for activity log
+  const { data: category } = await supabase
+    .from('budget_categories')
+    .select('category_name')
+    .eq('id', categoryId)
+    .single();
+
   const { error } = await supabase
     .from('budget_categories')
     .delete()
@@ -180,6 +207,17 @@ async function deleteCategory({ categoryId, weddingId }: DeleteCategoryVariables
 
   // Sync wedding totals after delete
   await updateWeddingBudgetTotals(weddingId);
+
+  // Log activity (fire-and-forget)
+  if (category) {
+    logActivity({
+      weddingId,
+      actionType: 'deleted',
+      entityType: 'budget',
+      entityId: categoryId,
+      description: activityDescriptions.budget.deleted(category.category_name),
+    });
+  }
 }
 
 export function useDeleteBudgetCategory() {

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
-import { UserPlus, Store, Calendar, Clock, DollarSign, FileText } from 'lucide-react';
+import { UserPlus, Store, Calendar, Clock, PiggyBank, FileText } from 'lucide-react';
 import { GenerateFunctionSheetModal } from '@/components/documents';
 
 interface DashboardQuickActionsProps {
@@ -19,22 +18,19 @@ export function DashboardQuickActions({ weddingId, weddingTitle }: DashboardQuic
   const navigate = useNavigate();
   const [showDocModal, setShowDocModal] = useState(false);
 
-  const showComingSoon = (feature: string, phase: string) => {
-    toast(`${feature} coming in ${phase}`);
-  };
-
+  // @feature 020-dashboard-settings-fix - Updated to navigate to implemented pages
   const actions = [
     {
       id: 'add-guest',
       label: 'Add Guest',
       icon: UserPlus,
-      onClick: () => showComingSoon('Add Guest', 'Phase 6'),
+      onClick: () => navigate(`/weddings/${weddingId}/guests`),
     },
     {
       id: 'add-vendor',
       label: 'Add Vendor',
       icon: Store,
-      onClick: () => showComingSoon('Add Vendor', 'Phase 8'),
+      onClick: () => navigate(`/weddings/${weddingId}/vendors`),
     },
     {
       id: 'create-event',
@@ -46,13 +42,13 @@ export function DashboardQuickActions({ weddingId, weddingTitle }: DashboardQuic
       id: 'view-timeline',
       label: 'View Timeline',
       icon: Clock,
-      onClick: () => showComingSoon('View Timeline', 'Phase 10'),
+      onClick: () => navigate(`/weddings/${weddingId}/events`),
     },
     {
       id: 'manage-budget',
       label: 'Manage Budget',
-      icon: DollarSign,
-      onClick: () => showComingSoon('Manage Budget', 'Phase 9'),
+      icon: PiggyBank,
+      onClick: () => navigate(`/weddings/${weddingId}/budget`),
     },
     {
       id: 'generate-docs',

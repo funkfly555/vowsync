@@ -16,8 +16,6 @@ export const invitationStatusSchema = z.enum(['pending', 'invited', 'confirmed',
 
 export const rsvpMethodSchema = z.enum(['email', 'phone', 'in_person', 'online']);
 
-export const rsvpStatusSchema = z.enum(['yes', 'overdue', 'pending']);
-
 // =============================================================================
 // Database Entity Schema
 // =============================================================================
@@ -28,7 +26,6 @@ export const guestSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   guest_type: guestTypeSchema,
   invitation_status: invitationStatusSchema,
-  attendance_confirmed: z.boolean(),
   rsvp_deadline: z.string().nullable(),
   rsvp_received_date: z.string().nullable(),
   rsvp_method: rsvpMethodSchema.nullable(),
@@ -56,7 +53,7 @@ export const guestSchema = z.object({
 export const guestFiltersSchema = z.object({
   search: z.string(),
   type: guestTypeSchema.or(z.literal('all')),
-  rsvpStatus: rsvpStatusSchema.or(z.literal('all')),
+  invitationStatus: invitationStatusSchema.or(z.literal('all')),
   eventId: z.string().uuid().nullable(),
 });
 
@@ -75,8 +72,6 @@ export const basicInfoSchema = z.object({
   guest_type: guestTypeSchema,
   email: z.string().email('Invalid email format').or(z.literal('')),
   phone: z.string().max(50, 'Phone number is too long'),
-  invitation_status: invitationStatusSchema,
-  attendance_confirmed: z.boolean(),
 });
 
 /**
@@ -166,7 +161,6 @@ export const guestFormSchema = z.object({
   email: z.string().email('Invalid email format').or(z.literal('')),
   phone: z.string().max(50, 'Phone number is too long'),
   invitation_status: invitationStatusSchema,
-  attendance_confirmed: z.boolean(),
 
   // RSVP
   rsvp_deadline: z.date().nullable(),

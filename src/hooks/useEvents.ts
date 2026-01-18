@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import type { Event, EventFormData, EventWithWedding } from '@/types/event';
 import { toast } from 'sonner';
+import { logActivity, activityDescriptions } from '@/lib/activityLog';
 
 // List events for a wedding (sorted chronologically)
 export function useEvents(weddingId: string) {
@@ -105,6 +106,16 @@ export function useCreateEvent() {
         }
         throw error;
       }
+
+      // Log activity (fire-and-forget)
+      logActivity({
+        weddingId,
+        actionType: 'created',
+        entityType: 'event',
+        entityId: event.id,
+        description: activityDescriptions.event.created(event.event_name),
+      });
+
       return event as Event;
     },
     onSuccess: (_, variables) => {
@@ -149,6 +160,17 @@ export function useUpdateEvent() {
         }
         throw error;
       }
+
+      // Log activity (fire-and-forget)
+      logActivity({
+        weddingId: variables.weddingId,
+        actionType: 'updated',
+        entityType: 'event',
+        entityId: variables.eventId,
+        description: activityDescriptions.event.updated(event.event_name),
+        changes: variables.data as unknown as Record<string, unknown>,
+      });
+
       return event as Event;
     },
     onSuccess: (_, variables) => {
@@ -171,9 +193,27 @@ export function useDeleteEvent() {
       eventId: string;
       weddingId: string;
     }) => {
+      // Fetch event info before deleting for activity log
+      const { data: event } = await supabase
+        .from('events')
+        .select('event_name')
+        .eq('id', variables.eventId)
+        .single();
+
       const { error } = await supabase.from('events').delete().eq('id', variables.eventId);
 
       if (error) throw error;
+
+      // Log activity (fire-and-forget)
+      if (event) {
+        logActivity({
+          weddingId: variables.weddingId,
+          actionType: 'deleted',
+          entityType: 'event',
+          entityId: variables.eventId,
+          description: activityDescriptions.event.deleted(event.event_name),
+        });
+      }
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['events', variables.weddingId] });

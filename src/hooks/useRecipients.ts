@@ -70,8 +70,8 @@ async function fetchGuestRecipients(
 
   // Apply guest-specific filters
   if (filter) {
-    if (filter.rsvp_status) {
-      query = query.eq('rsvp_status', filter.rsvp_status);
+    if (filter.invitation_status) {
+      query = query.eq('invitation_status', filter.invitation_status);
     }
     if (filter.table_assigned !== undefined) {
       if (filter.table_assigned) {

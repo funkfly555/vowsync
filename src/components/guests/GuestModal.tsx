@@ -102,7 +102,6 @@ export function GuestModal({
         email: guest.email || '',
         phone: guest.phone || '',
         invitation_status: guest.invitation_status,
-        attendance_confirmed: guest.attendance_confirmed,
         rsvp_deadline: guest.rsvp_deadline
           ? new Date(guest.rsvp_deadline)
           : null,
@@ -138,7 +137,7 @@ export function GuestModal({
   const getTabsWithErrors = (): Set<TabId> => {
     const tabsWithErrors = new Set<TabId>();
 
-    if (errors.name || errors.email || errors.phone || errors.guest_type || errors.invitation_status || errors.attendance_confirmed) {
+    if (errors.name || errors.email || errors.phone || errors.guest_type || errors.invitation_status) {
       tabsWithErrors.add('basic');
     }
     if (errors.rsvp_deadline || errors.rsvp_received_date || errors.rsvp_method || errors.has_plus_one || errors.plus_one_name || errors.plus_one_confirmed) {

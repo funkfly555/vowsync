@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import {
   FileText,
   Calendar,
-  DollarSign,
+  PiggyBank,
   AlertCircle,
   Shield,
   CheckCircle,
@@ -87,7 +87,7 @@ export function VendorContractTabView({ vendor }: VendorContractTabViewProps) {
               </div>
 
               <div className="flex items-start gap-3">
-                <DollarSign className="h-4 w-4 text-gray-400 mt-0.5" />
+                <PiggyBank className="h-4 w-4 text-gray-400 mt-0.5" />
                 <div>
                   <p className="text-sm text-gray-500">Contract Value</p>
                   <p className="font-medium">{formatCurrency(vendor.contract_value)}</p>

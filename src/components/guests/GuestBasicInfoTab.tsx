@@ -1,14 +1,14 @@
 /**
  * GuestBasicInfoTab - Tab 1: Basic Information
  * @feature 007-guest-crud-attendance
+ * @feature 020-dashboard-settings-fix - Moved Invitation Status to RSVP tab
  *
- * Fields: Name, Email, Phone, Type, Invitation Status, Attendance Confirmed
+ * Fields: Name, Email, Phone, Type
  */
 
 import { UseFormReturn } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
 import {
   Select,
   SelectContent,
@@ -22,13 +22,6 @@ interface GuestBasicInfoTabProps {
   form: UseFormReturn<GuestFormData>;
 }
 
-const INVITATION_STATUS_OPTIONS = [
-  { value: 'pending', label: 'Pending' },
-  { value: 'invited', label: 'Invited' },
-  { value: 'confirmed', label: 'Confirmed' },
-  { value: 'declined', label: 'Declined' },
-];
-
 export function GuestBasicInfoTab({ form }: GuestBasicInfoTabProps) {
   const {
     register,
@@ -38,8 +31,6 @@ export function GuestBasicInfoTab({ form }: GuestBasicInfoTabProps) {
   } = form;
 
   const guestType = watch('guest_type');
-  const invitationStatus = watch('invitation_status');
-  const attendanceConfirmed = watch('attendance_confirmed');
 
   return (
     <div className="space-y-4">
@@ -109,42 +100,6 @@ export function GuestBasicInfoTab({ form }: GuestBasicInfoTabProps) {
             ))}
           </SelectContent>
         </Select>
-      </div>
-
-      {/* Invitation Status */}
-      <div className="space-y-2">
-        <Label htmlFor="invitation_status">Invitation Status</Label>
-        <Select
-          value={invitationStatus}
-          onValueChange={(value) =>
-            setValue('invitation_status', value as GuestFormData['invitation_status'])
-          }
-        >
-          <SelectTrigger id="invitation_status">
-            <SelectValue placeholder="Select status" />
-          </SelectTrigger>
-          <SelectContent>
-            {INVITATION_STATUS_OPTIONS.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Attendance Confirmed */}
-      <div className="flex items-center space-x-2">
-        <Checkbox
-          id="attendance_confirmed"
-          checked={attendanceConfirmed}
-          onCheckedChange={(checked) =>
-            setValue('attendance_confirmed', checked === true)
-          }
-        />
-        <Label htmlFor="attendance_confirmed" className="cursor-pointer">
-          Attendance Confirmed
-        </Label>
       </div>
     </div>
   );

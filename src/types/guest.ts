@@ -13,8 +13,6 @@ export type InvitationStatus = 'pending' | 'invited' | 'confirmed' | 'declined';
 
 export type RsvpMethod = 'email' | 'phone' | 'in_person' | 'online';
 
-export type RsvpStatus = 'yes' | 'overdue' | 'pending';
-
 /**
  * Full guest entity from database
  */
@@ -24,7 +22,6 @@ export interface Guest {
   name: string;
   guest_type: GuestType;
   invitation_status: InvitationStatus;
-  attendance_confirmed: boolean;
   rsvp_deadline: string | null;
   rsvp_received_date: string | null;
   rsvp_method: RsvpMethod | null;
@@ -60,16 +57,17 @@ export interface GuestListItem {
   id: string;
   name: string;
   guest_type: GuestType;
+  invitation_status: InvitationStatus;
   rsvp_deadline: string | null;
   rsvp_received_date: string | null;
   table_number: string | null;
 }
 
 /**
- * Guest with calculated RSVP status for display
+ * Guest with invitation status for display
  */
 export interface GuestDisplayItem extends GuestListItem {
-  rsvpStatus: RsvpStatus;
+  invitation_status: InvitationStatus;
 }
 
 // =============================================================================
@@ -79,14 +77,14 @@ export interface GuestDisplayItem extends GuestListItem {
 export interface GuestFilters {
   search: string;
   type: GuestType | 'all';
-  rsvpStatus: RsvpStatus | 'all';
+  invitationStatus: InvitationStatus | 'all';
   eventId: string | null;
 }
 
 export const DEFAULT_GUEST_FILTERS: GuestFilters = {
   search: '',
   type: 'all',
-  rsvpStatus: 'all',
+  invitationStatus: 'all',
   eventId: null,
 };
 
@@ -107,33 +105,9 @@ export interface PaginationState {
 // =============================================================================
 
 /**
- * Calculate RSVP status from guest data
- */
-export function calculateRsvpStatus(
-  rsvpReceivedDate: string | null,
-  rsvpDeadline: string | null
-): RsvpStatus {
-  if (rsvpReceivedDate) {
-    return 'yes';
-  }
-
-  if (rsvpDeadline) {
-    const deadline = new Date(rsvpDeadline);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    if (deadline < today) {
-      return 'overdue';
-    }
-  }
-
-  return 'pending';
-}
-
-/**
  * Transform Guest to GuestDisplayItem
  */
-export function toGuestDisplayItem(guest: Guest | GuestListItem): GuestDisplayItem {
+export function toGuestDisplayItem(guest: Guest): GuestDisplayItem {
   return {
     id: guest.id,
     name: guest.name,
@@ -141,7 +115,7 @@ export function toGuestDisplayItem(guest: Guest | GuestListItem): GuestDisplayIt
     rsvp_deadline: guest.rsvp_deadline,
     rsvp_received_date: guest.rsvp_received_date,
     table_number: guest.table_number,
-    rsvpStatus: calculateRsvpStatus(guest.rsvp_received_date, guest.rsvp_deadline),
+    invitation_status: guest.invitation_status,
   };
 }
 
@@ -149,24 +123,29 @@ export function toGuestDisplayItem(guest: Guest | GuestListItem): GuestDisplayIt
 // Display Configuration
 // =============================================================================
 
-export const RSVP_STATUS_CONFIG: Record<
-  RsvpStatus,
+export const INVITATION_STATUS_CONFIG: Record<
+  InvitationStatus,
   { label: string; color: string; bgColor: string }
 > = {
-  yes: {
-    label: 'Yes',
+  pending: {
+    label: 'To Be Sent',
+    color: 'text-gray-700',
+    bgColor: 'bg-gray-100',
+  },
+  invited: {
+    label: 'Invited',
+    color: 'text-blue-700',
+    bgColor: 'bg-blue-100',
+  },
+  confirmed: {
+    label: 'Confirmed',
     color: 'text-green-700',
     bgColor: 'bg-green-100',
   },
-  overdue: {
-    label: 'Overdue',
+  declined: {
+    label: 'Declined',
     color: 'text-red-700',
     bgColor: 'bg-red-100',
-  },
-  pending: {
-    label: 'Pending',
-    color: 'text-yellow-700',
-    bgColor: 'bg-yellow-100',
   },
 };
 
@@ -215,7 +194,6 @@ export interface GuestFormData {
   email: string;
   phone: string;
   invitation_status: InvitationStatus;
-  attendance_confirmed: boolean;
 
   // RSVP
   rsvp_deadline: Date | null;
@@ -248,7 +226,6 @@ export const DEFAULT_GUEST_FORM_DATA: GuestFormData = {
   email: '',
   phone: '',
   invitation_status: 'pending',
-  attendance_confirmed: false,
   rsvp_deadline: null,
   rsvp_received_date: null,
   rsvp_method: null,
@@ -339,12 +316,8 @@ export const CSV_EXPORT_COLUMNS: ExportColumn[] = [
   { header: 'Phone', accessor: (g) => g.phone ?? '' },
   { header: 'Type', accessor: (g) => g.guest_type.charAt(0).toUpperCase() + g.guest_type.slice(1) },
   {
-    header: 'RSVP Status',
-    accessor: (g) => {
-      if (g.rsvp_received_date) return 'Yes';
-      if (g.rsvp_deadline && new Date(g.rsvp_deadline) < new Date()) return 'Overdue';
-      return 'Pending';
-    },
+    header: 'Invitation Status',
+    accessor: (g) => INVITATION_STATUS_CONFIG[g.invitation_status]?.label ?? g.invitation_status,
   },
   { header: 'Table', accessor: (g) => g.table_number ?? '' },
   { header: 'Dietary', accessor: (g) => g.dietary_restrictions ?? '' },

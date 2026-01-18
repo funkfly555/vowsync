@@ -4,7 +4,7 @@
  * @task T037
  */
 
-import { GuestDisplayItem, RsvpStatus } from '@/types/guest';
+import { GuestDisplayItem, InvitationStatus, INVITATION_STATUS_CONFIG } from '@/types/guest';
 import { format } from 'date-fns';
 
 /**
@@ -39,22 +39,17 @@ function escapeCSVValue(value: string | number | boolean | null | undefined): st
 const CSV_COLUMNS: { key: keyof GuestDisplayItem; header: string }[] = [
   { key: 'name', header: 'Name' },
   { key: 'guest_type', header: 'Type' },
-  { key: 'rsvpStatus', header: 'RSVP Status' },
+  { key: 'invitation_status', header: 'Invitation Status' },
   { key: 'rsvp_deadline', header: 'RSVP Deadline' },
   { key: 'rsvp_received_date', header: 'RSVP Received' },
   { key: 'table_number', header: 'Table Number' },
 ];
 
 /**
- * Format RSVP status for display
+ * Format invitation status for display
  */
-function formatRsvpStatus(status: RsvpStatus): string {
-  const statusMap: Record<RsvpStatus, string> = {
-    yes: 'Yes',
-    overdue: 'Overdue',
-    pending: 'Pending',
-  };
-  return statusMap[status] || status;
+function formatInvitationStatus(status: InvitationStatus): string {
+  return INVITATION_STATUS_CONFIG[status]?.label ?? status;
 }
 
 /**
@@ -74,9 +69,9 @@ function formatGuestValue(
     return null;
   }
 
-  // Format RSVP status
-  if (key === 'rsvpStatus') {
-    return formatRsvpStatus(value as RsvpStatus);
+  // Format invitation status
+  if (key === 'invitation_status') {
+    return formatInvitationStatus(value as InvitationStatus);
   }
 
   // Format guest type

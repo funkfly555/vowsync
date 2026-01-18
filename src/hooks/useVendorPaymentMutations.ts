@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase';
 import type { VendorPaymentSchedule, VendorPaymentScheduleFormData, MarkAsPaidFormData, VendorInvoice } from '@/types/vendor';
 import { calculateInvoiceStatusFromPayment } from '@/lib/vendorInvoiceStatus';
+import { logActivity, activityDescriptions } from '@/lib/activityLog';
 
 // =============================================================================
 // T020: Create Payment Mutation
@@ -23,6 +24,13 @@ interface CreatePaymentVariables {
 }
 
 async function createPayment({ vendorId, data }: CreatePaymentVariables): Promise<VendorPaymentSchedule> {
+  // Get wedding_id from vendor for activity logging
+  const { data: vendor } = await supabase
+    .from('vendors')
+    .select('wedding_id')
+    .eq('id', vendorId)
+    .single();
+
   const { data: payment, error } = await supabase
     .from('vendor_payment_schedule')
     .insert({
@@ -40,6 +48,17 @@ async function createPayment({ vendorId, data }: CreatePaymentVariables): Promis
   if (error) {
     console.error('Error creating payment:', error);
     throw error;
+  }
+
+  // Log activity (fire-and-forget)
+  if (vendor) {
+    logActivity({
+      weddingId: vendor.wedding_id,
+      actionType: 'created',
+      entityType: 'payment',
+      entityId: payment.id,
+      description: activityDescriptions.payment.created(`R ${data.amount.toLocaleString('en-ZA', { minimumFractionDigits: 2 })} - ${data.milestone_name}`),
+    });
   }
 
   return payment;
@@ -200,7 +219,14 @@ interface MarkAsPaidResult {
 /**
  * T006: Extended to update linked invoice status when payment is marked as paid
  */
-async function markPaymentAsPaid({ paymentId, data }: MarkAsPaidVariables): Promise<MarkAsPaidResult> {
+async function markPaymentAsPaid({ paymentId, vendorId, data }: MarkAsPaidVariables): Promise<MarkAsPaidResult> {
+  // Get wedding_id from vendor for activity logging
+  const { data: vendor } = await supabase
+    .from('vendors')
+    .select('wedding_id')
+    .eq('id', vendorId)
+    .single();
+
   // Step 1: Mark the payment as paid
   const { data: payment, error: paymentError } = await supabase
     .from('vendor_payment_schedule')
@@ -251,6 +277,17 @@ async function markPaymentAsPaid({ paymentId, data }: MarkAsPaidVariables): Prom
     } else {
       updatedInvoice = invoice;
     }
+  }
+
+  // Log activity (fire-and-forget)
+  if (vendor) {
+    logActivity({
+      weddingId: vendor.wedding_id,
+      actionType: 'completed',
+      entityType: 'payment',
+      entityId: paymentId,
+      description: activityDescriptions.payment.completed(`R ${payment.amount.toLocaleString('en-ZA', { minimumFractionDigits: 2 })} - ${payment.milestone_name}`),
+    });
   }
 
   return { payment, updatedInvoice };
@@ -346,7 +383,20 @@ interface DeletePaymentVariables {
   vendorId: string;
 }
 
-async function deletePayment({ paymentId }: DeletePaymentVariables): Promise<void> {
+async function deletePayment({ paymentId, vendorId }: DeletePaymentVariables): Promise<void> {
+  // Get payment info and wedding_id before deleting for activity log
+  const { data: payment } = await supabase
+    .from('vendor_payment_schedule')
+    .select('milestone_name, amount')
+    .eq('id', paymentId)
+    .single();
+
+  const { data: vendor } = await supabase
+    .from('vendors')
+    .select('wedding_id')
+    .eq('id', vendorId)
+    .single();
+
   const { error } = await supabase
     .from('vendor_payment_schedule')
     .delete()
@@ -355,6 +405,17 @@ async function deletePayment({ paymentId }: DeletePaymentVariables): Promise<voi
   if (error) {
     console.error('Error deleting payment:', error);
     throw error;
+  }
+
+  // Log activity (fire-and-forget)
+  if (payment && vendor) {
+    logActivity({
+      weddingId: vendor.wedding_id,
+      actionType: 'deleted',
+      entityType: 'payment',
+      entityId: paymentId,
+      description: activityDescriptions.payment.deleted(`R ${payment.amount.toLocaleString('en-ZA', { minimumFractionDigits: 2 })} - ${payment.milestone_name}`),
+    });
   }
 }
 

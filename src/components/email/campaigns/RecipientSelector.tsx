@@ -223,18 +223,19 @@ function GuestFilters({ filter, onFilterChange, events }: GuestFiltersProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
-        <Label className="text-sm">RSVP Status</Label>
+        <Label className="text-sm">Invitation Status</Label>
         <Select
-          value={filter?.rsvp_status || 'all'}
-          onValueChange={(v) => handleChange('rsvp_status', v)}
+          value={filter?.invitation_status || 'all'}
+          onValueChange={(v) => handleChange('invitation_status', v)}
         >
           <SelectTrigger className="mt-1">
             <SelectValue placeholder="All statuses" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Statuses</SelectItem>
-            <SelectItem value="pending">Pending</SelectItem>
-            <SelectItem value="accepted">Accepted</SelectItem>
+            <SelectItem value="pending">To Be Sent</SelectItem>
+            <SelectItem value="invited">Invited</SelectItem>
+            <SelectItem value="confirmed">Confirmed</SelectItem>
             <SelectItem value="declined">Declined</SelectItem>
           </SelectContent>
         </Select>

@@ -24,14 +24,14 @@ export function renderGuestListPDF(
   const tableData = data.guests.map((guest) => [
     guest.name,
     guest.guest_type === 'adult' ? 'Adult' : 'Child',
-    guest.attendance_confirmed ? 'Yes' : 'No',
+    guest.invitation_status.charAt(0).toUpperCase() + guest.invitation_status.slice(1),
     guest.table_number || '-',
     guest.dietary_restrictions || '-',
   ]);
 
   doc.autoTable({
     startY,
-    head: [['Name', 'Type', 'Confirmed', 'Table', 'Dietary']],
+    head: [['Name', 'Type', 'Status', 'Table', 'Dietary']],
     body: tableData,
     theme: 'grid',
     headStyles: {
@@ -70,7 +70,7 @@ export async function renderGuestListDOCX(
   const headerColor = branding.primaryColor.replace('#', '');
 
   const headerRow = new TableRow({
-    children: ['Name', 'Type', 'Confirmed', 'Table', 'Dietary'].map(
+    children: ['Name', 'Type', 'Status', 'Table', 'Dietary'].map(
       (text) =>
         new TableCell({
           children: [
@@ -89,7 +89,7 @@ export async function renderGuestListDOCX(
         children: [
           guest.name,
           guest.guest_type === 'adult' ? 'Adult' : 'Child',
-          guest.attendance_confirmed ? 'Yes' : 'No',
+          guest.invitation_status.charAt(0).toUpperCase() + guest.invitation_status.slice(1),
           guest.table_number || '-',
           guest.dietary_restrictions || '-',
         ].map(

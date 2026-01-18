@@ -1,8 +1,9 @@
 /**
  * GuestRsvpTab - Tab 2: RSVP Information
  * @feature 007-guest-crud-attendance
+ * @feature 020-dashboard-settings-fix - Added Invitation Status as first field
  *
- * Fields: RSVP Deadline, RSVP Received Date, RSVP Method (conditional),
+ * Fields: Invitation Status, RSVP Deadline, RSVP Received Date, RSVP Method (conditional),
  *         Has Plus One, Plus One Name (conditional), Plus One Confirmed (conditional)
  */
 
@@ -33,6 +34,13 @@ interface GuestRsvpTabProps {
   form: UseFormReturn<GuestFormData>;
 }
 
+const INVITATION_STATUS_OPTIONS = [
+  { value: 'pending', label: 'To Be Sent' },
+  { value: 'invited', label: 'Invited' },
+  { value: 'confirmed', label: 'Confirmed' },
+  { value: 'declined', label: 'Declined' },
+];
+
 const RSVP_METHOD_OPTIONS: { value: RsvpMethod; label: string }[] = [
   { value: 'email', label: 'Email' },
   { value: 'phone', label: 'Phone' },
@@ -48,6 +56,7 @@ export function GuestRsvpTab({ form }: GuestRsvpTabProps) {
     watch,
   } = form;
 
+  const invitationStatus = watch('invitation_status');
   const rsvpDeadline = watch('rsvp_deadline');
   const rsvpReceivedDate = watch('rsvp_received_date');
   const rsvpMethod = watch('rsvp_method');
@@ -56,6 +65,30 @@ export function GuestRsvpTab({ form }: GuestRsvpTabProps) {
 
   return (
     <div className="space-y-4">
+      {/* Invitation Status - Primary field */}
+      <div className="space-y-2">
+        <Label htmlFor="invitation_status">
+          Invitation Status <span className="text-red-500">*</span>
+        </Label>
+        <Select
+          value={invitationStatus}
+          onValueChange={(value) =>
+            setValue('invitation_status', value as GuestFormData['invitation_status'])
+          }
+        >
+          <SelectTrigger id="invitation_status" className="font-medium">
+            <SelectValue placeholder="Select status" />
+          </SelectTrigger>
+          <SelectContent>
+            {INVITATION_STATUS_OPTIONS.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
       {/* RSVP Deadline */}
       <div className="space-y-2">
         <Label>RSVP Deadline</Label>

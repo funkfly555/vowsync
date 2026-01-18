@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'sonner';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { AuthProvider } from './contexts/AuthContext';
+import { CurrencyProvider } from './contexts/CurrencyContext';
 import { AppLayout } from './components/layout/AppLayout';
 import { WeddingListPage } from './pages/WeddingListPage';
 import { CreateWeddingPage } from './pages/CreateWeddingPage';
@@ -27,6 +28,8 @@ import { CreateEmailCampaignPage } from './pages/email/CreateEmailCampaignPage';
 import { EmailCampaignDetailPage } from './pages/email/EmailCampaignDetailPage';
 import { NotificationsPage } from './pages/NotificationsPage';
 import { DocumentsPage } from './pages/DocumentsPage';
+import { SettingsPage } from './pages/SettingsPage';
+import { ActivityPage } from './pages/ActivityPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -43,6 +46,7 @@ function App() {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
+          <CurrencyProvider>
           <BrowserRouter>
             <Routes>
               {/* Auth pages */}
@@ -77,10 +81,15 @@ function App() {
                 <Route path="/weddings/:weddingId/notifications" element={<NotificationsPage />} />
                 {/* Documents - 017-document-generation */}
                 <Route path="/weddings/:weddingId/docs" element={<DocumentsPage />} />
+                {/* Activity Log - 020-dashboard-settings-fix */}
+                <Route path="/weddings/:weddingId/activity" element={<ActivityPage />} />
+                {/* Settings - 020-dashboard-settings-fix */}
+                <Route path="/settings" element={<SettingsPage />} />
               </Route>
             </Routes>
           </BrowserRouter>
           <Toaster position="top-right" richColors />
+          </CurrencyProvider>
         </AuthProvider>
       </QueryClientProvider>
     </ErrorBoundary>

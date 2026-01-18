@@ -8,6 +8,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { VendorSchemaType } from '@/schemas/vendor';
+import { logActivity, activityDescriptions } from '@/lib/activityLog';
 
 interface UseVendorMutationsParams {
   weddingId: string;
@@ -38,6 +39,15 @@ export function useVendorMutations({ weddingId }: UseVendorMutationsParams) {
         throw error;
       }
 
+      // Log activity (fire-and-forget)
+      logActivity({
+        weddingId,
+        actionType: 'created',
+        entityType: 'vendor',
+        entityId: vendor.id,
+        description: activityDescriptions.vendor.created(vendor.company_name),
+      });
+
       return vendor;
     },
     onSuccess: () => {
@@ -64,6 +74,16 @@ export function useVendorMutations({ weddingId }: UseVendorMutationsParams) {
         throw error;
       }
 
+      // Log activity (fire-and-forget)
+      logActivity({
+        weddingId,
+        actionType: 'updated',
+        entityType: 'vendor',
+        entityId: vendorId,
+        description: activityDescriptions.vendor.updated(vendor.company_name),
+        changes: data as Record<string, unknown>,
+      });
+
       return vendor;
     },
     onSuccess: (_, variables) => {
@@ -79,6 +99,13 @@ export function useVendorMutations({ weddingId }: UseVendorMutationsParams) {
   // Delete vendor mutation
   const deleteVendor = useMutation({
     mutationFn: async (vendorId: string) => {
+      // Fetch vendor info before deleting for activity log
+      const { data: vendor } = await supabase
+        .from('vendors')
+        .select('company_name')
+        .eq('id', vendorId)
+        .single();
+
       const { error } = await supabase
         .from('vendors')
         .delete()
@@ -87,6 +114,17 @@ export function useVendorMutations({ weddingId }: UseVendorMutationsParams) {
       if (error) {
         console.error('Error deleting vendor:', error);
         throw error;
+      }
+
+      // Log activity (fire-and-forget)
+      if (vendor) {
+        logActivity({
+          weddingId,
+          actionType: 'deleted',
+          entityType: 'vendor',
+          entityId: vendorId,
+          description: activityDescriptions.vendor.deleted(vendor.company_name),
+        });
       }
     },
     onSuccess: () => {

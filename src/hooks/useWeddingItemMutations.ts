@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import type { WeddingItemFormData, AggregationMethod } from '@/types/weddingItem';
 import { calculateTotalRequired, calculateTotalCost } from '@/types/weddingItem';
 import { weddingItemKeys } from './useWeddingItems';
+import { logActivity, activityDescriptions } from '@/lib/activityLog';
 
 // =============================================================================
 // Types
@@ -101,6 +102,15 @@ export function useWeddingItemMutations({ weddingId }: UseWeddingItemMutationsPa
         }
       }
 
+      // Log activity (fire-and-forget)
+      logActivity({
+        weddingId,
+        actionType: 'created',
+        entityType: 'wedding_item',
+        entityId: item.id,
+        description: activityDescriptions.wedding_item.created(item.description),
+      });
+
       return item;
     },
     onSuccess: () => {
@@ -189,6 +199,16 @@ export function useWeddingItemMutations({ weddingId }: UseWeddingItemMutationsPa
         throw error;
       }
 
+      // Log activity (fire-and-forget)
+      logActivity({
+        weddingId,
+        actionType: 'updated',
+        entityType: 'wedding_item',
+        entityId: itemId,
+        description: activityDescriptions.wedding_item.updated(item.description),
+        changes: data as unknown as Record<string, unknown>,
+      });
+
       return item;
     },
     onSuccess: (_, variables) => {
@@ -205,6 +225,13 @@ export function useWeddingItemMutations({ weddingId }: UseWeddingItemMutationsPa
    */
   const deleteItem = useMutation({
     mutationFn: async (itemId: string) => {
+      // Fetch item info before deleting for activity log
+      const { data: item } = await supabase
+        .from('wedding_items')
+        .select('description')
+        .eq('id', itemId)
+        .single();
+
       const { error } = await supabase
         .from('wedding_items')
         .delete()
@@ -213,6 +240,17 @@ export function useWeddingItemMutations({ weddingId }: UseWeddingItemMutationsPa
       if (error) {
         console.error('Error deleting wedding item:', error);
         throw error;
+      }
+
+      // Log activity (fire-and-forget)
+      if (item) {
+        logActivity({
+          weddingId,
+          actionType: 'deleted',
+          entityType: 'wedding_item',
+          entityId: itemId,
+          description: activityDescriptions.wedding_item.deleted(item.description),
+        });
       }
     },
     onSuccess: () => {

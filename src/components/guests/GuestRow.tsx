@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { GuestDisplayItem } from '@/types/guest';
-import { RsvpBadge } from './RsvpBadge';
+import { InvitationStatusBadge } from './InvitationStatusBadge';
 import { GuestTypeBadge } from './GuestTypeBadge';
 
 interface GuestRowProps {
@@ -70,9 +70,9 @@ export function GuestRow({
         <GuestTypeBadge type={guest.guest_type} />
       </TableCell>
 
-      {/* RSVP Status */}
+      {/* Invitation Status */}
       <TableCell className="p-4">
-        <RsvpBadge status={guest.rsvpStatus} />
+        <InvitationStatusBadge status={guest.invitation_status} />
       </TableCell>
 
       {/* Table */}

@@ -122,12 +122,12 @@ export const NOTIFICATION_TYPE_CONFIG: Record<
 > = {
   payment_due: {
     label: 'Payment Due',
-    icon: 'DollarSign',
+    icon: 'PiggyBank',
     color: 'text-red-500',
   },
   payment_overdue: {
     label: 'Payment Overdue',
-    icon: 'DollarSign',
+    icon: 'PiggyBank',
     color: 'text-red-600',
   },
   task_due: {

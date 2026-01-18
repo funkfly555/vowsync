@@ -15,6 +15,7 @@ import {
   TaskStatus,
 } from '@/types/task';
 import { calculateDaysRelativeToWedding } from '@/lib/taskUtils';
+import { logActivity, activityDescriptions } from '@/lib/activityLog';
 
 interface UseTaskMutationsParams {
   weddingId: string;
@@ -66,6 +67,15 @@ export function useTaskMutations({ weddingId, weddingDate }: UseTaskMutationsPar
         throw error;
       }
 
+      // Log activity (fire-and-forget)
+      logActivity({
+        weddingId,
+        actionType: 'created',
+        entityType: 'task',
+        entityId: task.id,
+        description: activityDescriptions.task.created(task.title),
+      });
+
       return task;
     },
     onSuccess: () => {
@@ -107,6 +117,16 @@ export function useTaskMutations({ weddingId, weddingDate }: UseTaskMutationsPar
         throw error;
       }
 
+      // Log activity (fire-and-forget)
+      logActivity({
+        weddingId,
+        actionType: 'updated',
+        entityType: 'task',
+        entityId: id,
+        description: activityDescriptions.task.updated(task.title),
+        changes: updateData,
+      });
+
       return task;
     },
     onSuccess: (_, variables) => {
@@ -125,6 +145,13 @@ export function useTaskMutations({ weddingId, weddingDate }: UseTaskMutationsPar
 
   const deleteTask = useMutation({
     mutationFn: async (taskId: string) => {
+      // Fetch task info before deleting for activity log
+      const { data: task } = await supabase
+        .from('pre_post_wedding_tasks')
+        .select('title')
+        .eq('id', taskId)
+        .single();
+
       const { error } = await supabase
         .from('pre_post_wedding_tasks')
         .delete()
@@ -133,6 +160,17 @@ export function useTaskMutations({ weddingId, weddingDate }: UseTaskMutationsPar
       if (error) {
         console.error('Error deleting task:', error);
         throw error;
+      }
+
+      // Log activity (fire-and-forget)
+      if (task) {
+        logActivity({
+          weddingId,
+          actionType: 'deleted',
+          entityType: 'task',
+          entityId: taskId,
+          description: activityDescriptions.task.deleted(task.title),
+        });
       }
     },
     onSuccess: () => {
@@ -176,6 +214,25 @@ export function useTaskMutations({ weddingId, weddingDate }: UseTaskMutationsPar
       if (error) {
         console.error('Error updating task status:', error);
         throw error;
+      }
+
+      // Log activity for completed/cancelled status changes (fire-and-forget)
+      if (status === 'completed') {
+        logActivity({
+          weddingId,
+          actionType: 'completed',
+          entityType: 'task',
+          entityId: id,
+          description: activityDescriptions.task.completed(task.title),
+        });
+      } else if (status === 'cancelled') {
+        logActivity({
+          weddingId,
+          actionType: 'cancelled',
+          entityType: 'task',
+          entityId: id,
+          description: activityDescriptions.task.cancelled(task.title),
+        });
       }
 
       return task;

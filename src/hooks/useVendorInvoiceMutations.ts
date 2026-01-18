@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase';
 import type { VendorInvoice, VendorInvoiceFormData, InvoiceStatus } from '@/types/vendor';
 import { calculateVAT } from '@/lib/vendorInvoiceStatus';
+import { logActivity, activityDescriptions } from '@/lib/activityLog';
 
 // =============================================================================
 // Create Invoice Mutation
@@ -20,6 +21,13 @@ interface CreateInvoiceVariables {
 }
 
 async function createInvoice({ vendorId, data }: CreateInvoiceVariables): Promise<VendorInvoice> {
+  // Get wedding_id from vendor for activity logging
+  const { data: vendor } = await supabase
+    .from('vendors')
+    .select('wedding_id')
+    .eq('id', vendorId)
+    .single();
+
   const vatAmount = calculateVAT(data.amount);
 
   const { data: invoice, error } = await supabase
@@ -42,6 +50,17 @@ async function createInvoice({ vendorId, data }: CreateInvoiceVariables): Promis
   if (error) {
     console.error('Error creating invoice:', error);
     throw error;
+  }
+
+  // Log activity (fire-and-forget)
+  if (vendor) {
+    logActivity({
+      weddingId: vendor.wedding_id,
+      actionType: 'created',
+      entityType: 'invoice',
+      entityId: invoice.id,
+      description: activityDescriptions.invoice.created(invoice.invoice_number),
+    });
   }
 
   return invoice;
@@ -76,7 +95,14 @@ interface UpdateInvoiceVariables {
   data: Partial<VendorInvoiceFormData>;
 }
 
-async function updateInvoice({ invoiceId, data }: UpdateInvoiceVariables): Promise<VendorInvoice> {
+async function updateInvoice({ invoiceId, vendorId, data }: UpdateInvoiceVariables): Promise<VendorInvoice> {
+  // Get wedding_id from vendor for activity logging
+  const { data: vendor } = await supabase
+    .from('vendors')
+    .select('wedding_id')
+    .eq('id', vendorId)
+    .single();
+
   const updateData: Record<string, unknown> = {};
 
   // Only include fields that are provided
@@ -102,6 +128,18 @@ async function updateInvoice({ invoiceId, data }: UpdateInvoiceVariables): Promi
   if (error) {
     console.error('Error updating invoice:', error);
     throw error;
+  }
+
+  // Log activity (fire-and-forget)
+  if (vendor) {
+    logActivity({
+      weddingId: vendor.wedding_id,
+      actionType: 'updated',
+      entityType: 'invoice',
+      entityId: invoiceId,
+      description: activityDescriptions.invoice.updated(invoice.invoice_number),
+      changes: data as unknown as Record<string, unknown>,
+    });
   }
 
   return invoice;
@@ -135,7 +173,20 @@ interface DeleteInvoiceVariables {
   vendorId: string;
 }
 
-async function deleteInvoice({ invoiceId }: DeleteInvoiceVariables): Promise<void> {
+async function deleteInvoice({ invoiceId, vendorId }: DeleteInvoiceVariables): Promise<void> {
+  // Get invoice info and wedding_id before deleting for activity log
+  const { data: invoice } = await supabase
+    .from('vendor_invoices')
+    .select('invoice_number')
+    .eq('id', invoiceId)
+    .single();
+
+  const { data: vendor } = await supabase
+    .from('vendors')
+    .select('wedding_id')
+    .eq('id', vendorId)
+    .single();
+
   const { error } = await supabase
     .from('vendor_invoices')
     .delete()
@@ -144,6 +195,17 @@ async function deleteInvoice({ invoiceId }: DeleteInvoiceVariables): Promise<voi
   if (error) {
     console.error('Error deleting invoice:', error);
     throw error;
+  }
+
+  // Log activity (fire-and-forget)
+  if (invoice && vendor) {
+    logActivity({
+      weddingId: vendor.wedding_id,
+      actionType: 'deleted',
+      entityType: 'invoice',
+      entityId: invoiceId,
+      description: activityDescriptions.invoice.deleted(invoice.invoice_number),
+    });
   }
 }
 

@@ -176,7 +176,6 @@ export interface GuestData {
   name: string;
   guest_type: string;
   invitation_status: string;
-  attendance_confirmed: boolean;
   table_number: string | null;
   dietary_restrictions: string | null;
   allergies: string | null;
