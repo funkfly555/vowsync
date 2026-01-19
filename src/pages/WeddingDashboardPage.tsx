@@ -1,6 +1,18 @@
+/**
+ * WeddingDashboardPage - Visual dashboard with charts and data visualization
+ * @feature 022-dashboard-visual-metrics
+ * @task T020, T029, T038, T047, T053, T060, T061-T067
+ */
+
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useDashboard } from '@/hooks/useDashboard';
-import { DashboardStatsGrid } from '@/components/dashboard/DashboardStatsGrid';
+import { QuickStatsRow } from '@/components/dashboard/QuickStatsRow';
+import { BudgetOverviewCard } from '@/components/dashboard/BudgetOverviewCard';
+import { RsvpStatusCard } from '@/components/dashboard/RsvpStatusCard';
+import { EventTimelineCard } from '@/components/dashboard/EventTimelineCard';
+import { VendorInvoicesCard } from '@/components/dashboard/VendorInvoicesCard';
+import { ItemsStatusCard } from '@/components/dashboard/ItemsStatusCard';
+import { BarOrdersStatusCard } from '@/components/dashboard/BarOrdersStatusCard';
 import { DashboardQuickActions } from '@/components/dashboard/DashboardQuickActions';
 import { ArrowLeft, RefreshCw, UserCircle, User, CheckSquare, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,8 +22,20 @@ import { formatDistanceToNow } from 'date-fns';
 export function WeddingDashboardPage() {
   const { weddingId } = useParams<{ weddingId: string }>();
   const navigate = useNavigate();
-  // @feature 020-dashboard-settings-fix - Added vendorStats, taskStats, itemsStats, barOrdersStats, guestStats, and recentActivity
-  const { wedding, metrics, events, vendorStats, taskStats, itemsStats, barOrdersStats, guestStats, recentActivity, isLoading, isError, refetch } = useDashboard(weddingId ?? '');
+  const {
+    wedding,
+    metrics,
+    events,
+    vendorStats,
+    taskStats,
+    itemsStats,
+    barOrdersStats,
+    guestStats,
+    recentActivity,
+    isLoading,
+    isError,
+    refetch
+  } = useDashboard(weddingId ?? '');
 
   if (!weddingId) {
     return (
@@ -63,9 +87,7 @@ export function WeddingDashboardPage() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-6" data-testid="dashboard-content">
-        {isLoading ? (
-          <DashboardStatsGrid metrics={null} events={[]} vendorStats={null} taskStats={null} itemsStats={null} barOrdersStats={null} guestStats={null} isLoading />
-        ) : isError ? (
+        {isError ? (
           <div className="text-center py-12" data-testid="dashboard-error">
             <p className="text-red-600 mb-4">Failed to load dashboard</p>
             <Button onClick={() => refetch()} variant="outline">
@@ -75,29 +97,88 @@ export function WeddingDashboardPage() {
           </div>
         ) : (
           <div className="space-y-6">
-            {/* 3x2 Stats Grid */}
+            {/* Quick Stats Row - Full Width (T020, T062) */}
             <section aria-labelledby="stats-heading">
               <h2 id="stats-heading" className="sr-only">
-                Wedding Statistics
+                Quick Statistics
               </h2>
-              <DashboardStatsGrid
-                metrics={metrics}
-                events={events}
-                vendorStats={vendorStats}
-                taskStats={taskStats}
-                itemsStats={itemsStats}
-                barOrdersStats={barOrdersStats}
-                guestStats={guestStats}
+              <QuickStatsRow
+                guestCount={metrics?.totalGuests ?? 0}
+                eventCount={metrics?.eventCount ?? 0}
+                budgetPercentage={metrics?.budgetPercentage ?? 0}
+                vendorCount={metrics?.vendorCount ?? 0}
                 isLoading={isLoading}
               />
             </section>
 
-            {/* Upcoming Tasks - @feature 020-dashboard-settings-fix */}
+            {/* Budget Overview & RSVP Status - 2fr 1fr Grid (T029, T038, T061, T064) */}
+            <section className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6" aria-labelledby="charts-heading">
+              <h2 id="charts-heading" className="sr-only">
+                Budget and RSVP Charts
+              </h2>
+              <BudgetOverviewCard
+                budgetTotal={wedding?.budget_total ?? 0}
+                budgetSpent={wedding?.budget_actual ?? 0}
+                budgetPercentage={metrics?.budgetPercentage ?? 0}
+                isLoading={isLoading}
+              />
+              <RsvpStatusCard
+                pending={guestStats?.rsvpNotInvited ?? 0}
+                invited={guestStats?.rsvpInvited ?? 0}
+                confirmed={guestStats?.rsvpConfirmed ?? 0}
+                declined={guestStats?.rsvpDeclined ?? 0}
+                isLoading={isLoading}
+              />
+            </section>
+
+            {/* Event Timeline - Full Width (T047, T063) */}
+            <section aria-labelledby="timeline-heading">
+              <h2 id="timeline-heading" className="sr-only">
+                Event Timeline
+              </h2>
+              <EventTimelineCard
+                events={events}
+                weddingId={weddingId}
+                isLoading={isLoading}
+              />
+            </section>
+
+            {/* Status Cards Grid - Vendor, Items, Bar Orders (T053, T060, T067) */}
+            <section
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              aria-labelledby="status-heading"
+            >
+              <h2 id="status-heading" className="sr-only">
+                Status Cards
+              </h2>
+              <VendorInvoicesCard
+                overdue={vendorStats?.overdue?.totalAmount ?? 0}
+                unpaid={vendorStats?.unpaid?.totalAmount ?? 0}
+                partiallyPaid={vendorStats?.partiallyPaid?.totalAmount ?? 0}
+                paid={vendorStats?.paid?.totalAmount ?? 0}
+                isLoading={isLoading}
+              />
+              <ItemsStatusCard
+                total={itemsStats?.total ?? 0}
+                shortage={itemsStats?.shortage ?? 0}
+                totalCost={itemsStats?.totalCost}
+                isLoading={isLoading}
+              />
+              <BarOrdersStatusCard
+                total={barOrdersStats?.total ?? 0}
+                draft={barOrdersStats?.draft ?? 0}
+                confirmed={barOrdersStats?.confirmed ?? 0}
+                delivered={barOrdersStats?.delivered ?? 0}
+                isLoading={isLoading}
+              />
+            </section>
+
+            {/* Upcoming Tasks */}
             <section aria-labelledby="tasks-heading">
               <h2 id="tasks-heading" className="sr-only">
                 Upcoming Tasks
               </h2>
-              <div className="bg-white rounded-lg border p-4">
+              <div className="bg-white rounded-lg border border-[#E8E8E8] shadow-sm p-4">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-medium text-gray-900 flex items-center gap-2">
                     <CheckSquare className="h-5 w-5" />
@@ -112,7 +193,12 @@ export function WeddingDashboardPage() {
                     View All
                   </Button>
                 </div>
-                {!taskStats || taskStats.upcoming === 0 ? (
+                {isLoading ? (
+                  <div className="space-y-2 animate-pulse">
+                    <div className="h-12 bg-gray-100 rounded" />
+                    <div className="h-12 bg-gray-100 rounded" />
+                  </div>
+                ) : !taskStats || taskStats.upcoming === 0 ? (
                   <p className="text-gray-500 text-sm">No upcoming tasks in the next 7 days</p>
                 ) : (
                   <ul className="space-y-2">
@@ -145,12 +231,12 @@ export function WeddingDashboardPage() {
               </div>
             </section>
 
-            {/* Recent Activity - fetches from activity_log table */}
+            {/* Recent Activity */}
             <section aria-labelledby="activity-heading">
               <h2 id="activity-heading" className="sr-only">
                 Recent Activity
               </h2>
-              <div className="bg-white rounded-lg border p-4">
+              <div className="bg-white rounded-lg border border-[#E8E8E8] shadow-sm p-4">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-medium text-gray-900 flex items-center gap-2">
                     <Activity className="h-5 w-5" />
@@ -163,13 +249,17 @@ export function WeddingDashboardPage() {
                     View All
                   </Link>
                 </div>
-                {!recentActivity || recentActivity.length === 0 ? (
+                {isLoading ? (
+                  <div className="space-y-3 animate-pulse">
+                    <div className="h-10 bg-gray-100 rounded" />
+                    <div className="h-10 bg-gray-100 rounded" />
+                  </div>
+                ) : !recentActivity || recentActivity.length === 0 ? (
                   <p className="text-gray-500 text-sm">No recent activity</p>
                 ) : (
                   <ul className="space-y-3">
                     {recentActivity.map((activity) => (
                       <li key={activity.id} className="flex items-start gap-3 py-2 border-b last:border-b-0">
-                        {/* Role-based icon */}
                         <div className="flex-shrink-0 mt-0.5">
                           {activity.userRole === 'consultant' ? (
                             <UserCircle className="h-5 w-5 text-primary" />
