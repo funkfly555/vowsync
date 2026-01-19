@@ -1,11 +1,12 @@
 /**
  * GuestCardList - Container for mobile guest cards
+ * Uses legacy card view for backward compatibility during redesign
  * @feature 006-guest-list
  * @task T028
  */
 
 import { GuestDisplayItem } from '@/types/guest';
-import { GuestCard } from './GuestCard';
+import { GuestCardLegacy } from './GuestCardLegacy';
 
 interface GuestCardListProps {
   guests: GuestDisplayItem[];
@@ -17,7 +18,7 @@ export function GuestCardList({ guests, onEditGuest, onDeleteGuest }: GuestCardL
   return (
     <div className="space-y-3">
       {guests.map((guest) => (
-        <GuestCard
+        <GuestCardLegacy
           key={guest.id}
           guest={guest}
           onEdit={onEditGuest}

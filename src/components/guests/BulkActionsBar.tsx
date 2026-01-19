@@ -1,11 +1,14 @@
 /**
  * BulkActionsBar - Always-visible bulk action controls for guest management
  * Shows informational state when no guests selected, active state when selected
+ * Includes: Select All, Clear Selection, Assign Table, Export CSV, Send Email
  * @feature 006-guest-list
  * @feature 007-guest-crud-attendance
+ * @feature 021-guest-page-redesign
+ * @task T040, T041, T044, T045, T046
  */
 
-import { X, Loader2, Info } from 'lucide-react';
+import { X, Loader2, Info, Download, CheckSquare, Square, Users } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
@@ -15,20 +18,35 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Checkbox } from '@/components/ui/checkbox';
 import { TABLE_NUMBERS } from '@/types/guest';
 
 interface BulkActionsBarProps {
   selectedCount: number;
+  totalCount: number;
+  allSelected: boolean;
+  someSelected: boolean;
   onClearSelection: () => void;
+  onSelectAll: () => void;
   onAssignTable?: (tableNumber: string | null) => void;
+  onAssignSeats?: () => void;
+  onExportSelected?: () => void;
+  onExportAll?: () => void;
   onSendEmail?: () => void;
   isAssigning?: boolean;
 }
 
 export function BulkActionsBar({
   selectedCount,
+  totalCount,
+  allSelected,
+  someSelected,
   onClearSelection,
+  onSelectAll,
   onAssignTable,
+  onAssignSeats,
+  onExportSelected,
+  onExportAll,
   onSendEmail,
   isAssigning = false,
 }: BulkActionsBarProps) {
@@ -43,6 +61,14 @@ export function BulkActionsBar({
     }
   };
 
+  const handleAssignSeats = () => {
+    if (onAssignSeats) {
+      onAssignSeats();
+    } else {
+      toast.info('Visual seat assignment coming soon');
+    }
+  };
+
   const handleSendEmail = () => {
     if (onSendEmail) {
       onSendEmail();
@@ -51,19 +77,65 @@ export function BulkActionsBar({
     }
   };
 
+  const handleExportSelected = () => {
+    if (onExportSelected) {
+      onExportSelected();
+      toast.success(`Exported ${selectedCount} guests to CSV`);
+    }
+  };
+
+  const handleExportAll = () => {
+    if (onExportAll) {
+      onExportAll();
+      toast.success(`Exported all ${totalCount} guests to CSV`);
+    }
+  };
+
+  const handleToggleSelectAll = () => {
+    if (allSelected) {
+      onClearSelection();
+    } else {
+      onSelectAll();
+    }
+  };
+
   return (
     <div
       className={`sticky top-0 z-10 flex items-center justify-between rounded-lg px-4 py-3 shadow-sm transition-colors ${
         hasSelection
-          ? 'bg-blue-50 border-2 border-blue-200 shadow-md'
+          ? 'bg-rose-50 border-2 border-[#D4A5A5] shadow-md'
           : 'bg-slate-50 border border-slate-200'
       }`}
     >
       <div className="flex items-center gap-4">
+        {/* Select All Checkbox */}
+        <div
+          className="flex items-center gap-2 cursor-pointer"
+          onClick={handleToggleSelectAll}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => e.key === 'Enter' && handleToggleSelectAll()}
+        >
+          {someSelected ? (
+            <div className="h-4 w-4 border-2 border-[#D4A5A5] bg-[#D4A5A5]/20 rounded flex items-center justify-center">
+              <div className="h-2 w-2 bg-[#D4A5A5] rounded-sm" />
+            </div>
+          ) : (
+            <Checkbox
+              checked={allSelected}
+              aria-label={allSelected ? 'Deselect all guests' : 'Select all guests'}
+              className="data-[state=checked]:bg-[#D4A5A5] data-[state=checked]:border-[#D4A5A5]"
+            />
+          )}
+          <span className="text-sm text-gray-600">
+            {allSelected ? 'Deselect All' : 'Select All'}
+          </span>
+        </div>
+
         {hasSelection ? (
           <>
             <span className="text-sm font-medium text-gray-700">
-              Selected: {selectedCount} guest{selectedCount !== 1 ? 's' : ''}
+              {selectedCount} of {totalCount} selected
             </span>
             <Button
               variant="ghost"
@@ -79,17 +151,53 @@ export function BulkActionsBar({
         ) : (
           <span className="text-sm text-slate-500 flex items-center gap-2">
             <Info className="h-4 w-4" />
-            Select guests to assign tables or send emails
+            Select guests to assign tables, export, or send emails
           </span>
         )}
       </div>
 
       <div className="flex items-center gap-2">
+        {/* Export Dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm">
+              <Download className="h-4 w-4 mr-2" />
+              Export
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              onClick={handleExportSelected}
+              disabled={!hasSelection}
+              className={!hasSelection ? 'text-gray-400' : ''}
+            >
+              <CheckSquare className="h-4 w-4 mr-2" />
+              Export Selected ({selectedCount})
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleExportAll}>
+              <Square className="h-4 w-4 mr-2" />
+              Export All ({totalCount})
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {/* Assign Seats (Visual) Button */}
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={isDisabled}
+          onClick={handleAssignSeats}
+        >
+          <Users className="h-4 w-4 mr-2" />
+          Assign Seats
+        </Button>
+
+        {/* Assign Table Dropdown (Quick) */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm" disabled={isDisabled}>
               {isAssigning && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-              Assign Table
+              Quick Table
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="max-h-[300px] overflow-y-auto">
@@ -111,6 +219,7 @@ export function BulkActionsBar({
           </DropdownMenuContent>
         </DropdownMenu>
 
+        {/* Send Email Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm" disabled={isDisabled}>

@@ -259,7 +259,7 @@ export interface CreateGuestRequest {
 
 export interface UpdateGuestRequest {
   guest_id: string;
-  data: Partial<GuestFormData>;
+  data: Partial<GuestFormData> | Record<string, unknown>;
 }
 
 export interface DeleteGuestRequest {
@@ -338,3 +338,159 @@ export const MEAL_OPTIONS = [1, 2, 3, 4, 5] as const;
 export type MealOption = (typeof MEAL_OPTIONS)[number];
 
 export const TABLE_NUMBERS = Array.from({ length: 20 }, (_, i) => String(i + 1));
+
+// =============================================================================
+// UI State Types (Phase 021 - Guest Page Redesign)
+// =============================================================================
+
+/**
+ * Track which guest cards are expanded
+ * Set<string> of guest IDs for O(1) lookup
+ */
+export type ExpandedCardsState = Set<string>;
+
+/**
+ * Track which guests are selected for bulk actions
+ * Set<string> of guest IDs for O(1) lookup
+ */
+export type SelectedGuestsState = Set<string>;
+
+/**
+ * Tab names for the 5-tab interface in expanded cards
+ */
+export type TabName = 'basic' | 'rsvp' | 'seating' | 'dietary' | 'meals';
+
+/**
+ * Track active tab per expanded card
+ * Record mapping guest ID to active tab name
+ */
+export type ActiveTabsState = Record<string, TabName>;
+
+/**
+ * Enhanced filter state for guest list redesign
+ */
+export interface GuestFiltersState {
+  search: string;
+  type: GuestType | 'all';
+  invitationStatus: InvitationStatus | 'all';
+  tableNumber: string | 'all' | 'none';
+  eventId: string | null;
+}
+
+export const DEFAULT_GUEST_FILTERS_STATE: GuestFiltersState = {
+  search: '',
+  type: 'all',
+  invitationStatus: 'all',
+  tableNumber: 'all',
+  eventId: null,
+};
+
+// =============================================================================
+// Display Models (Phase 021 - Guest Page Redesign)
+// =============================================================================
+
+/**
+ * Guest card display item with computed/joined data
+ * Extends Guest with event attendance for display
+ */
+export interface GuestCardDisplayItem extends Guest {
+  eventAttendance: GuestEventAttendance[];
+  attendingEventsCount: number;
+  totalEventsCount: number;
+}
+
+/**
+ * Guest count summary for header display
+ * Format: "X guests + Y plus ones = Z total"
+ */
+export interface GuestCountSummary {
+  primaryGuests: number;
+  plusOnes: number;
+  total: number;
+}
+
+/**
+ * Table seating display for circular visualization
+ */
+export interface TableSeatingDisplay {
+  tableNumber: string;
+  seats: (TableSeat | null)[];
+}
+
+/**
+ * Individual seat at a table
+ */
+export interface TableSeat {
+  position: number;
+  guestId: string;
+  guestName: string;
+  isPlusOne: boolean;
+}
+
+// =============================================================================
+// Form Data Types (Phase 021 - Guest Page Redesign)
+// =============================================================================
+
+/**
+ * Form data for editing a guest via expanded card tabs
+ * Used by React Hook Form in tab components
+ */
+export interface GuestEditFormData {
+  // Basic Info Tab
+  name: string;
+  email: string;
+  phone: string;
+  guest_type: GuestType;
+  invitation_status: InvitationStatus;
+
+  // Plus One (Basic Info Tab)
+  has_plus_one: boolean;
+  plus_one_name: string;
+  plus_one_confirmed: boolean;
+
+  // RSVP Tab
+  rsvp_deadline: Date | null;
+  rsvp_received_date: Date | null;
+  rsvp_method: RsvpMethod | null;
+  rsvp_notes: string;
+
+  // Seating Tab
+  table_number: string;
+  table_position: number | null;
+
+  // Dietary Tab
+  dietary_restrictions: string;
+  allergies: string;
+  dietary_notes: string;
+
+  // Meals Tab
+  starter_choice: number | null;
+  main_choice: number | null;
+  dessert_choice: number | null;
+}
+
+/**
+ * Default values for guest edit form
+ */
+export const DEFAULT_GUEST_EDIT_FORM_DATA: GuestEditFormData = {
+  name: '',
+  email: '',
+  phone: '',
+  guest_type: 'adult',
+  invitation_status: 'pending',
+  has_plus_one: false,
+  plus_one_name: '',
+  plus_one_confirmed: false,
+  rsvp_deadline: null,
+  rsvp_received_date: null,
+  rsvp_method: null,
+  rsvp_notes: '',
+  table_number: '',
+  table_position: null,
+  dietary_restrictions: '',
+  allergies: '',
+  dietary_notes: '',
+  starter_choice: null,
+  main_choice: null,
+  dessert_choice: null,
+};

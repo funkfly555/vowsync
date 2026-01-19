@@ -215,3 +215,53 @@ export type DietarySchemaType = z.infer<typeof dietarySchema>;
 export type MealSchemaType = z.infer<typeof mealSchema>;
 export type EventsSchemaType = z.infer<typeof eventsSchema>;
 export type EventAttendanceItemSchemaType = z.infer<typeof eventAttendanceItemSchema>;
+
+// =============================================================================
+// Guest Edit Form Schema (Phase 021 - Guest Page Redesign)
+// =============================================================================
+
+/**
+ * Validation schema for guest edit form used in expanded card tabs
+ * Includes plus one conditional validation
+ */
+export const guestEditSchema = z.object({
+  // Basic Info Tab
+  name: z.string().min(1, 'Name is required').max(255, 'Name is too long'),
+  email: z.string().email('Invalid email format').or(z.literal('')),
+  phone: z.string().max(50, 'Phone number is too long'),
+  guest_type: guestTypeSchema,
+  invitation_status: invitationStatusSchema,
+
+  // Plus One (Basic Info Tab)
+  has_plus_one: z.boolean(),
+  plus_one_name: z.string().max(255, 'Plus one name is too long'),
+  plus_one_confirmed: z.boolean(),
+
+  // RSVP Tab
+  rsvp_deadline: z.date().nullable(),
+  rsvp_received_date: z.date().nullable(),
+  rsvp_method: rsvpMethodSchema.nullable(),
+  rsvp_notes: z.string().max(1000, 'Notes too long'),
+
+  // Seating Tab
+  table_number: z.string().max(20, 'Table number too long'),
+  table_position: z.number().min(1).max(10).nullable(),
+
+  // Dietary Tab
+  dietary_restrictions: z.string().max(500, 'Too long'),
+  allergies: z.string().max(500, 'Too long'),
+  dietary_notes: z.string().max(1000, 'Too long'),
+
+  // Meals Tab
+  starter_choice: z.number().min(1).max(5).nullable(),
+  main_choice: z.number().min(1).max(5).nullable(),
+  dessert_choice: z.number().min(1).max(5).nullable(),
+}).refine(
+  (data) => !data.has_plus_one || (data.plus_one_name && data.plus_one_name.trim().length > 0),
+  {
+    message: 'Plus one name is required when plus one is enabled',
+    path: ['plus_one_name'],
+  }
+);
+
+export type GuestEditSchemaType = z.infer<typeof guestEditSchema>;

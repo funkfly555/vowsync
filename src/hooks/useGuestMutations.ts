@@ -138,12 +138,15 @@ async function createGuest(request: CreateGuestRequest): Promise<Guest> {
 
 /**
  * Update an existing guest with event attendance records
+ * Accepts either GuestFormData (from modal) or pre-transformed Record (from card tabs)
  */
 async function updateGuest(request: UpdateGuestRequest): Promise<Guest> {
   const { guest_id, data } = request;
 
-  // Update guest fields
-  const guestData = transformFormDataForUpdate(data);
+  // Check if data is already transformed (has direct DB fields like table_number)
+  // vs needs transformation (has event_attendance array typical of GuestFormData)
+  const isPreTransformed = 'table_number' in data || 'table_position' in data || 'rsvp_notes' in data;
+  const guestData = isPreTransformed ? (data as Record<string, unknown>) : transformFormDataForUpdate(data as Partial<GuestFormData>);
 
   if (Object.keys(guestData).length > 0) {
     const { error: guestError } = await supabase
@@ -157,9 +160,10 @@ async function updateGuest(request: UpdateGuestRequest): Promise<Guest> {
     }
   }
 
-  // Update event attendance using UPSERT
-  if (data.event_attendance) {
-    const attendanceRecords = data.event_attendance.map((ea) => ({
+  // Update event attendance using UPSERT (only for GuestFormData with event_attendance)
+  const formData = data as Partial<GuestFormData>;
+  if (formData.event_attendance && Array.isArray(formData.event_attendance)) {
+    const attendanceRecords = formData.event_attendance.map((ea) => ({
       guest_id: guest_id,
       event_id: ea.event_id,
       attending: ea.attending,
@@ -292,6 +296,8 @@ export function useGuestMutations(weddingId: string) {
   const invalidateQueries = () => {
     queryClient.invalidateQueries({ queryKey: ['guests', weddingId] });
     queryClient.invalidateQueries({ queryKey: ['guest'] });
+    // Invalidate guest cards for Phase 021 redesign
+    queryClient.invalidateQueries({ queryKey: ['guest-cards', weddingId] });
     // Invalidate dashboard stats so they refresh when navigating back
     queryClient.invalidateQueries({ queryKey: ['guestStats', weddingId] });
     queryClient.invalidateQueries({ queryKey: ['dashboardMetrics', weddingId] });

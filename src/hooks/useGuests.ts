@@ -14,6 +14,8 @@ import {
   toGuestDisplayItem,
   GuestWithAttendance,
   GuestEventAttendance,
+  GuestCardDisplayItem,
+  GuestFiltersState,
 } from '@/types/guest';
 
 interface UseGuestsParams {
@@ -256,4 +258,175 @@ export function useWeddingEventsForAttendance(weddingId: string) {
     },
     enabled: !!weddingId,
   });
+}
+
+// =============================================================================
+// Guest Cards Hook (Phase 021 - Guest Page Redesign)
+// =============================================================================
+
+interface UseGuestCardsParams {
+  weddingId: string;
+  filters: GuestFiltersState;
+}
+
+interface UseGuestCardsReturn {
+  guests: GuestCardDisplayItem[];
+  totalEvents: number;
+  isLoading: boolean;
+  isError: boolean;
+  error: Error | null;
+  refetch: () => void;
+}
+
+/**
+ * Fetch guests with event attendance for expandable card display
+ * Returns GuestCardDisplayItem[] with attendance counts
+ */
+export function useGuestCards({ weddingId, filters }: UseGuestCardsParams): UseGuestCardsReturn {
+  // Fetch all events to get total count
+  const { data: events = [] } = useWeddingEvents(weddingId);
+  const totalEvents = events.length;
+
+  const { data, isLoading, isError, error, refetch } = useQuery({
+    queryKey: ['guest-cards', weddingId, filters],
+    queryFn: async (): Promise<GuestCardDisplayItem[]> => {
+      // Fetch guests with their event attendance
+      const { data: guests, error: guestsError } = await supabase
+        .from('guests')
+        .select(`
+          *,
+          guest_event_attendance (
+            event_id,
+            attending,
+            shuttle_to_event,
+            shuttle_from_event,
+            notes
+          )
+        `)
+        .eq('wedding_id', weddingId)
+        .order('name', { ascending: true });
+
+      if (guestsError) {
+        console.error('Error fetching guests:', guestsError);
+        throw guestsError;
+      }
+
+      // Transform to GuestCardDisplayItem
+      return (guests || []).map((guest) => {
+        const attendance = (guest.guest_event_attendance as GuestEventAttendance[]) || [];
+        const attendingCount = attendance.filter((a) => a.attending).length;
+
+        return {
+          ...guest,
+          eventAttendance: attendance,
+          attendingEventsCount: attendingCount,
+          totalEventsCount: totalEvents,
+        } as GuestCardDisplayItem;
+      });
+    },
+    enabled: !!weddingId,
+  });
+
+  // Apply client-side filters
+  const filteredGuests = (data || []).filter((guest) => {
+    // Search filter
+    if (filters.search) {
+      const searchLower = filters.search.toLowerCase();
+      if (!guest.name.toLowerCase().includes(searchLower)) {
+        return false;
+      }
+    }
+
+    // Type filter
+    if (filters.type !== 'all' && guest.guest_type !== filters.type) {
+      return false;
+    }
+
+    // Invitation status filter
+    if (filters.invitationStatus !== 'all' && guest.invitation_status !== filters.invitationStatus) {
+      return false;
+    }
+
+    // Table filter
+    if (filters.tableNumber === 'none' && guest.table_number) {
+      return false;
+    }
+    if (filters.tableNumber !== 'all' && filters.tableNumber !== 'none' && guest.table_number !== filters.tableNumber) {
+      return false;
+    }
+
+    // Event filter
+    if (filters.eventId) {
+      const isAttending = guest.eventAttendance.some(
+        (a) => a.event_id === filters.eventId && a.attending
+      );
+      if (!isAttending) {
+        return false;
+      }
+    }
+
+    return true;
+  });
+
+  return {
+    guests: filteredGuests,
+    totalEvents,
+    isLoading,
+    isError,
+    error: error as Error | null,
+    refetch,
+  };
+}
+
+// =============================================================================
+// Guests by Table Hook (Phase 021 - Visual Seating Arrangement)
+// =============================================================================
+
+interface SeatedGuest {
+  id: string;
+  name: string;
+  table_position: number | null;
+}
+
+interface UseGuestsByTableReturn {
+  guests: SeatedGuest[];
+  isLoading: boolean;
+  isError: boolean;
+}
+
+/**
+ * Fetch guests at a specific table for seating arrangement
+ * Returns minimal guest info (id, name, table_position)
+ */
+export function useGuestsByTable(
+  weddingId: string,
+  tableNumber: string | null
+): UseGuestsByTableReturn {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['guests-by-table', weddingId, tableNumber],
+    queryFn: async (): Promise<SeatedGuest[]> => {
+      if (!tableNumber) return [];
+
+      const { data: guests, error } = await supabase
+        .from('guests')
+        .select('id, name, table_position')
+        .eq('wedding_id', weddingId)
+        .eq('table_number', tableNumber)
+        .order('table_position', { ascending: true, nullsFirst: false });
+
+      if (error) {
+        console.error('Error fetching guests by table:', error);
+        throw error;
+      }
+
+      return guests || [];
+    },
+    enabled: !!weddingId && !!tableNumber,
+  });
+
+  return {
+    guests: data || [],
+    isLoading,
+    isError,
+  };
 }

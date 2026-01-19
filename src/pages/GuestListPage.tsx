@@ -1,46 +1,56 @@
 /**
  * GuestListPage - Main guest list page component
+ * Phase 021 redesign: Expandable cards with 5-tab interface
  * @feature 006-guest-list
  * @feature 007-guest-crud-attendance
+ * @feature 021-guest-page-redesign
  */
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { Plus, Grid3X3 } from 'lucide-react';
+import { Plus, Grid3X3, ChevronsDownUp, ChevronsUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useGuests, useWeddingEvents } from '@/hooks/useGuests';
+import { useGuestCards, useWeddingEvents } from '@/hooks/useGuests';
 import { useDebounce } from '@/hooks/useDebounce';
-import { GuestFilters, DEFAULT_GUEST_FILTERS, PAGE_SIZE } from '@/types/guest';
+import { useBulkGuestActions } from '@/hooks/useBulkGuestActions';
+import {
+  GuestFiltersState,
+  DEFAULT_GUEST_FILTERS_STATE,
+  ExpandedCardsState,
+  SelectedGuestsState,
+} from '@/types/guest';
 
-// Helper to check if any filters are active
-function hasActiveFilters(filters: GuestFilters): boolean {
-  return (
-    filters.search !== '' ||
-    filters.type !== 'all' ||
-    filters.invitationStatus !== 'all' ||
-    filters.eventId !== null
-  );
-}
-import { GuestTable } from '@/components/guests/GuestTable';
-import { GuestCardList } from '@/components/guests/GuestCardList';
-import { GuestPagination } from '@/components/guests/GuestPagination';
+// Components
+import { GuestCard } from '@/components/guests/GuestCard';
 import { BulkActionsBar } from '@/components/guests/BulkActionsBar';
 import { EmptyGuestState } from '@/components/guests/EmptyGuestState';
 import { NoSearchResults } from '@/components/guests/NoSearchResults';
-import { GuestTableSkeleton } from '@/components/guests/GuestTableSkeleton';
-import { ExportRow } from '@/components/guests/ExportRow';
 import { GuestFilters as GuestFiltersComponent } from '@/components/guests/GuestFilters';
 import { GuestModal } from '@/components/guests/GuestModal';
 import { DeleteGuestDialog } from '@/components/guests/DeleteGuestDialog';
 import { AttendanceMatrix } from '@/components/guests/AttendanceMatrix';
+import { BulkTableAssignModal } from '@/components/guests/BulkTableAssignModal';
 import { useGuestMutations } from '@/hooks/useGuestMutations';
 import { toast } from 'sonner';
 
+// Helper to check if any filters are active
+function hasActiveFilters(filters: GuestFiltersState): boolean {
+  return (
+    filters.search !== '' ||
+    filters.type !== 'all' ||
+    filters.invitationStatus !== 'all' ||
+    filters.tableNumber !== 'all' ||
+    filters.eventId !== null
+  );
+}
+
 export function GuestListPage() {
   const { weddingId } = useParams<{ weddingId: string }>();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [filters, setFilters] = useState<GuestFilters>(DEFAULT_GUEST_FILTERS);
-  const [selectedGuests, setSelectedGuests] = useState<Set<string>>(new Set());
+
+  // Card state management (Phase 021)
+  const [expandedCards, setExpandedCards] = useState<ExpandedCardsState>(new Set());
+  const [selectedGuests, setSelectedGuests] = useState<SelectedGuestsState>(new Set());
+  const [filters, setFilters] = useState<GuestFiltersState>(DEFAULT_GUEST_FILTERS_STATE);
 
   // Modal state
   const [isGuestModalOpen, setIsGuestModalOpen] = useState(false);
@@ -53,27 +63,86 @@ export function GuestListPage() {
   // Attendance matrix state
   const [isAttendanceMatrixOpen, setIsAttendanceMatrixOpen] = useState(false);
 
+  // Bulk seating modal state
+  const [isBulkSeatingOpen, setIsBulkSeatingOpen] = useState(false);
+
   // Mutations
   const { deleteGuest, bulkAssignTable } = useGuestMutations(weddingId || '');
 
   // Fetch events for event filter dropdown
   const { data: events = [] } = useWeddingEvents(weddingId || '');
 
-  // Debounce search for performance
+  // Debounce search for performance (300ms)
   const debouncedSearch = useDebounce(filters.search, 300);
   const debouncedFilters = { ...filters, search: debouncedSearch };
 
-  // Fetch guests with current filters and pagination
-  const { guests, total, isLoading, isError } = useGuests({
+  // Fetch guests with event attendance for card display
+  const { guests, isLoading, isError } = useGuestCards({
     weddingId: weddingId || '',
-    page: currentPage,
     filters: debouncedFilters,
   });
 
-  // Handle filter changes - reset to page 1 when filters change
-  const handleFiltersChange = (newFilters: Partial<GuestFilters>) => {
+  // Handle filter changes
+  const handleFiltersChange = (newFilters: Partial<GuestFiltersState>) => {
     setFilters((prev) => ({ ...prev, ...newFilters }));
-    setCurrentPage(1);
+  };
+
+  // Card expand/collapse handlers
+  const handleToggleExpand = useCallback((guestId: string) => {
+    setExpandedCards((prev) => {
+      const next = new Set(prev);
+      if (next.has(guestId)) {
+        next.delete(guestId);
+      } else {
+        next.add(guestId);
+      }
+      return next;
+    });
+  }, []);
+
+  // Expand all visible guests (respects current filter state)
+  const handleExpandAll = useCallback(() => {
+    setExpandedCards(new Set(guests.map((g) => g.id)));
+  }, [guests]);
+
+  // Collapse all guests
+  const handleCollapseAll = useCallback(() => {
+    setExpandedCards(new Set());
+  }, []);
+
+  // Check if all visible cards are expanded
+  const allExpanded = guests.length > 0 && expandedCards.size >= guests.length &&
+    guests.every((g) => expandedCards.has(g.id));
+
+  // Selection handlers
+  const handleToggleSelect = useCallback((guestId: string) => {
+    setSelectedGuests((prev) => {
+      const next = new Set(prev);
+      if (next.has(guestId)) {
+        next.delete(guestId);
+      } else {
+        next.add(guestId);
+      }
+      return next;
+    });
+  }, []);
+
+  // Bulk actions hook
+  const {
+    selectAll,
+    deselectAll,
+    allSelected,
+    someSelected,
+    exportSelected,
+    exportAll,
+  } = useBulkGuestActions({
+    guests,
+    selectedGuests,
+    setSelectedGuests,
+  });
+
+  const handleClearSelection = () => {
+    deselectAll();
   };
 
   // Guest CRUD handlers
@@ -82,19 +151,17 @@ export function GuestListPage() {
     setIsGuestModalOpen(true);
   };
 
-  const handleEditGuest = (id: string) => {
-    setEditingGuestId(id);
-    setIsGuestModalOpen(true);
-  };
-
+  // Delete handler - triggered from GuestCard dropdown menu
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleDeleteGuest = (id: string) => {
-    // Find the guest name for the confirmation dialog
     const guest = guests.find((g) => g.id === id);
     if (guest) {
       setDeletingGuest({ id, name: guest.name });
       setIsDeleteDialogOpen(true);
     }
   };
+  // Make TypeScript happy by using the function in a no-op expression
+  void handleDeleteGuest;
 
   const handleConfirmDelete = async () => {
     if (!deletingGuest) return;
@@ -104,8 +171,13 @@ export function GuestListPage() {
       toast.success(`${deletingGuest.name} has been deleted.`);
       setIsDeleteDialogOpen(false);
       setDeletingGuest(null);
-      // Clear selection if deleted guest was selected
+      // Clear selection and expanded state if deleted
       setSelectedGuests((prev) => {
+        const next = new Set(prev);
+        next.delete(deletingGuest.id);
+        return next;
+      });
+      setExpandedCards((prev) => {
         const next = new Set(prev);
         next.delete(deletingGuest.id);
         return next;
@@ -151,41 +223,15 @@ export function GuestListPage() {
     }
   };
 
-  // Selection handlers
-  const handleSelectGuest = (id: string) => {
-    setSelectedGuests((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
-    });
-  };
-
-  const handleSelectAll = () => {
-    if (selectedGuests.size === guests.length) {
-      setSelectedGuests(new Set());
-    } else {
-      setSelectedGuests(new Set(guests.map((g) => g.id)));
+  // Open bulk seating modal
+  const handleOpenBulkSeating = () => {
+    if (selectedGuests.size > 0) {
+      setIsBulkSeatingOpen(true);
     }
   };
 
-  const handleClearSelection = () => {
-    setSelectedGuests(new Set());
-  };
-
-  // Handle page changes - clear selection when changing pages
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    setSelectedGuests(new Set());
-  };
-
-  // Calculate pagination values
-  const totalPages = Math.ceil(total / PAGE_SIZE);
-  const startItem = (currentPage - 1) * PAGE_SIZE + 1;
-  const endItem = Math.min(currentPage * PAGE_SIZE, total);
+  // Get selected guest objects for the modal
+  const selectedGuestObjects = guests.filter((g) => selectedGuests.has(g.id));
 
   // Handle invalid wedding ID
   if (!weddingId) {
@@ -196,17 +242,43 @@ export function GuestListPage() {
     );
   }
 
+  // Calculate guest counts for header
+  const totalGuests = guests.length;
+  const plusOnesCount = guests.filter((g) => g.has_plus_one).length;
+  const totalAttendees = totalGuests + plusOnesCount;
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-gray-900">Guests</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold text-[#5C4B4B]">Guests</h1>
+          {!isLoading && !isError && (
+            <p className="text-sm text-gray-600 mt-1">
+              {totalGuests} guests + {plusOnesCount} plus ones = {totalAttendees} total
+            </p>
+          )}
+        </div>
         <div className="flex items-center gap-2">
+          {/* Expand/Collapse All - only show when there are guests */}
+          {!isLoading && !isError && guests.length > 0 && (
+            allExpanded ? (
+              <Button variant="outline" onClick={handleCollapseAll}>
+                <ChevronsDownUp className="h-4 w-4 mr-2" />
+                Collapse All
+              </Button>
+            ) : (
+              <Button variant="outline" onClick={handleExpandAll}>
+                <ChevronsUpDown className="h-4 w-4 mr-2" />
+                Expand All
+              </Button>
+            )
+          )}
           <Button variant="outline" onClick={() => setIsAttendanceMatrixOpen(true)}>
             <Grid3X3 className="h-4 w-4 mr-2" />
             Attendance Matrix
           </Button>
-          <Button onClick={handleAddGuest}>
+          <Button onClick={handleAddGuest} className="bg-[#D4A5A5] hover:bg-[#c99595]">
             <Plus className="h-4 w-4 mr-2" />
             Add Guest
           </Button>
@@ -215,45 +287,49 @@ export function GuestListPage() {
 
       {/* Filters */}
       <GuestFiltersComponent
-        filters={filters}
-        onFiltersChange={handleFiltersChange}
+        filters={{
+          search: filters.search,
+          type: filters.type,
+          invitationStatus: filters.invitationStatus,
+          tableNumber: filters.tableNumber,
+          eventId: filters.eventId,
+        }}
+        onFiltersChange={(newFilters) => {
+          handleFiltersChange({
+            search: newFilters.search ?? filters.search,
+            type: newFilters.type ?? filters.type,
+            invitationStatus: newFilters.invitationStatus ?? filters.invitationStatus,
+            tableNumber: newFilters.tableNumber ?? filters.tableNumber,
+            eventId: newFilters.eventId !== undefined ? newFilters.eventId : filters.eventId,
+          });
+        }}
+        onClearFilters={() => setFilters(DEFAULT_GUEST_FILTERS_STATE)}
         events={events}
         guests={guests}
       />
 
-      {/* Export Row - Export buttons + Results count */}
-      {!isLoading && !isError && (
-        <ExportRow
-          startItem={total > 0 ? startItem : 0}
-          endItem={total > 0 ? endItem : 0}
-          total={total}
-        />
-      )}
-
       {/* Loading State - Skeleton */}
       {isLoading && (
-        <>
-          {/* Desktop skeleton */}
-          <div className="hidden lg:block">
-            <GuestTableSkeleton rowCount={5} />
-          </div>
-          {/* Mobile skeleton */}
-          <div className="block lg:hidden space-y-3">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div
-                key={i}
-                className="border border-[#E8E8E8] rounded-lg p-4 bg-white animate-pulse"
-              >
-                <div className="h-4 bg-gray-200 rounded w-1/3 mb-2" />
-                <div className="flex gap-2 mb-3">
-                  <div className="h-6 bg-gray-200 rounded-full w-16" />
-                  <div className="h-6 bg-gray-200 rounded-full w-16" />
+        <div className="space-y-3">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div
+              key={i}
+              className="border border-[#E8E8E8] rounded-lg p-4 bg-white animate-pulse"
+            >
+              <div className="flex items-center gap-4">
+                <div className="h-4 w-4 bg-gray-200 rounded" />
+                <div className="flex-1">
+                  <div className="h-4 bg-gray-200 rounded w-1/3 mb-2" />
+                  <div className="flex gap-2">
+                    <div className="h-5 bg-gray-200 rounded-full w-16" />
+                    <div className="h-5 bg-gray-200 rounded-full w-20" />
+                  </div>
                 </div>
-                <div className="h-3 bg-gray-200 rounded w-1/4" />
+                <div className="h-5 w-5 bg-gray-200 rounded" />
               </div>
-            ))}
-          </div>
-        </>
+            </div>
+          ))}
+        </div>
       )}
 
       {/* Error State */}
@@ -263,47 +339,37 @@ export function GuestListPage() {
         </div>
       )}
 
-      {/* Bulk Actions Bar - always visible for discoverability */}
+      {/* Bulk Actions Bar */}
       {!isLoading && !isError && guests.length > 0 && (
         <BulkActionsBar
           selectedCount={selectedGuests.size}
+          totalCount={guests.length}
+          allSelected={allSelected}
+          someSelected={someSelected}
           onClearSelection={handleClearSelection}
+          onSelectAll={selectAll}
           onAssignTable={handleBulkAssignTable}
+          onAssignSeats={handleOpenBulkSeating}
+          onExportSelected={exportSelected}
+          onExportAll={exportAll}
           isAssigning={bulkAssignTable.isPending}
         />
       )}
 
-      {/* Guest List - Desktop Table / Mobile Cards */}
+      {/* Guest Cards List - Card-based layout (Design 3) */}
       {!isLoading && !isError && guests.length > 0 && (
-        <>
-          {/* Desktop: Table view (hidden on mobile) */}
-          <div className="hidden lg:block">
-            <GuestTable
-              guests={guests}
-              selectedGuests={selectedGuests}
-              onSelectGuest={handleSelectGuest}
-              onSelectAll={handleSelectAll}
-              onEditGuest={handleEditGuest}
-              onDeleteGuest={handleDeleteGuest}
+        <div className="space-y-3">
+          {guests.map((guest) => (
+            <GuestCard
+              key={guest.id}
+              guest={guest}
+              isExpanded={expandedCards.has(guest.id)}
+              isSelected={selectedGuests.has(guest.id)}
+              onToggleExpand={handleToggleExpand}
+              onToggleSelect={handleToggleSelect}
             />
-          </div>
-
-          {/* Mobile: Card view (hidden on desktop) */}
-          <div className="block lg:hidden">
-            <GuestCardList
-              guests={guests}
-              onEditGuest={handleEditGuest}
-              onDeleteGuest={handleDeleteGuest}
-            />
-          </div>
-
-          {/* Pagination */}
-          <GuestPagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
-        </>
+          ))}
+        </div>
       )}
 
       {/* Empty states */}
@@ -337,6 +403,17 @@ export function GuestListPage() {
         open={isAttendanceMatrixOpen}
         onOpenChange={setIsAttendanceMatrixOpen}
         weddingId={weddingId}
+      />
+
+      {/* Bulk Seating Assignment Modal */}
+      <BulkTableAssignModal
+        open={isBulkSeatingOpen}
+        onOpenChange={setIsBulkSeatingOpen}
+        weddingId={weddingId}
+        selectedGuests={selectedGuestObjects}
+        onComplete={() => {
+          setSelectedGuests(new Set());
+        }}
       />
     </div>
   );
