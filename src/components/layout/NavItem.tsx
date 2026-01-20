@@ -15,6 +15,7 @@ import {
   FileText,
   Settings,
   LogOut,
+  UtensilsCrossed,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { NavigationItem } from '@/types/navigation';
@@ -36,6 +37,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   FileText,
   Settings,
   LogOut,
+  UtensilsCrossed,
 };
 
 interface NavItemProps {

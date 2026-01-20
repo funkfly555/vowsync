@@ -38,6 +38,25 @@ export const eventFormSchema = z.object({
     .string()
     .max(1000, 'Notes cannot exceed 1000 characters')
     .optional(),
+  // Shuttle configuration fields (all optional)
+  shuttle_from_location: z
+    .string()
+    .max(200, 'Pickup location cannot exceed 200 characters')
+    .optional(),
+  shuttle_departure_to_event: z
+    .string()
+    .regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/, 'Invalid time format (HH:mm)')
+    .optional()
+    .or(z.literal('')),
+  shuttle_departure_from_event: z
+    .string()
+    .regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/, 'Invalid time format (HH:mm)')
+    .optional()
+    .or(z.literal('')),
+  shuttle_notes: z
+    .string()
+    .max(1000, 'Shuttle notes cannot exceed 1000 characters')
+    .optional(),
 }).refine(
   (data) => {
     const [startH, startM] = data.event_start_time.split(':').map(Number);

@@ -94,7 +94,7 @@ export function EditEventPage() {
             </Link>
           </Button>
           <div className="min-w-0">
-            <h1 className="text-xl sm:text-2xl font-bold">Edit Event</h1>
+            <h1 className="text-xl sm:text-2xl font-bold">Edit Event & Shuttle</h1>
             <p className="text-sm sm:text-base text-muted-foreground truncate">
               {event.wedding.bride_name} & {event.wedding.groom_name}
             </p>
@@ -126,6 +126,11 @@ export function EditEventPage() {
                 event_end_time: event.event_end_time.slice(0, 5), // Strip seconds (HH:mm:ss -> HH:mm)
                 event_location: event.event_location,
                 notes: event.notes ?? '',
+                // Shuttle fields
+                shuttle_from_location: event.shuttle_from_location ?? '',
+                shuttle_departure_to_event: event.shuttle_departure_to_event?.slice(0, 5) ?? '', // Strip seconds
+                shuttle_departure_from_event: event.shuttle_departure_from_event?.slice(0, 5) ?? '', // Strip seconds
+                shuttle_notes: event.shuttle_notes ?? '',
               }}
               usedOrders={usedOrders ?? []}
               weddingDate={event.wedding.wedding_date}

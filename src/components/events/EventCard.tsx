@@ -1,4 +1,4 @@
-import { MapPin, Users, Trash2 } from 'lucide-react';
+import { MapPin, Users, Trash2, Bus, ArrowRight } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { DurationDisplay } from './DurationDisplay';
@@ -88,6 +88,95 @@ export function EventCard({ event, onClick, onDeleteClick }: EventCardProps) {
                 </Button>
               )}
             </div>
+
+            {/* Shuttle Section - Only show if shuttle data exists */}
+            {(event.shuttle_from_location || event.shuttle_departure_to_event || event.shuttle_departure_from_event) && (
+              <>
+                {/* Separator */}
+                <div className="mt-3 sm:mt-4 border-t border-dashed border-border" />
+
+                {/* Shuttle Journey */}
+                <div className="mt-3 sm:mt-4">
+                  {/* Header */}
+                  <div className="flex items-center gap-2 mb-2 sm:mb-3">
+                    <Bus className="h-4 w-4" style={{ color: '#D4A5A5' }} />
+                    <span className="text-xs sm:text-sm font-semibold" style={{ color: '#D4A5A5' }}>
+                      Shuttle Service
+                    </span>
+                  </div>
+
+                  {/* Journey Timeline */}
+                  <div
+                    className="rounded-lg p-2 sm:p-3 border"
+                    style={{
+                      backgroundColor: '#FAFAFA',
+                      borderColor: '#E8E8E8',
+                      borderLeftWidth: '3px',
+                      borderLeftColor: '#D4A5A5',
+                    }}
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-2">
+                      {/* PICKUP POINT */}
+                      <div className="flex-1 flex sm:flex-col items-center sm:items-center gap-2 sm:gap-0 sm:text-center">
+                        <div className="text-[10px] sm:text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:mb-1 w-12 sm:w-auto">
+                          Pickup
+                        </div>
+                        <div className="text-xs sm:text-sm font-semibold text-foreground">
+                          {event.shuttle_departure_to_event ? formatTime(event.shuttle_departure_to_event) : '—'}
+                        </div>
+                        {event.shuttle_from_location && (
+                          <div className="text-[10px] sm:text-xs text-muted-foreground sm:mt-1 truncate max-w-[100px] sm:max-w-none">
+                            {event.shuttle_from_location}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* ARROW */}
+                      <ArrowRight
+                        className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0 self-center rotate-90 sm:rotate-0 hidden sm:block"
+                        style={{ color: '#D4A5A5' }}
+                      />
+
+                      {/* EVENT POINT */}
+                      <div className="flex-1 flex sm:flex-col items-center sm:items-center gap-2 sm:gap-0 sm:text-center">
+                        <div className="text-[10px] sm:text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:mb-1 w-12 sm:w-auto">
+                          Event
+                        </div>
+                        <div className="text-xs sm:text-sm font-semibold text-foreground">
+                          {formatTime(event.event_start_time)}
+                        </div>
+                        {event.event_location && (
+                          <div className="text-[10px] sm:text-xs text-muted-foreground sm:mt-1 truncate max-w-[100px] sm:max-w-none">
+                            {event.event_location}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* ARROW */}
+                      <ArrowRight
+                        className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0 self-center rotate-90 sm:rotate-0 hidden sm:block"
+                        style={{ color: '#D4A5A5' }}
+                      />
+
+                      {/* RETURN POINT */}
+                      <div className="flex-1 flex sm:flex-col items-center sm:items-center gap-2 sm:gap-0 sm:text-center">
+                        <div className="text-[10px] sm:text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:mb-1 w-12 sm:w-auto">
+                          Return
+                        </div>
+                        <div className="text-xs sm:text-sm font-semibold text-foreground">
+                          {event.shuttle_departure_from_event ? formatTime(event.shuttle_departure_from_event) : '—'}
+                        </div>
+                        {event.shuttle_from_location && (
+                          <div className="text-[10px] sm:text-xs text-muted-foreground sm:mt-1 truncate max-w-[100px] sm:max-w-none">
+                            {event.shuttle_from_location}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </CardContent>

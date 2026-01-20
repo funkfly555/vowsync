@@ -9,7 +9,7 @@
 import { supabase } from '@/lib/supabase';
 
 export type ActionType = 'created' | 'updated' | 'deleted' | 'completed' | 'cancelled';
-export type EntityType = 'guest' | 'vendor' | 'event' | 'task' | 'payment' | 'invoice' | 'budget' | 'bar_order' | 'wedding_item';
+export type EntityType = 'guest' | 'vendor' | 'event' | 'task' | 'payment' | 'invoice' | 'budget' | 'bar_order' | 'wedding_item' | 'meal_option';
 
 interface LogActivityParams {
   weddingId: string;
@@ -110,5 +110,10 @@ export const activityDescriptions = {
     created: (name: string) => `Added item: ${name}`,
     updated: (name: string) => `Updated item: ${name}`,
     deleted: (name: string) => `Removed item: ${name}`,
+  },
+  mealOption: {
+    created: (name: string, course: string) => `Added ${course} option: ${name}`,
+    updated: (name: string) => `Updated menu option: ${name}`,
+    deleted: (name: string, course: string) => `Removed ${course} option: ${name}`,
   },
 };

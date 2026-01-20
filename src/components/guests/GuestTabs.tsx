@@ -1,13 +1,14 @@
 /**
  * GuestTabs - Tab navigation component for expanded guest cards
- * 5 tabs: Basic Info, RSVP, Seating, Dietary, Meals
+ * 6 tabs: Basic Info, RSVP, Seating, Dietary, Meals, Events & Shuttles
  * @feature 021-guest-page-redesign
+ * @feature 024-guest-menu-management
  * @task T009, T016
  */
 
 import { cn } from '@/lib/utils';
 import { TabName } from '@/types/guest';
-import { User, Mail, MapPin, Utensils, ChefHat } from 'lucide-react';
+import { User, Mail, MapPin, Utensils, ChefHat, Calendar } from 'lucide-react';
 
 interface GuestTabsProps {
   activeTab: TabName;
@@ -20,6 +21,7 @@ const TABS: { id: TabName; label: string; icon: React.ReactNode }[] = [
   { id: 'seating', label: 'Seating', icon: <MapPin className="h-4 w-4" /> },
   { id: 'dietary', label: 'Dietary', icon: <Utensils className="h-4 w-4" /> },
   { id: 'meals', label: 'Meals', icon: <ChefHat className="h-4 w-4" /> },
+  { id: 'events-shuttles', label: 'Events & Shuttles', icon: <Calendar className="h-4 w-4" /> },
 ];
 
 export function GuestTabs({ activeTab, onTabChange }: GuestTabsProps) {

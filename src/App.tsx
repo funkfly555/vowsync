@@ -21,6 +21,7 @@ import { BarOrderDetailPage } from './pages/bar-orders/BarOrderDetailPage';
 import { WeddingItemsPage } from './pages/wedding-items/WeddingItemsPage';
 import { RepurposingPage } from './pages/RepurposingPage';
 import { TasksPage } from './pages/TasksPage';
+import { MenuPage } from './pages/MenuPage';
 import { LoginPage } from './pages/LoginPage';
 import { EmailTemplatesPage } from './pages/email/EmailTemplatesPage';
 import { EmailCampaignsPage } from './pages/email/EmailCampaignsPage';
@@ -65,6 +66,7 @@ function App() {
                 <Route path="/weddings/:weddingId/events/:eventId/edit" element={<EditEventPage />} />
                 <Route path="/weddings/:weddingId/tasks" element={<TasksPage />} />
                 <Route path="/weddings/:weddingId/guests" element={<GuestListPage />} />
+                <Route path="/weddings/:weddingId/menu" element={<MenuPage />} />
                 <Route path="/weddings/:weddingId/vendors" element={<VendorsPage />} />
                 <Route path="/weddings/:weddingId/vendors/:vendorId" element={<VendorDetailPage />} />
                 <Route path="/weddings/:weddingId/budget" element={<BudgetPage />} />

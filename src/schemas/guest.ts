@@ -153,6 +153,7 @@ export const eventsSchema = z.object({
 /**
  * Complete guest form validation schema
  * Combines all tab schemas for full form validation
+ * @feature 024-guest-menu-management - Added seating and plus one meal fields
  */
 export const guestFormSchema = z.object({
   // Basic Info
@@ -170,15 +171,24 @@ export const guestFormSchema = z.object({
   plus_one_name: z.string().max(255),
   plus_one_confirmed: z.boolean(),
 
+  // Seating
+  table_number: z.string().nullable(),
+  table_position: z.number().min(1).max(10).nullable(),
+
   // Dietary
   dietary_restrictions: z.string().max(500),
   allergies: z.string().max(500),
   dietary_notes: z.string().max(1000),
 
-  // Meal
+  // Meal - Primary Guest
   starter_choice: z.number().min(1).max(5).nullable(),
   main_choice: z.number().min(1).max(5).nullable(),
   dessert_choice: z.number().min(1).max(5).nullable(),
+
+  // Meal - Plus One
+  plus_one_starter_choice: z.number().min(1).max(5).nullable(),
+  plus_one_main_choice: z.number().min(1).max(5).nullable(),
+  plus_one_dessert_choice: z.number().min(1).max(5).nullable(),
 
   // Events
   event_attendance: z.array(eventAttendanceItemSchema),
@@ -256,6 +266,9 @@ export const guestEditSchema = z.object({
   starter_choice: z.number().min(1).max(5).nullable(),
   main_choice: z.number().min(1).max(5).nullable(),
   dessert_choice: z.number().min(1).max(5).nullable(),
+
+  // Events & Shuttle Tab
+  event_attendance: z.array(eventAttendanceItemSchema),
 }).refine(
   (data) => !data.has_plus_one || (data.plus_one_name && data.plus_one_name.trim().length > 0),
   {

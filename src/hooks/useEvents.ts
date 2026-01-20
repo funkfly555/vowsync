@@ -95,6 +95,11 @@ export function useCreateEvent() {
           event_end_time: data.event_end_time,
           event_location: data.event_location,
           notes: data.notes || null,
+          // Shuttle fields
+          shuttle_from_location: data.shuttle_from_location || null,
+          shuttle_departure_to_event: data.shuttle_departure_to_event || null,
+          shuttle_departure_from_event: data.shuttle_departure_from_event || null,
+          shuttle_notes: data.shuttle_notes || null,
         })
         .select()
         .single();
@@ -149,6 +154,11 @@ export function useUpdateEvent() {
           event_end_time: variables.data.event_end_time,
           event_location: variables.data.event_location,
           notes: variables.data.notes || null,
+          // Shuttle fields
+          shuttle_from_location: variables.data.shuttle_from_location || null,
+          shuttle_departure_to_event: variables.data.shuttle_departure_to_event || null,
+          shuttle_departure_from_event: variables.data.shuttle_departure_from_event || null,
+          shuttle_notes: variables.data.shuttle_notes || null,
         })
         .eq('id', variables.eventId)
         .select()

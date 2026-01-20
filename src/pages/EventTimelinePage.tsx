@@ -48,13 +48,13 @@ export function EventTimelinePage() {
               <h1 className="text-lg sm:text-2xl font-bold truncate">
                 {wedding.bride_name} & {wedding.groom_name}
               </h1>
-              <p className="text-sm sm:text-base text-muted-foreground">Events Timeline</p>
+              <p className="text-sm sm:text-base text-muted-foreground">Events & Shuttles Timeline</p>
             </div>
           </div>
           <Button asChild size="sm" className="flex-shrink-0 sm:size-default">
             <Link to={`/weddings/${weddingId}/events/new`}>
               <Plus className="h-4 w-4 sm:mr-2" />
-              <span className="hidden sm:inline">Add Event</span>
+              <span className="hidden sm:inline">Add Event & Shuttle</span>
             </Link>
           </Button>
         </div>

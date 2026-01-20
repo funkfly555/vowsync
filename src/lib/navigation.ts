@@ -19,6 +19,14 @@ export const mainNavItems: NavigationItem[] = [
     isPlaceholder: false,
   },
   {
+    id: 'menu',
+    label: 'Menu',
+    icon: 'UtensilsCrossed',
+    path: '/weddings/:id/menu',
+    isPlaceholder: false,
+    // @feature 024-guest-menu-management
+  },
+  {
     id: 'emails',
     label: 'Emails',
     icon: 'Mail',
@@ -34,7 +42,7 @@ export const mainNavItems: NavigationItem[] = [
   },
   {
     id: 'events',
-    label: 'Events',
+    label: 'Events & Shuttles',
     icon: 'Calendar',
     path: '/weddings/:id/events',
     isPlaceholder: false,

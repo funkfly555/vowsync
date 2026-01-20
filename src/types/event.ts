@@ -22,6 +22,11 @@ export interface Event {
   expected_guests_children: number;
   duration_hours: number | null;
   notes: string | null;
+  // Shuttle configuration fields
+  shuttle_from_location: string | null;
+  shuttle_departure_to_event: string | null; // TIME stored as "HH:mm:ss" or "HH:mm"
+  shuttle_departure_from_event: string | null; // TIME stored as "HH:mm:ss" or "HH:mm"
+  shuttle_notes: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -35,6 +40,11 @@ export interface EventFormData {
   event_end_time: string; // HH:mm
   event_location: string;
   notes?: string;
+  // Shuttle configuration
+  shuttle_from_location?: string;
+  shuttle_departure_to_event?: string; // HH:mm
+  shuttle_departure_from_event?: string; // HH:mm
+  shuttle_notes?: string;
 }
 
 export interface EventWithWedding extends Event {

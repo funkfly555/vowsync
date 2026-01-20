@@ -10,7 +10,8 @@ import { UseFormReturn } from 'react-hook-form';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-import { Loader2 } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Loader2, AlertCircle } from 'lucide-react';
 import { GuestFormData, EventAttendanceFormData } from '@/types/guest';
 import { useWeddingEventsForAttendance } from '@/hooks/useGuests';
 
@@ -29,6 +30,9 @@ interface EventWithDetails {
 export function GuestEventsTab({ form, weddingId }: GuestEventsTabProps) {
   const { setValue, watch } = form;
   const eventAttendance = watch('event_attendance');
+  const invitationStatus = watch('invitation_status');
+
+  const isDeclined = invitationStatus === 'declined';
 
   const { data: events, isLoading } = useWeddingEventsForAttendance(weddingId);
 
@@ -120,6 +124,15 @@ export function GuestEventsTab({ form, weddingId }: GuestEventsTabProps) {
 
   return (
     <div className="space-y-4">
+      {isDeclined && (
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            This guest has declined the invitation. Event attendance selections are disabled.
+          </AlertDescription>
+        </Alert>
+      )}
+
       <div className="text-sm text-muted-foreground mb-4">
         Select which events this guest will attend and provide shuttle
         information if needed.
@@ -132,20 +145,21 @@ export function GuestEventsTab({ form, weddingId }: GuestEventsTabProps) {
         return (
           <div
             key={event.id}
-            className="border rounded-lg p-4 space-y-3"
+            className={`border rounded-lg p-4 space-y-3 ${isDeclined ? 'opacity-50' : ''}`}
           >
             {/* Event Name & Attendance Checkbox */}
             <div className="flex items-center space-x-3">
               <Checkbox
                 id={`attending-${event.id}`}
                 checked={isAttending}
+                disabled={isDeclined}
                 onCheckedChange={(checked) =>
                   updateAttendance(event.id, 'attending', checked === true)
                 }
               />
               <Label
                 htmlFor={`attending-${event.id}`}
-                className="cursor-pointer font-medium"
+                className={`font-medium ${isDeclined ? '' : 'cursor-pointer'}`}
               >
                 {event.event_name}
               </Label>
@@ -175,6 +189,7 @@ export function GuestEventsTab({ form, weddingId }: GuestEventsTabProps) {
                       }
                       placeholder="e.g., Bus A, Car 1, White Van"
                       className="h-9"
+                      disabled={isDeclined}
                     />
                   </div>
 
@@ -198,6 +213,7 @@ export function GuestEventsTab({ form, weddingId }: GuestEventsTabProps) {
                       }
                       placeholder="e.g., Bus A, Car 1, White Van"
                       className="h-9"
+                      disabled={isDeclined}
                     />
                   </div>
                 </div>

@@ -35,9 +35,14 @@ export interface Guest {
   dietary_restrictions: string | null;
   allergies: string | null;
   dietary_notes: string | null;
+  // Primary guest meal choices
   starter_choice: number | null;
   main_choice: number | null;
   dessert_choice: number | null;
+  // Plus one meal choices (024-guest-menu-management)
+  plus_one_starter_choice: number | null;
+  plus_one_main_choice: number | null;
+  plus_one_dessert_choice: number | null;
   email: string | null;
   phone: string | null;
   email_valid: boolean;
@@ -203,15 +208,24 @@ export interface GuestFormData {
   plus_one_name: string;
   plus_one_confirmed: boolean;
 
+  // Seating
+  table_number: string | null;
+  table_position: number | null;
+
   // Dietary
   dietary_restrictions: string;
   allergies: string;
   dietary_notes: string;
 
-  // Meal
+  // Meal - Primary Guest
   starter_choice: number | null;
   main_choice: number | null;
   dessert_choice: number | null;
+
+  // Meal - Plus One
+  plus_one_starter_choice: number | null;
+  plus_one_main_choice: number | null;
+  plus_one_dessert_choice: number | null;
 
   // Events
   event_attendance: EventAttendanceFormData[];
@@ -232,12 +246,17 @@ export const DEFAULT_GUEST_FORM_DATA: GuestFormData = {
   has_plus_one: false,
   plus_one_name: '',
   plus_one_confirmed: false,
+  table_number: null,
+  table_position: null,
   dietary_restrictions: '',
   allergies: '',
   dietary_notes: '',
   starter_choice: null,
   main_choice: null,
   dessert_choice: null,
+  plus_one_starter_choice: null,
+  plus_one_main_choice: null,
+  plus_one_dessert_choice: null,
   event_attendance: [],
 };
 
@@ -356,9 +375,10 @@ export type ExpandedCardsState = Set<string>;
 export type SelectedGuestsState = Set<string>;
 
 /**
- * Tab names for the 5-tab interface in expanded cards
+ * Tab names for the 6-tab interface in expanded cards
+ * (Events & Shuttles merged into single tab)
  */
-export type TabName = 'basic' | 'rsvp' | 'seating' | 'dietary' | 'meals';
+export type TabName = 'basic' | 'rsvp' | 'seating' | 'dietary' | 'meals' | 'events-shuttles';
 
 /**
  * Track active tab per expanded card
@@ -467,6 +487,9 @@ export interface GuestEditFormData {
   starter_choice: number | null;
   main_choice: number | null;
   dessert_choice: number | null;
+
+  // Events & Shuttle Tab
+  event_attendance: EventAttendanceFormData[];
 }
 
 /**
@@ -493,4 +516,5 @@ export const DEFAULT_GUEST_EDIT_FORM_DATA: GuestEditFormData = {
   starter_choice: null,
   main_choice: null,
   dessert_choice: null,
+  event_attendance: [],
 };

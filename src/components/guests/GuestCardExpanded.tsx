@@ -1,6 +1,6 @@
 /**
  * GuestCardExpanded - Expanded view wrapper with CSS transition animation
- * Contains the 5-tab interface with form content
+ * Contains the 6-tab interface with form content and auto-save status
  * @feature 021-guest-page-redesign
  * @task T010, T015, T025
  */
@@ -8,25 +8,21 @@
 import { useState, ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import { GuestTabs } from './GuestTabs';
-import { Button } from '@/components/ui/button';
-import { Loader2, Save } from 'lucide-react';
+import { Loader2, Check, AlertCircle, Cloud } from 'lucide-react';
 import { TabName, GuestCardDisplayItem } from '@/types/guest';
+import type { SaveStatus } from './GuestCard';
 
 interface GuestCardExpandedProps {
   guest: GuestCardDisplayItem;
   isExpanded: boolean;
-  isDirty: boolean;
-  isSaving: boolean;
-  onSave: () => void;
+  saveStatus: SaveStatus;
   children: (activeTab: TabName) => ReactNode;
 }
 
 export function GuestCardExpanded({
   guest: _guest,
   isExpanded,
-  isDirty,
-  isSaving,
-  onSave,
+  saveStatus,
   children,
 }: GuestCardExpandedProps) {
   const [activeTab, setActiveTab] = useState<TabName>('basic');
@@ -47,32 +43,48 @@ export function GuestCardExpanded({
           {children(activeTab)}
         </div>
 
-        {/* Save button footer */}
-        <div className="flex justify-end gap-2 px-4 py-3 bg-gray-50 border-t border-gray-200">
-          <Button
-            onClick={onSave}
-            disabled={!isDirty || isSaving}
-            className={cn(
-              'min-w-[100px]',
-              isDirty
-                ? 'bg-[#D4A5A5] hover:bg-[#c99595]'
-                : 'bg-gray-300 cursor-not-allowed'
-            )}
-          >
-            {isSaving ? (
-              <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Saving...
-              </>
-            ) : (
-              <>
-                <Save className="h-4 w-4 mr-2" />
-                {isDirty ? 'Save Changes' : 'Saved'}
-              </>
-            )}
-          </Button>
+        {/* Auto-save status footer */}
+        <div className="flex justify-end items-center gap-2 px-4 py-2 bg-gray-50 border-t border-gray-200">
+          <AutoSaveIndicator status={saveStatus} />
         </div>
       </div>
     </div>
   );
+}
+
+/**
+ * Auto-save status indicator component
+ */
+function AutoSaveIndicator({ status }: { status: SaveStatus }) {
+  switch (status) {
+    case 'saving':
+      return (
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Loader2 className="h-4 w-4 animate-spin text-[#D4A5A5]" />
+          <span>Saving...</span>
+        </div>
+      );
+    case 'saved':
+      return (
+        <div className="flex items-center gap-2 text-sm text-green-600">
+          <Check className="h-4 w-4" />
+          <span>All changes saved</span>
+        </div>
+      );
+    case 'error':
+      return (
+        <div className="flex items-center gap-2 text-sm text-red-600">
+          <AlertCircle className="h-4 w-4" />
+          <span>Failed to save</span>
+        </div>
+      );
+    case 'idle':
+    default:
+      return (
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Cloud className="h-4 w-4" />
+          <span>Auto-save enabled</span>
+        </div>
+      );
+  }
 }

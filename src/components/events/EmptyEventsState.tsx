@@ -12,12 +12,12 @@ export function EmptyEventsState({ weddingId }: EmptyEventsStateProps) {
       <div className="rounded-full bg-muted p-4 mb-4">
         <Calendar className="h-8 w-8 text-muted-foreground" />
       </div>
-      <h3 className="text-lg font-semibold mb-2">No events yet</h3>
+      <h3 className="text-lg font-semibold mb-2">No events & shuttles yet</h3>
       <p className="text-muted-foreground mb-6 max-w-sm">
-        Create your first event to start building the wedding day schedule.
+        Create your first event to start building the wedding day schedule and shuttle configuration.
       </p>
       <Button asChild>
-        <Link to={`/weddings/${weddingId}/events/new`}>Add First Event</Link>
+        <Link to={`/weddings/${weddingId}/events/new`}>Add First Event & Shuttle</Link>
       </Button>
     </div>
   );

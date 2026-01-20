@@ -5,16 +5,19 @@
  * @task T007, T014, T017, T024-T028
  */
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { GuestCardCollapsed } from './GuestCardCollapsed';
 import { GuestCardExpanded } from './GuestCardExpanded';
-import { BasicInfoTab, RsvpTab, SeatingTab, DietaryTab, MealsTab } from './tabs';
-import { GuestCardDisplayItem, GuestEditFormData, TabName } from '@/types/guest';
+import { BasicInfoTab, RsvpTab, SeatingTab, DietaryTab, MealsTab, EventsShuttlesTab } from './tabs';
+import { GuestCardDisplayItem, GuestEditFormData, TabName, EventAttendanceFormData } from '@/types/guest';
 import { guestEditSchema } from '@/schemas/guest';
 import { useGuestMutations } from '@/hooks/useGuestMutations';
 import { toast } from 'sonner';
+
+// Auto-save status type
+export type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
 interface TabContentProps {
   tab: TabName;
@@ -36,6 +39,8 @@ function TabContent({ tab, guest }: TabContentProps) {
       return <DietaryTab />;
     case 'meals':
       return <MealsTab />;
+    case 'events-shuttles':
+      return <EventsShuttlesTab weddingId={guest.wedding_id} />;
     default:
       return null;
   }
@@ -56,8 +61,10 @@ export function GuestCard({
   onToggleExpand,
   onToggleSelect,
 }: GuestCardProps) {
-  const [isSaving, setIsSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
   const { updateGuest } = useGuestMutations(guest.wedding_id);
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isSavingRef = useRef(false);
 
   // Initialize form with guest data
   const formMethods = useForm<GuestEditFormData>({
@@ -65,7 +72,64 @@ export function GuestCard({
     defaultValues: guestToFormData(guest),
   });
 
-  const { formState: { isDirty }, reset, handleSubmit } = formMethods;
+  const { reset, getValues } = formMethods;
+
+  // Auto-save function
+  const performSave = useCallback(async () => {
+    if (isSavingRef.current) return;
+
+    isSavingRef.current = true;
+    setSaveStatus('saving');
+
+    try {
+      const currentValues = getValues();
+      await updateGuest.mutateAsync({
+        guest_id: guest.id,
+        data: formDataToGuestUpdate(currentValues),
+      });
+      setSaveStatus('saved');
+      reset(currentValues); // Reset dirty state with current values
+
+      // Reset status after 2 seconds
+      setTimeout(() => setSaveStatus('idle'), 2000);
+    } catch (error) {
+      console.error('Error auto-saving guest:', error);
+      setSaveStatus('error');
+      toast.error('Failed to save changes. Please try again.');
+
+      // Reset error status after 3 seconds
+      setTimeout(() => setSaveStatus('idle'), 3000);
+    } finally {
+      isSavingRef.current = false;
+    }
+  }, [guest.id, updateGuest, reset, getValues]);
+
+  // Subscribe to form changes for auto-save
+  useEffect(() => {
+    if (!isExpanded) return;
+
+    const subscription = formMethods.watch(() => {
+      // Only trigger save if form is dirty
+      if (!formMethods.formState.isDirty) return;
+
+      // Clear existing timer
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+
+      // Debounce the save operation (1000ms delay)
+      debounceTimerRef.current = setTimeout(() => {
+        performSave();
+      }, 1000);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [isExpanded, formMethods, performSave]);
 
   // Handle card expand toggle
   const handleToggleExpand = useCallback(() => {
@@ -76,24 +140,6 @@ export function GuestCard({
   const handleToggleSelect = useCallback(() => {
     onToggleSelect(guest.id);
   }, [guest.id, onToggleSelect]);
-
-  // Handle form save
-  const handleSave = handleSubmit(async (data) => {
-    setIsSaving(true);
-    try {
-      await updateGuest.mutateAsync({
-        guest_id: guest.id,
-        data: formDataToGuestUpdate(data),
-      });
-      toast.success(`${data.name} has been updated.`);
-      reset(data); // Reset form with new data to clear dirty state
-    } catch (error) {
-      console.error('Error updating guest:', error);
-      toast.error('Failed to save changes. Please try again.');
-    } finally {
-      setIsSaving(false);
-    }
-  });
 
   // Handle keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -121,9 +167,7 @@ export function GuestCard({
         <GuestCardExpanded
           guest={guest}
           isExpanded={isExpanded}
-          isDirty={isDirty}
-          isSaving={isSaving}
-          onSave={handleSave}
+          saveStatus={saveStatus}
         >
           {(activeTab) => <TabContent tab={activeTab} guest={guest} />}
         </GuestCardExpanded>
@@ -136,6 +180,16 @@ export function GuestCard({
  * Convert Guest entity to form data format
  */
 function guestToFormData(guest: GuestCardDisplayItem): GuestEditFormData {
+  // Transform eventAttendance from GuestCardDisplayItem
+  const eventAttendanceData: EventAttendanceFormData[] =
+    guest.eventAttendance?.map((ea) => ({
+      event_id: ea.event_id,
+      attending: ea.attending,
+      shuttle_to_event: ea.shuttle_to_event ?? null,
+      shuttle_from_event: ea.shuttle_from_event ?? null,
+      notes: ea.notes ?? null,
+    })) || [];
+
   return {
     name: guest.name,
     email: guest.email || '',
@@ -157,12 +211,13 @@ function guestToFormData(guest: GuestCardDisplayItem): GuestEditFormData {
     starter_choice: guest.starter_choice,
     main_choice: guest.main_choice,
     dessert_choice: guest.dessert_choice,
+    event_attendance: eventAttendanceData,
   };
 }
 
 /**
  * Convert form data to guest update request format
- * Includes all fields from the 5-tab interface
+ * Includes all fields from the 6-tab interface
  */
 function formDataToGuestUpdate(data: GuestEditFormData): Record<string, unknown> {
   return {
@@ -192,5 +247,7 @@ function formDataToGuestUpdate(data: GuestEditFormData): Record<string, unknown>
     starter_choice: data.starter_choice,
     main_choice: data.main_choice,
     dessert_choice: data.dessert_choice,
+    // Events & Shuttle (event_attendance)
+    event_attendance: data.event_attendance,
   };
 }

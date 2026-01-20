@@ -241,7 +241,8 @@ export function useGuest(guestId: string | undefined): UseGuestReturn {
 
 /**
  * Fetch all events for a wedding for attendance tracking
- * Used for Events tab in GuestModal
+ * Used for Events & Shuttles tab in GuestModal
+ * Includes shuttle configuration details
  */
 export function useWeddingEventsForAttendance(weddingId: string) {
   return useQuery({
@@ -249,7 +250,18 @@ export function useWeddingEventsForAttendance(weddingId: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('events')
-        .select('id, event_name, event_order, event_date')
+        .select(`
+          id,
+          event_name,
+          event_order,
+          event_date,
+          event_start_time,
+          event_end_time,
+          event_location,
+          shuttle_from_location,
+          shuttle_departure_to_event,
+          shuttle_departure_from_event
+        `)
         .eq('wedding_id', weddingId)
         .order('event_order', { ascending: true });
 

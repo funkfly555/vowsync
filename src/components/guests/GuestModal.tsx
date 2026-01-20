@@ -1,16 +1,25 @@
 /**
- * GuestModal - Add/Edit Guest Modal with 5-Tab Interface
- * @feature 007-guest-crud-attendance
+ * GuestModal - Add/Edit Guest Modal with 6-Tab Interface
+ * @feature 024-guest-menu-management
  *
- * Container component wrapping all 5 tabs with React Hook Form
- * Tabs: Basic Info, RSVP, Dietary, Meal, Events
+ * Container component wrapping all 6 tabs with React Hook Form
+ * Tabs: Basic Info, RSVP, Seating, Dietary, Meals, Events & Shuttles
  */
 
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
-import { Loader2, AlertCircle } from 'lucide-react';
+import {
+  Loader2,
+  AlertCircle,
+  User,
+  Mail,
+  Armchair,
+  Utensils,
+  UtensilsCrossed,
+  Calendar,
+} from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -31,9 +40,10 @@ import {
 import { guestFormSchema } from '@/schemas/guest';
 import { GuestBasicInfoTab } from './GuestBasicInfoTab';
 import { GuestRsvpTab } from './GuestRsvpTab';
+import { GuestSeatingTab } from './GuestSeatingTab';
 import { GuestDietaryTab } from './GuestDietaryTab';
 import { GuestMealTab } from './GuestMealTab';
-import { GuestEventsTab } from './GuestEventsTab';
+import { GuestEventsShuttlesTab } from './GuestEventsShuttlesTab';
 import { cn } from '@/lib/utils';
 
 interface GuestModalProps {
@@ -44,14 +54,15 @@ interface GuestModalProps {
   onSuccess?: () => void;
 }
 
-type TabId = 'basic' | 'rsvp' | 'dietary' | 'meal' | 'events';
+type TabId = 'basic' | 'rsvp' | 'seating' | 'dietary' | 'meals' | 'events-shuttles';
 
-const TABS: { id: TabId; label: string }[] = [
-  { id: 'basic', label: 'Basic Info' },
-  { id: 'rsvp', label: 'RSVP' },
-  { id: 'dietary', label: 'Dietary' },
-  { id: 'meal', label: 'Meal' },
-  { id: 'events', label: 'Events' },
+const TABS: { id: TabId; label: string; icon: typeof User }[] = [
+  { id: 'basic', label: 'Basic Info', icon: User },
+  { id: 'rsvp', label: 'RSVP', icon: Mail },
+  { id: 'seating', label: 'Seating', icon: Armchair },
+  { id: 'dietary', label: 'Dietary', icon: Utensils },
+  { id: 'meals', label: 'Meals', icon: UtensilsCrossed },
+  { id: 'events-shuttles', label: 'Events & Shuttles', icon: Calendar },
 ];
 
 export function GuestModal({
@@ -112,12 +123,17 @@ export function GuestModal({
         has_plus_one: guest.has_plus_one,
         plus_one_name: guest.plus_one_name || '',
         plus_one_confirmed: guest.plus_one_confirmed,
+        table_number: guest.table_number,
+        table_position: guest.table_position,
         dietary_restrictions: guest.dietary_restrictions || '',
         allergies: guest.allergies || '',
         dietary_notes: guest.dietary_notes || '',
         starter_choice: guest.starter_choice,
         main_choice: guest.main_choice,
         dessert_choice: guest.dessert_choice,
+        plus_one_starter_choice: guest.plus_one_starter_choice ?? null,
+        plus_one_main_choice: guest.plus_one_main_choice ?? null,
+        plus_one_dessert_choice: guest.plus_one_dessert_choice ?? null,
         event_attendance: eventAttendance,
       });
     }
@@ -143,14 +159,15 @@ export function GuestModal({
     if (errors.rsvp_deadline || errors.rsvp_received_date || errors.rsvp_method || errors.has_plus_one || errors.plus_one_name || errors.plus_one_confirmed) {
       tabsWithErrors.add('rsvp');
     }
+    // Seating tab errors - handled in form state
     if (errors.dietary_restrictions || errors.allergies || errors.dietary_notes) {
       tabsWithErrors.add('dietary');
     }
     if (errors.starter_choice || errors.main_choice || errors.dessert_choice) {
-      tabsWithErrors.add('meal');
+      tabsWithErrors.add('meals');
     }
     if (errors.event_attendance) {
-      tabsWithErrors.add('events');
+      tabsWithErrors.add('events-shuttles');
     }
 
     return tabsWithErrors;
@@ -185,8 +202,9 @@ export function GuestModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-full h-full max-w-full max-h-full md:max-w-2xl md:max-h-[85vh] md:h-auto overflow-y-auto rounded-none md:rounded-lg">
-        <DialogHeader>
+      <DialogContent className="w-full max-w-full md:max-w-3xl h-[95vh] md:h-auto md:max-h-[85vh] flex flex-col p-0 gap-0 rounded-none md:rounded-lg overflow-hidden">
+        {/* Fixed Header */}
+        <DialogHeader className="px-6 pt-6 pb-4 border-b flex-shrink-0">
           <DialogTitle>
             {isEditMode ? 'Edit Guest' : 'Add New Guest'}
           </DialogTitle>
@@ -198,35 +216,46 @@ export function GuestModal({
         </DialogHeader>
 
         {isEditMode && isLoadingGuest ? (
-          <div className="flex items-center justify-center py-12">
+          <div className="flex items-center justify-center py-12 flex-1">
             <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
           </div>
         ) : (
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col flex-1 min-h-0"
+          >
             <Tabs
               value={activeTab}
               onValueChange={(value) => setActiveTab(value as TabId)}
-              className="w-full"
+              className="flex flex-col flex-1 min-h-0"
             >
-              <TabsList className="w-full grid grid-cols-5 mb-4">
-                {TABS.map((tab) => (
-                  <TabsTrigger
-                    key={tab.id}
-                    value={tab.id}
-                    className={cn(
-                      'relative',
-                      tabsWithErrors.has(tab.id) && 'text-red-500'
-                    )}
-                  >
-                    {tab.label}
-                    {tabsWithErrors.has(tab.id) && (
-                      <AlertCircle className="absolute -top-1 -right-1 h-3 w-3 text-red-500" />
-                    )}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
+              {/* Fixed Tabs - Always Visible */}
+              <div className="px-6 py-2 border-b bg-background flex-shrink-0">
+                <TabsList className="w-full h-auto flex overflow-x-auto sm:grid sm:grid-cols-6 gap-1">
+                  {TABS.map((tab) => {
+                    const Icon = tab.icon;
+                    return (
+                      <TabsTrigger
+                        key={tab.id}
+                        value={tab.id}
+                        className={cn(
+                          'relative flex flex-col items-center justify-center gap-0.5 py-1.5 px-1 sm:px-2 text-xs h-auto min-h-[3rem]',
+                          tabsWithErrors.has(tab.id) && 'text-red-500'
+                        )}
+                      >
+                        <Icon className="h-4 w-4 flex-shrink-0" />
+                        <span className="hidden sm:inline text-[10px] leading-tight">{tab.label}</span>
+                        {tabsWithErrors.has(tab.id) && (
+                          <AlertCircle className="absolute -top-1 -right-1 h-3 w-3 text-red-500" />
+                        )}
+                      </TabsTrigger>
+                    );
+                  })}
+                </TabsList>
+              </div>
 
-              <div className="min-h-[300px]">
+              {/* Scrollable Content Area */}
+              <div className="flex-1 min-h-0 overflow-y-auto px-6 py-4">
                 <TabsContent value="basic" className="mt-0">
                   <GuestBasicInfoTab form={form} />
                 </TabsContent>
@@ -235,21 +264,26 @@ export function GuestModal({
                   <GuestRsvpTab form={form} />
                 </TabsContent>
 
+                <TabsContent value="seating" className="mt-0">
+                  <GuestSeatingTab form={form} />
+                </TabsContent>
+
                 <TabsContent value="dietary" className="mt-0">
                   <GuestDietaryTab form={form} />
                 </TabsContent>
 
-                <TabsContent value="meal" className="mt-0">
-                  <GuestMealTab form={form} />
+                <TabsContent value="meals" className="mt-0">
+                  <GuestMealTab form={form} weddingId={weddingId} />
                 </TabsContent>
 
-                <TabsContent value="events" className="mt-0">
-                  <GuestEventsTab form={form} weddingId={weddingId} />
+                <TabsContent value="events-shuttles" className="mt-0">
+                  <GuestEventsShuttlesTab form={form} weddingId={weddingId} />
                 </TabsContent>
               </div>
             </Tabs>
 
-            <DialogFooter className="mt-6">
+            {/* Fixed Footer */}
+            <DialogFooter className="px-6 py-4 border-t flex-shrink-0">
               <Button
                 type="button"
                 variant="outline"

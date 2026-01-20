@@ -23,7 +23,7 @@ import { logActivity, activityDescriptions } from '@/lib/activityLog';
 function transformFormDataForInsert(
   weddingId: string,
   data: GuestFormData
-): Omit<Guest, 'id' | 'created_at' | 'updated_at' | 'email_valid' | 'table_position' | 'rsvp_notes' | 'last_reminder_sent_date'> {
+): Omit<Guest, 'id' | 'created_at' | 'updated_at' | 'email_valid' | 'rsvp_notes' | 'last_reminder_sent_date'> {
   return {
     wedding_id: weddingId,
     name: data.name,
@@ -37,13 +37,17 @@ function transformFormDataForInsert(
     has_plus_one: data.has_plus_one,
     plus_one_name: data.plus_one_name || null,
     plus_one_confirmed: data.plus_one_confirmed,
-    table_number: null, // Table assignment is separate
+    table_number: data.table_number,
+    table_position: data.table_position,
     dietary_restrictions: data.dietary_restrictions || null,
     allergies: data.allergies || null,
     dietary_notes: data.dietary_notes || null,
     starter_choice: data.starter_choice,
     main_choice: data.main_choice,
     dessert_choice: data.dessert_choice,
+    plus_one_starter_choice: data.plus_one_starter_choice,
+    plus_one_main_choice: data.plus_one_main_choice,
+    plus_one_dessert_choice: data.plus_one_dessert_choice,
     notes: null,
   };
 }
@@ -77,6 +81,13 @@ function transformFormDataForUpdate(
   if (data.starter_choice !== undefined) result.starter_choice = data.starter_choice;
   if (data.main_choice !== undefined) result.main_choice = data.main_choice;
   if (data.dessert_choice !== undefined) result.dessert_choice = data.dessert_choice;
+  // Plus one meal choices (024-guest-menu-management)
+  if (data.plus_one_starter_choice !== undefined) result.plus_one_starter_choice = data.plus_one_starter_choice;
+  if (data.plus_one_main_choice !== undefined) result.plus_one_main_choice = data.plus_one_main_choice;
+  if (data.plus_one_dessert_choice !== undefined) result.plus_one_dessert_choice = data.plus_one_dessert_choice;
+  // Seating fields (024-guest-menu-management)
+  if (data.table_number !== undefined) result.table_number = data.table_number;
+  if (data.table_position !== undefined) result.table_position = data.table_position;
 
   return result;
 }
@@ -146,7 +157,11 @@ async function updateGuest(request: UpdateGuestRequest): Promise<Guest> {
   // Check if data is already transformed (has direct DB fields like table_number)
   // vs needs transformation (has event_attendance array typical of GuestFormData)
   const isPreTransformed = 'table_number' in data || 'table_position' in data || 'rsvp_notes' in data;
-  const guestData = isPreTransformed ? (data as Record<string, unknown>) : transformFormDataForUpdate(data as Partial<GuestFormData>);
+
+  // Extract event_attendance before building guestData (it goes to a different table)
+  const { event_attendance, ...restData } = data as Record<string, unknown>;
+
+  const guestData = isPreTransformed ? restData : transformFormDataForUpdate(data as Partial<GuestFormData>);
 
   if (Object.keys(guestData).length > 0) {
     const { error: guestError } = await supabase
@@ -160,10 +175,9 @@ async function updateGuest(request: UpdateGuestRequest): Promise<Guest> {
     }
   }
 
-  // Update event attendance using UPSERT (only for GuestFormData with event_attendance)
-  const formData = data as Partial<GuestFormData>;
-  if (formData.event_attendance && Array.isArray(formData.event_attendance)) {
-    const attendanceRecords = formData.event_attendance.map((ea) => ({
+  // Update event attendance using UPSERT
+  if (event_attendance && Array.isArray(event_attendance)) {
+    const attendanceRecords = (event_attendance as Array<{ event_id: string; attending: boolean; shuttle_to_event?: string | null; shuttle_from_event?: string | null }>).map((ea) => ({
       guest_id: guest_id,
       event_id: ea.event_id,
       attending: ea.attending,
