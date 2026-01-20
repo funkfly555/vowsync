@@ -55,7 +55,8 @@ interface VendorCardProps {
 export function VendorCard({ vendor, weddingId, onEdit, onDelete }: VendorCardProps) {
   const navigate = useNavigate();
   const Icon = VENDOR_ICONS[vendor.vendor_type] || MoreHorizontal;
-  const typeConfig = VENDOR_TYPE_CONFIG[vendor.vendor_type];
+  // Defensive null check - handle undefined vendor_type gracefully
+  const typeConfig = VENDOR_TYPE_CONFIG[vendor.vendor_type] || { label: vendor.vendor_type || 'Unknown', color: 'gray' };
 
   const handleCardClick = () => {
     navigate(`/weddings/${weddingId}/vendors/${vendor.id}`);

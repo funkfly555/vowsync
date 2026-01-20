@@ -42,8 +42,8 @@ function EventCard({ event }: { event: EventData }) {
   return (
     <div
       className={cn(
-        // Minimum width 280px (T042)
-        'min-w-[280px] max-w-[320px] rounded-lg p-4',
+        // T010-T011: Reduced widths to prevent horizontal page scroll (023-dashboard-bug-fixes)
+        'min-w-[200px] max-w-[260px] rounded-lg p-4',
         // Scroll snap alignment (T041)
         'snap-start',
         // Flex-shrink to prevent compression
@@ -152,7 +152,8 @@ export function EventTimelineCard({
       {/* Horizontal scroll container (T041) */}
       <div
         className={cn(
-          'flex gap-4',
+          // T012: Reduced gap for better fit on desktop viewports (023-dashboard-bug-fixes)
+          'flex gap-3',
           // Horizontal scroll with snap
           'overflow-x-auto',
           'scroll-snap-type-x mandatory',

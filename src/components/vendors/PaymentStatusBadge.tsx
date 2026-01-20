@@ -85,7 +85,8 @@ export function PaymentStatusBadge({ status, className }: PaymentStatusBadgeProp
     Overdue: { label: 'Overdue', color: 'text-red-700', bgColor: 'bg-red-100' },
   };
 
-  const statusConfig = config[status.label] || config['Pending'];
+  // T009: Defensive null check for status prop
+  const statusConfig = config[status?.label] || config['Pending'];
 
   return (
     <Badge

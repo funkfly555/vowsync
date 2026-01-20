@@ -35,6 +35,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-13
 - Supabase PostgreSQL (existing tables: guests, vendors, vendor_payment_schedule, pre_post_wedding_tasks, users) (020-dashboard-settings-fix)
 - TypeScript 5.x with React 18+ (strict mode enabled) + React Router v6, TanStack Query v5, Shadcn/ui, Tailwind CSS v3, date-fns, Lucide React (022-dashboard-visual-metrics)
 - Supabase PostgreSQL (existing tables: weddings, events, guests, vendor_invoices, wedding_items, bar_orders) (022-dashboard-visual-metrics)
+- TypeScript 5.x with React 18+ (strict mode enabled) + React Router v6, TanStack Query v5, Shadcn/ui, Tailwind CSS v3, Recharts, date-fns, Lucide React (023-dashboard-bug-fixes)
+- Supabase PostgreSQL (no schema changes required) (023-dashboard-bug-fixes)
 
 - SQL (PostgreSQL 15+ via Supabase) + Supabase (PostgreSQL, Auth, Storage) (001-database-schema-foundation)
 
@@ -54,9 +56,9 @@ tests/
 SQL (PostgreSQL 15+ via Supabase): Follow standard conventions
 
 ## Recent Changes
+- 023-dashboard-bug-fixes: Added TypeScript 5.x with React 18+ (strict mode enabled) + React Router v6, TanStack Query v5, Shadcn/ui, Tailwind CSS v3, Recharts, date-fns, Lucide React
 - 022-dashboard-visual-metrics: Added TypeScript 5.x with React 18+ (strict mode enabled) + React Router v6, TanStack Query v5, Shadcn/ui, Tailwind CSS v3, date-fns, Lucide React
 - 021-guest-page-redesign: Added TypeScript 5.x with React 18+ (strict mode enabled) + React Router v6, TanStack Query v5, React Hook Form, Zod, Shadcn/ui, Tailwind CSS v3, date-fns, Lucide React
-- 020-dashboard-settings-fix: Added TypeScript 5.x with React 18+ (strict mode enabled) + React Router v6, TanStack Query v5, React Hook Form, Zod, Shadcn/ui, Tailwind CSS v3, date-fns, Lucide React
 
 
 <!-- MANUAL ADDITIONS START -->

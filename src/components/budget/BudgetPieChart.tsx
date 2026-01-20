@@ -44,6 +44,7 @@ function CustomTooltip({ active, payload }: any) {
 }
 
 // Custom legend renderer - defined outside to avoid recreation during render
+// T013-T017: Changed to 2-column grid layout to prevent overlap with many categories (023-dashboard-bug-fixes)
 function renderLegend(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   props: any,
@@ -53,22 +54,22 @@ function renderLegend(
   if (!payload) return null;
 
   return (
-    <ul className="flex flex-wrap justify-center gap-x-4 gap-y-2 mt-4">
+    <div className="grid grid-cols-2 gap-x-4 gap-y-1 mt-4 max-h-[180px] overflow-y-auto">
       {payload.map((entry: { value: string; color: string }, index: number) => {
         const dataItem = chartData.find((d) => d.name === entry.value);
         return (
-          <li key={`legend-${index}`} className="flex items-center gap-2 text-sm">
+          <div key={`legend-${index}`} className="flex items-center gap-2 text-xs">
             <span
-              className="w-3 h-3 rounded-full flex-shrink-0"
+              className="w-3 h-3 rounded-sm flex-shrink-0"
               style={{ backgroundColor: entry.color }}
             />
-            <span className="text-gray-700">
+            <span className="text-gray-700 truncate">
               {entry.value} ({dataItem?.percentage.toFixed(0)}%)
             </span>
-          </li>
+          </div>
         );
       })}
-    </ul>
+    </div>
   );
 }
 

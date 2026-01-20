@@ -16,6 +16,23 @@ interface ContractStatusBadgeProps {
 }
 
 export function ContractStatusBadge({ status, className }: ContractStatusBadgeProps) {
+  // T007: Defensive null check - handle undefined status gracefully
+  if (!status?.label) {
+    return (
+      <Badge
+        variant="secondary"
+        className={cn(
+          'px-2 py-1 text-xs font-medium',
+          'bg-gray-100',
+          'text-gray-700',
+          className
+        )}
+      >
+        Unknown
+      </Badge>
+    );
+  }
+
   const config = CONTRACT_STATUS_CONFIG[status.label];
 
   return (
