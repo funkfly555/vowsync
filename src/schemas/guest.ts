@@ -17,6 +17,37 @@ export const invitationStatusSchema = z.enum(['pending', 'invited', 'confirmed',
 export const rsvpMethodSchema = z.enum(['email', 'phone', 'in_person', 'online']);
 
 // =============================================================================
+// Wedding Party Schemas (025-guest-page-fixes)
+// =============================================================================
+
+/**
+ * Gender validation schema
+ * @feature 025-guest-page-fixes
+ */
+export const genderSchema = z.enum(['male', 'female']).nullable();
+
+/**
+ * Wedding party side validation schema
+ * @feature 025-guest-page-fixes
+ */
+export const weddingPartySideSchema = z.enum(['bride', 'groom']).nullable();
+
+/**
+ * Wedding party role validation schema
+ * @feature 025-guest-page-fixes
+ */
+export const weddingPartyRoleSchema = z.enum([
+  'best_man',
+  'groomsmen',
+  'maid_of_honor',
+  'bridesmaids',
+  'parent',
+  'close_relative',
+  'relative',
+  'other',
+]).nullable();
+
+// =============================================================================
 // Database Entity Schema
 // =============================================================================
 
@@ -163,6 +194,11 @@ export const guestFormSchema = z.object({
   phone: z.string().max(50, 'Phone number is too long'),
   invitation_status: invitationStatusSchema,
 
+  // Wedding Party (025-guest-page-fixes)
+  gender: genderSchema,
+  wedding_party_side: weddingPartySideSchema,
+  wedding_party_role: weddingPartyRoleSchema,
+
   // RSVP
   rsvp_deadline: z.date().nullable(),
   rsvp_received_date: z.date().nullable(),
@@ -242,6 +278,11 @@ export const guestEditSchema = z.object({
   guest_type: guestTypeSchema,
   invitation_status: invitationStatusSchema,
 
+  // Wedding Party (025-guest-page-fixes)
+  gender: genderSchema,
+  wedding_party_side: weddingPartySideSchema,
+  wedding_party_role: weddingPartyRoleSchema,
+
   // Plus One (Basic Info Tab)
   has_plus_one: z.boolean(),
   plus_one_name: z.string().max(255, 'Plus one name is too long'),
@@ -262,10 +303,15 @@ export const guestEditSchema = z.object({
   allergies: z.string().max(500, 'Too long'),
   dietary_notes: z.string().max(1000, 'Too long'),
 
-  // Meals Tab
+  // Meals Tab - Primary Guest
   starter_choice: z.number().min(1).max(5).nullable(),
   main_choice: z.number().min(1).max(5).nullable(),
   dessert_choice: z.number().min(1).max(5).nullable(),
+
+  // Meals Tab - Plus One (025-guest-page-fixes)
+  plus_one_starter_choice: z.number().min(1).max(5).nullable(),
+  plus_one_main_choice: z.number().min(1).max(5).nullable(),
+  plus_one_dessert_choice: z.number().min(1).max(5).nullable(),
 
   // Events & Shuttle Tab
   event_attendance: z.array(eventAttendanceItemSchema),
@@ -274,6 +320,26 @@ export const guestEditSchema = z.object({
   {
     message: 'Plus one name is required when plus one is enabled',
     path: ['plus_one_name'],
+  }
+).refine(
+  // Validate role matches side (025-guest-page-fixes)
+  (data) => {
+    if (!data.wedding_party_side || !data.wedding_party_role) return true;
+
+    const brideRoles = ['maid_of_honor', 'bridesmaids', 'parent', 'close_relative', 'relative', 'other'];
+    const groomRoles = ['best_man', 'groomsmen', 'parent', 'close_relative', 'relative', 'other'];
+
+    if (data.wedding_party_side === 'bride') {
+      return brideRoles.includes(data.wedding_party_role);
+    }
+    if (data.wedding_party_side === 'groom') {
+      return groomRoles.includes(data.wedding_party_role);
+    }
+    return true;
+  },
+  {
+    message: 'Wedding party role must match the selected side',
+    path: ['wedding_party_role'],
   }
 );
 

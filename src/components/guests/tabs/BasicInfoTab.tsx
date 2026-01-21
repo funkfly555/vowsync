@@ -10,7 +10,6 @@ import { UserPlus } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Checkbox } from '@/components/ui/checkbox';
 import {
   Select,
   SelectContent,
@@ -18,16 +17,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import {
   GuestEditFormData,
   GuestType,
-  InvitationStatus,
+  Gender,
+  WeddingPartySide,
+  WeddingPartyRole,
   GUEST_TYPE_CONFIG,
-  INVITATION_STATUS_CONFIG,
+  GENDER_CONFIG,
+  WEDDING_PARTY_SIDE_CONFIG,
+  WEDDING_PARTY_ROLES_BY_SIDE,
+  WEDDING_PARTY_ROLE_CONFIG,
 } from '@/types/guest';
 
 const GUEST_TYPES: GuestType[] = ['adult', 'child', 'vendor', 'staff'];
-const INVITATION_STATUSES: InvitationStatus[] = ['pending', 'invited', 'confirmed', 'declined'];
+const GENDERS: Gender[] = ['male', 'female'];
+const WEDDING_PARTY_SIDES: WeddingPartySide[] = ['bride', 'groom'];
 
 export function BasicInfoTab() {
   const {
@@ -38,9 +44,14 @@ export function BasicInfoTab() {
   } = useFormContext<GuestEditFormData>();
 
   const guestType = watch('guest_type');
-  const invitationStatus = watch('invitation_status');
   const hasPlusOne = watch('has_plus_one');
-  const plusOneConfirmed = watch('plus_one_confirmed');
+  // Wedding Party (025-guest-page-fixes)
+  const gender = watch('gender');
+  const weddingPartySide = watch('wedding_party_side');
+  const weddingPartyRole = watch('wedding_party_role');
+
+  // Get available roles based on selected side
+  const availableRoles = weddingPartySide ? WEDDING_PARTY_ROLES_BY_SIDE[weddingPartySide] : [];
 
   return (
     <div className="p-4">
@@ -116,25 +127,79 @@ export function BasicInfoTab() {
             </Select>
           </div>
 
-          {/* Invitation Status */}
+          {/* Gender (025-guest-page-fixes) */}
           <div className="space-y-2">
-            <Label htmlFor="invitation_status">Invitation Status</Label>
+            <Label htmlFor="gender">Gender</Label>
             <Select
-              value={invitationStatus}
-              onValueChange={(value) => setValue('invitation_status', value as InvitationStatus, { shouldDirty: true })}
+              value={gender || '_none'}
+              onValueChange={(value) => setValue('gender', value === '_none' ? null : value as Gender, { shouldDirty: true })}
             >
-              <SelectTrigger id="invitation_status">
-                <SelectValue placeholder="Select status" />
+              <SelectTrigger id="gender">
+                <SelectValue placeholder="Select gender" />
               </SelectTrigger>
               <SelectContent>
-                {INVITATION_STATUSES.map((status) => (
-                  <SelectItem key={status} value={status}>
-                    {INVITATION_STATUS_CONFIG[status].label}
+                <SelectItem value="_none">None</SelectItem>
+                {GENDERS.map((g) => (
+                  <SelectItem key={g} value={g}>
+                    {GENDER_CONFIG[g].label}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
+
+          {/* Wedding Party Side (025-guest-page-fixes) */}
+          <div className="space-y-2">
+            <Label>Wedding Party Side</Label>
+            <RadioGroup
+              value={weddingPartySide || ''}
+              onValueChange={(value) => {
+                const newSide = value ? value as WeddingPartySide : null;
+                setValue('wedding_party_side', newSide, { shouldDirty: true });
+                // Reset role when side changes (025-guest-page-fixes)
+                if (newSide !== weddingPartySide) {
+                  setValue('wedding_party_role', null, { shouldDirty: true });
+                }
+              }}
+              className="flex flex-wrap gap-4"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="" id="side_none" />
+                <Label htmlFor="side_none" className="font-normal cursor-pointer">None</Label>
+              </div>
+              {WEDDING_PARTY_SIDES.map((side) => (
+                <div key={side} className="flex items-center space-x-2">
+                  <RadioGroupItem value={side} id={`side_${side}`} />
+                  <Label htmlFor={`side_${side}`} className="font-normal cursor-pointer">
+                    {WEDDING_PARTY_SIDE_CONFIG[side].label}
+                  </Label>
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
+
+          {/* Wedding Party Role (025-guest-page-fixes) - Conditional on side */}
+          {weddingPartySide && (
+            <div className="space-y-2">
+              <Label htmlFor="wedding_party_role">Wedding Party Role</Label>
+              <Select
+                value={weddingPartyRole || '_none'}
+                onValueChange={(value) => setValue('wedding_party_role', value === '_none' ? null : value as WeddingPartyRole, { shouldDirty: true })}
+              >
+                <SelectTrigger id="wedding_party_role">
+                  <SelectValue placeholder="Select role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="_none">None</SelectItem>
+                  {availableRoles.map((role) => (
+                    <SelectItem key={role} value={role}>
+                      {WEDDING_PARTY_ROLE_CONFIG[role].label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
         </div>
 
         {/* Plus One Column */}
@@ -179,23 +244,6 @@ export function BasicInfoTab() {
                 {errors.plus_one_name && (
                   <p className="text-sm text-red-500">{errors.plus_one_name.message}</p>
                 )}
-              </div>
-
-              {/* Plus One Confirmed */}
-              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                <Checkbox
-                  id="plus_one_confirmed"
-                  checked={plusOneConfirmed}
-                  onCheckedChange={(checked) =>
-                    setValue('plus_one_confirmed', checked === true, { shouldDirty: true })
-                  }
-                />
-                <Label
-                  htmlFor="plus_one_confirmed"
-                  className="text-sm font-normal cursor-pointer"
-                >
-                  Plus one attendance confirmed
-                </Label>
               </div>
 
               {/* Plus One Info */}

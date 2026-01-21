@@ -38,6 +38,7 @@ Auto-generated from all feature plans. Last updated: 2026-01-13
 - TypeScript 5.x with React 18+ (strict mode enabled) + React Router v6, TanStack Query v5, Shadcn/ui, Tailwind CSS v3, Recharts, date-fns, Lucide React (023-dashboard-bug-fixes)
 - Supabase PostgreSQL (no schema changes required) (023-dashboard-bug-fixes)
 - Supabase PostgreSQL (`meal_options`, `guests`, `guest_event_attendance` tables) (024-guest-menu-management)
+- Supabase PostgreSQL (guests, meal_options tables) (025-guest-page-fixes)
 
 - SQL (PostgreSQL 15+ via Supabase) + Supabase (PostgreSQL, Auth, Storage) (001-database-schema-foundation)
 
@@ -57,9 +58,9 @@ tests/
 SQL (PostgreSQL 15+ via Supabase): Follow standard conventions
 
 ## Recent Changes
+- 025-guest-page-fixes: Added TypeScript 5.x with React 18+ (strict mode enabled) + React Router v6, TanStack Query v5, React Hook Form, Zod, Shadcn/ui, Tailwind CSS v3, date-fns, Lucide React
+- 025-guest-page-fixes: Added TypeScript 5.x with React 18+ (strict mode enabled) + React Router v6, TanStack Query v5, React Hook Form, Zod, Shadcn/ui, Tailwind CSS v3, date-fns, Lucide React
 - 024-guest-menu-management: Added TypeScript 5.x with React 18+ (strict mode enabled) + React Router v6, TanStack Query v5, React Hook Form, Zod, Shadcn/ui, Tailwind CSS v3, date-fns, Lucide React
-- 024-guest-menu-management: Added [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION] + [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]
-- 023-dashboard-bug-fixes: Added TypeScript 5.x with React 18+ (strict mode enabled) + React Router v6, TanStack Query v5, Shadcn/ui, Tailwind CSS v3, Recharts, date-fns, Lucide React
 
 
 <!-- MANUAL ADDITIONS START -->

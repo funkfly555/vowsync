@@ -1,13 +1,13 @@
 /**
  * MealsTab - Meal selection form fields with Plus One column
- * Starter, main, dessert choice fields
- * Plus One meals is a placeholder for future enhancement
+ * Uses useMealOptions hook to fetch actual meal names from database
  * @feature 021-guest-page-redesign
+ * @feature 025-guest-page-fixes - Plus One meals implementation
  * @task T023, T035
  */
 
 import { useFormContext } from 'react-hook-form';
-import { UtensilsCrossed, Soup, IceCream, UserPlus } from 'lucide-react';
+import { UtensilsCrossed, Soup, IceCream, UserPlus, Loader2 } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import {
   Select,
@@ -16,7 +16,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { GuestEditFormData, MEAL_OPTIONS } from '@/types/guest';
+import { GuestEditFormData } from '@/types/guest';
+import { useMealOptions } from '@/hooks/useMealOptions';
+import { MealOption, CourseType, getMealOptionLabel } from '@/types/meal-option';
+
+interface MealsTabProps {
+  weddingId: string;
+}
 
 interface MealSelectProps {
   id: string;
@@ -24,10 +30,12 @@ interface MealSelectProps {
   icon: React.ReactNode;
   value: number | null;
   onChange: (value: number | null) => void;
+  options: MealOption[];
   error?: string;
+  isLoading?: boolean;
 }
 
-function MealSelect({ id, label, icon, value, onChange, error }: MealSelectProps) {
+function MealSelect({ id, label, icon, value, onChange, options, error, isLoading }: MealSelectProps) {
   return (
     <div className="space-y-2">
       <Label htmlFor={id} className="flex items-center gap-2">
@@ -37,15 +45,23 @@ function MealSelect({ id, label, icon, value, onChange, error }: MealSelectProps
       <Select
         value={value?.toString() || '__none__'}
         onValueChange={(val) => onChange(val === '__none__' ? null : parseInt(val, 10))}
+        disabled={isLoading}
       >
         <SelectTrigger id={id}>
-          <SelectValue placeholder="Select option" />
+          {isLoading ? (
+            <div className="flex items-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span>Loading...</span>
+            </div>
+          ) : (
+            <SelectValue placeholder="Select option" />
+          )}
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="__none__">No selection</SelectItem>
-          {MEAL_OPTIONS.map((option) => (
-            <SelectItem key={option} value={option.toString()}>
-              Option {option}
+          {options.map((option) => (
+            <SelectItem key={option.option_number} value={option.option_number.toString()}>
+              {option.meal_name}
             </SelectItem>
           ))}
         </SelectContent>
@@ -55,18 +71,32 @@ function MealSelect({ id, label, icon, value, onChange, error }: MealSelectProps
   );
 }
 
-export function MealsTab() {
+export function MealsTab({ weddingId }: MealsTabProps) {
   const {
     watch,
     setValue,
     formState: { errors },
   } = useFormContext<GuestEditFormData>();
 
+  // Fetch meal options from database
+  const { mealOptions, mealOptionsByCourse, isLoading } = useMealOptions({ weddingId });
+
+  // Primary guest meal choices
   const starterChoice = watch('starter_choice');
   const mainChoice = watch('main_choice');
   const dessertChoice = watch('dessert_choice');
+
+  // Plus one meal choices (025-guest-page-fixes)
+  const plusOneStarterChoice = watch('plus_one_starter_choice');
+  const plusOneMainChoice = watch('plus_one_main_choice');
+  const plusOneDessertChoice = watch('plus_one_dessert_choice');
+
   const hasPlusOne = watch('has_plus_one');
-  const plusOneName = watch('plus_one_name');
+
+  // Helper to get meal name for summary display
+  const getMealName = (courseType: CourseType, optionNumber: number | null): string => {
+    return getMealOptionLabel(mealOptions, courseType, optionNumber);
+  };
 
   return (
     <div className="p-4">
@@ -83,7 +113,9 @@ export function MealsTab() {
             icon={<Soup className="h-4 w-4 text-gray-500" />}
             value={starterChoice}
             onChange={(value) => setValue('starter_choice', value, { shouldDirty: true })}
+            options={mealOptionsByCourse.starter}
             error={errors.starter_choice?.message}
+            isLoading={isLoading}
           />
 
           {/* Main Course */}
@@ -93,7 +125,9 @@ export function MealsTab() {
             icon={<UtensilsCrossed className="h-4 w-4 text-gray-500" />}
             value={mainChoice}
             onChange={(value) => setValue('main_choice', value, { shouldDirty: true })}
+            options={mealOptionsByCourse.main}
             error={errors.main_choice?.message}
+            isLoading={isLoading}
           />
 
           {/* Dessert */}
@@ -103,7 +137,9 @@ export function MealsTab() {
             icon={<IceCream className="h-4 w-4 text-gray-500" />}
             value={dessertChoice}
             onChange={(value) => setValue('dessert_choice', value, { shouldDirty: true })}
+            options={mealOptionsByCourse.dessert}
             error={errors.dessert_choice?.message}
+            isLoading={isLoading}
           />
 
           {/* Meal summary */}
@@ -112,22 +148,22 @@ export function MealsTab() {
             <div className="space-y-1 text-sm text-gray-600">
               <p>
                 <span className="font-medium">Starter:</span>{' '}
-                {starterChoice ? `Option ${starterChoice}` : 'Not selected'}
+                {isLoading ? 'Loading...' : getMealName('starter', starterChoice)}
               </p>
               <p>
                 <span className="font-medium">Main:</span>{' '}
-                {mainChoice ? `Option ${mainChoice}` : 'Not selected'}
+                {isLoading ? 'Loading...' : getMealName('main', mainChoice)}
               </p>
               <p>
                 <span className="font-medium">Dessert:</span>{' '}
-                {dessertChoice ? `Option ${dessertChoice}` : 'Not selected'}
+                {isLoading ? 'Loading...' : getMealName('dessert', dessertChoice)}
               </p>
             </div>
           </div>
 
           {/* Information note */}
           <p className="text-xs text-gray-500">
-            Meal options correspond to the menu items provided by your catering service.
+            Meal options are configured in the wedding settings menu.
           </p>
         </div>
 
@@ -140,29 +176,59 @@ export function MealsTab() {
 
           {hasPlusOne ? (
             <>
-              {/* Plus One Info */}
-              <div className="p-4 bg-gray-50 rounded-lg space-y-3">
-                <div>
-                  <p className="text-sm text-gray-500">Plus One</p>
-                  <p className="font-medium">{plusOneName || 'Not specified'}</p>
+              {/* Plus One Starter (025-guest-page-fixes) */}
+              <MealSelect
+                id="plus_one_starter_choice"
+                label="Starter"
+                icon={<Soup className="h-4 w-4 text-gray-500" />}
+                value={plusOneStarterChoice}
+                onChange={(value) => setValue('plus_one_starter_choice', value, { shouldDirty: true })}
+                options={mealOptionsByCourse.starter}
+                error={errors.plus_one_starter_choice?.message}
+                isLoading={isLoading}
+              />
+
+              {/* Plus One Main Course (025-guest-page-fixes) */}
+              <MealSelect
+                id="plus_one_main_choice"
+                label="Main Course"
+                icon={<UtensilsCrossed className="h-4 w-4 text-gray-500" />}
+                value={plusOneMainChoice}
+                onChange={(value) => setValue('plus_one_main_choice', value, { shouldDirty: true })}
+                options={mealOptionsByCourse.main}
+                error={errors.plus_one_main_choice?.message}
+                isLoading={isLoading}
+              />
+
+              {/* Plus One Dessert (025-guest-page-fixes) */}
+              <MealSelect
+                id="plus_one_dessert_choice"
+                label="Dessert"
+                icon={<IceCream className="h-4 w-4 text-gray-500" />}
+                value={plusOneDessertChoice}
+                onChange={(value) => setValue('plus_one_dessert_choice', value, { shouldDirty: true })}
+                options={mealOptionsByCourse.dessert}
+                error={errors.plus_one_dessert_choice?.message}
+                isLoading={isLoading}
+              />
+
+              {/* Plus One Meal summary (025-guest-page-fixes) */}
+              <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                <p className="text-sm font-medium text-gray-700 mb-2">Plus One Meal Summary</p>
+                <div className="space-y-1 text-sm text-gray-600">
+                  <p>
+                    <span className="font-medium">Starter:</span>{' '}
+                    {isLoading ? 'Loading...' : getMealName('starter', plusOneStarterChoice)}
+                  </p>
+                  <p>
+                    <span className="font-medium">Main:</span>{' '}
+                    {isLoading ? 'Loading...' : getMealName('main', plusOneMainChoice)}
+                  </p>
+                  <p>
+                    <span className="font-medium">Dessert:</span>{' '}
+                    {isLoading ? 'Loading...' : getMealName('dessert', plusOneDessertChoice)}
+                  </p>
                 </div>
-              </div>
-
-              {/* Placeholder for future enhancement */}
-              <div className="p-4 bg-gray-100 border border-dashed border-gray-300 rounded-lg">
-                <p className="text-sm font-medium text-gray-600">Future Enhancement</p>
-                <p className="text-xs text-gray-500 mt-1">
-                  Individual meal selection for plus ones will be available in a future update.
-                  For now, meal orders for plus ones should be coordinated separately.
-                </p>
-              </div>
-
-              {/* Note about Plus One Meals */}
-              <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700">
-                <p className="font-medium">Tip</p>
-                <p className="mt-1 text-blue-600">
-                  Contact your caterer to ensure plus one meal preferences are accommodated.
-                </p>
               </div>
             </>
           ) : (

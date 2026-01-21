@@ -49,6 +49,10 @@ function transformFormDataForInsert(
     plus_one_main_choice: data.plus_one_main_choice,
     plus_one_dessert_choice: data.plus_one_dessert_choice,
     notes: null,
+    // Wedding party fields (025-guest-page-fixes)
+    gender: data.gender ?? null,
+    wedding_party_side: data.wedding_party_side ?? null,
+    wedding_party_role: data.wedding_party_role ?? null,
   };
 }
 
@@ -88,6 +92,10 @@ function transformFormDataForUpdate(
   // Seating fields (024-guest-menu-management)
   if (data.table_number !== undefined) result.table_number = data.table_number;
   if (data.table_position !== undefined) result.table_position = data.table_position;
+  // Wedding party fields (025-guest-page-fixes)
+  if (data.gender !== undefined) result.gender = data.gender;
+  if (data.wedding_party_side !== undefined) result.wedding_party_side = data.wedding_party_side;
+  if (data.wedding_party_role !== undefined) result.wedding_party_role = data.wedding_party_role;
 
   return result;
 }
@@ -256,6 +264,41 @@ async function deleteGuest(request: DeleteGuestRequest): Promise<void> {
 }
 
 /**
+ * Bulk delete multiple guests (025-guest-page-fixes)
+ */
+async function bulkDeleteGuests(guestIds: string[], weddingId: string): Promise<void> {
+  if (guestIds.length === 0) return;
+
+  // Fetch guest names before deleting for activity log
+  const { data: guests } = await supabase
+    .from('guests')
+    .select('id, name')
+    .in('id', guestIds);
+
+  const { error } = await supabase
+    .from('guests')
+    .delete()
+    .in('id', guestIds);
+
+  if (error) {
+    console.error('Error bulk deleting guests:', error);
+    throw new Error(error.message);
+  }
+
+  // Log activity (fire-and-forget)
+  if (guests && guests.length > 0) {
+    const guestNames = guests.map(g => g.name).join(', ');
+    logActivity({
+      weddingId,
+      actionType: 'deleted',
+      entityType: 'guest',
+      entityId: guestIds[0], // Use first guest ID as reference
+      description: `Bulk deleted ${guests.length} guest(s): ${guestNames}`,
+    });
+  }
+}
+
+/**
  * Bulk assign table number to multiple guests
  */
 async function bulkAssignTable(request: BulkTableAssignmentRequest): Promise<void> {
@@ -345,6 +388,14 @@ export function useGuestMutations(weddingId: string) {
     },
   });
 
+  // Bulk delete mutation (025-guest-page-fixes)
+  const bulkDeleteGuestsMutation = useMutation({
+    mutationFn: (guestIds: string[]) => bulkDeleteGuests(guestIds, weddingId),
+    onSuccess: () => {
+      invalidateQueries();
+    },
+  });
+
   const saveAttendanceMutation = useMutation({
     mutationFn: (updates: AttendanceUpdatePayload[]) =>
       saveAttendanceMatrix(weddingId, updates),
@@ -382,6 +433,14 @@ export function useGuestMutations(weddingId: string) {
       isPending: bulkAssignTableMutation.isPending,
       isError: bulkAssignTableMutation.isError,
       error: bulkAssignTableMutation.error,
+    },
+    // Bulk delete (025-guest-page-fixes)
+    bulkDeleteGuests: {
+      mutate: bulkDeleteGuestsMutation.mutate,
+      mutateAsync: bulkDeleteGuestsMutation.mutateAsync,
+      isPending: bulkDeleteGuestsMutation.isPending,
+      isError: bulkDeleteGuestsMutation.isError,
+      error: bulkDeleteGuestsMutation.error,
     },
     saveAttendance: {
       mutate: saveAttendanceMutation.mutate,

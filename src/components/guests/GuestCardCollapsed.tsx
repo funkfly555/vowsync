@@ -5,7 +5,8 @@
  * @task T008, T011-T013
  */
 
-import { ChevronRight, ChevronDown, MoreVertical } from 'lucide-react';
+import { ChevronRight, ChevronDown, MoreVertical, Trash2 } from 'lucide-react';
+import { MaleIcon, FemaleIcon } from '../icons/GenderIcons';
 import { Checkbox } from '@/components/ui/checkbox';
 import { InvitationStatusBadge } from './InvitationStatusBadge';
 import { GuestCardDisplayItem } from '@/types/guest';
@@ -24,6 +25,7 @@ interface GuestCardCollapsedProps {
   isSelected: boolean;
   onToggleExpand: () => void;
   onToggleSelect: () => void;
+  onDelete?: () => void; // 025-guest-page-fixes
 }
 
 export function GuestCardCollapsed({
@@ -32,6 +34,7 @@ export function GuestCardCollapsed({
   isSelected,
   onToggleExpand,
   onToggleSelect,
+  onDelete,
 }: GuestCardCollapsedProps) {
   // Only stop propagation - don't call onToggleSelect here
   const handleCheckboxClick = (e: React.MouseEvent) => {
@@ -116,13 +119,26 @@ export function GuestCardCollapsed({
         </div>
 
         {/* Type Column - Same row */}
-        <div className="min-w-[100px]">
+        <div className="min-w-[70px]">
           <div className="text-xs text-gray-500 uppercase">Type</div>
           <div className="text-sm text-gray-900">{guestTypeDisplay}</div>
         </div>
 
+        {/* Gender Icon Column (025-guest-page-fixes) - Centered between TYPE and RSVP */}
+        <div className="w-[50px] mr-4">
+          <div className="text-xs text-gray-500 uppercase">Gender</div>
+          <div className="flex items-center justify-center">
+            {guest.gender === 'male' && (
+              <MaleIcon className="w-5 h-5 text-[#D4A5A5]" aria-label="Male" />
+            )}
+            {guest.gender === 'female' && (
+              <FemaleIcon className="w-5 h-5 text-[#D4A5A5]" aria-label="Female" />
+            )}
+          </div>
+        </div>
+
         {/* RSVP Column - Same row */}
-        <div className="min-w-[120px]">
+        <div className="min-w-[100px]">
           <div className="text-xs text-gray-500 uppercase">RSVP</div>
           <InvitationStatusBadge status={guest.invitation_status} />
         </div>
@@ -139,8 +155,23 @@ export function GuestCardCollapsed({
           <div className="text-sm text-gray-900">{eventsDisplay}</div>
         </div>
 
-        {/* Right: Menu - Same row */}
-        <div className="ml-auto flex-shrink-0" onClick={handleMenuClick}>
+        {/* Right: Delete + Menu - Same row (025-guest-page-fixes) */}
+        <div className="ml-auto flex-shrink-0 flex items-center gap-1" onClick={handleMenuClick}>
+          {/* Delete Button (025-guest-page-fixes) */}
+          {onDelete && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-gray-400 hover:text-red-500 hover:bg-red-50"
+              aria-label={`Delete ${guest.name}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete();
+              }}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button

@@ -6,6 +6,7 @@
  */
 
 import { useState, useCallback, useEffect, useRef } from 'react';
+import { cn } from '@/lib/utils';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { GuestCardCollapsed } from './GuestCardCollapsed';
@@ -38,7 +39,7 @@ function TabContent({ tab, guest }: TabContentProps) {
     case 'dietary':
       return <DietaryTab />;
     case 'meals':
-      return <MealsTab />;
+      return <MealsTab weddingId={guest.wedding_id} />;
     case 'events-shuttles':
       return <EventsShuttlesTab weddingId={guest.wedding_id} />;
     default:
@@ -52,6 +53,7 @@ interface GuestCardProps {
   isSelected: boolean;
   onToggleExpand: (guestId: string) => void;
   onToggleSelect: (guestId: string) => void;
+  onDelete?: (guestId: string) => void; // 025-guest-page-fixes
 }
 
 export function GuestCard({
@@ -60,6 +62,7 @@ export function GuestCard({
   isSelected,
   onToggleExpand,
   onToggleSelect,
+  onDelete,
 }: GuestCardProps) {
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
   const { updateGuest } = useGuestMutations(guest.wedding_id);
@@ -72,7 +75,13 @@ export function GuestCard({
     defaultValues: guestToFormData(guest),
   });
 
-  const { reset, getValues } = formMethods;
+  const { reset, getValues, watch } = formMethods;
+
+  // Flag to skip watch callback during reset (prevents infinite loop)
+  const isResettingRef = useRef(false);
+
+  // Ref to hold the latest performSave function (avoids stale closure issues)
+  const performSaveRef = useRef<(() => Promise<void>) | undefined>(undefined);
 
   // Auto-save function
   const performSave = useCallback(async () => {
@@ -88,7 +97,14 @@ export function GuestCard({
         data: formDataToGuestUpdate(currentValues),
       });
       setSaveStatus('saved');
+
+      // Mark as resetting to skip watch callback trigger from reset
+      isResettingRef.current = true;
       reset(currentValues); // Reset dirty state with current values
+      // Use microtask to clear the flag after React processes the reset
+      queueMicrotask(() => {
+        isResettingRef.current = false;
+      });
 
       // Reset status after 2 seconds
       setTimeout(() => setSaveStatus('idle'), 2000);
@@ -104,32 +120,40 @@ export function GuestCard({
     }
   }, [guest.id, updateGuest, reset, getValues]);
 
-  // Subscribe to form changes for auto-save
-  useEffect(() => {
-    if (!isExpanded) return;
+  // Keep performSaveRef updated with latest performSave
+  performSaveRef.current = performSave;
 
-    const subscription = formMethods.watch(() => {
-      // Only trigger save if form is dirty
-      if (!formMethods.formState.isDirty) return;
+  // Subscribe to form changes for auto-save
+  // watch() fires on any field change - we debounce and save
+  useEffect(() => {
+    if (!isExpanded) {
+      // Clear debounce timer when card is collapsed
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+        debounceTimerRef.current = null;
+      }
+      return;
+    }
+
+    const subscription = watch(() => {
+      // Skip if we're in the middle of a reset (prevents infinite loop)
+      if (isResettingRef.current) return;
 
       // Clear existing timer
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);
       }
 
-      // Debounce the save operation (1000ms delay)
+      // Debounce the save operation (500ms delay) - 025-guest-page-fixes
       debounceTimerRef.current = setTimeout(() => {
-        performSave();
-      }, 1000);
+        performSaveRef.current?.();
+      }, 500);
     });
 
     return () => {
       subscription.unsubscribe();
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
     };
-  }, [isExpanded, formMethods, performSave]);
+  }, [isExpanded, watch]);
 
   // Handle card expand toggle
   const handleToggleExpand = useCallback(() => {
@@ -150,7 +174,10 @@ export function GuestCard({
 
   return (
     <div
-      className="bg-white overflow-hidden"
+      className={cn(
+        'bg-white overflow-visible relative transition-all duration-300',
+        isExpanded && 'z-10 shadow-lg rounded-lg'
+      )}
       onKeyDown={handleKeyDown}
     >
       {/* Collapsed view - always visible */}
@@ -160,6 +187,7 @@ export function GuestCard({
         isSelected={isSelected}
         onToggleExpand={handleToggleExpand}
         onToggleSelect={handleToggleSelect}
+        onDelete={onDelete ? () => onDelete(guest.id) : undefined}
       />
 
       {/* Expanded view - animated in/out */}
@@ -211,7 +239,15 @@ function guestToFormData(guest: GuestCardDisplayItem): GuestEditFormData {
     starter_choice: guest.starter_choice,
     main_choice: guest.main_choice,
     dessert_choice: guest.dessert_choice,
+    // Plus One Meals (025-guest-page-fixes)
+    plus_one_starter_choice: guest.plus_one_starter_choice ?? null,
+    plus_one_main_choice: guest.plus_one_main_choice ?? null,
+    plus_one_dessert_choice: guest.plus_one_dessert_choice ?? null,
     event_attendance: eventAttendanceData,
+    // Wedding party fields (025-guest-page-fixes)
+    gender: guest.gender ?? null,
+    wedding_party_side: guest.wedding_party_side ?? null,
+    wedding_party_role: guest.wedding_party_role ?? null,
   };
 }
 
@@ -243,11 +279,19 @@ function formDataToGuestUpdate(data: GuestEditFormData): Record<string, unknown>
     dietary_restrictions: data.dietary_restrictions || null,
     allergies: data.allergies || null,
     dietary_notes: data.dietary_notes || null,
-    // Meals
+    // Meals - Primary Guest
     starter_choice: data.starter_choice,
     main_choice: data.main_choice,
     dessert_choice: data.dessert_choice,
+    // Meals - Plus One (025-guest-page-fixes)
+    plus_one_starter_choice: data.plus_one_starter_choice,
+    plus_one_main_choice: data.plus_one_main_choice,
+    plus_one_dessert_choice: data.plus_one_dessert_choice,
     // Events & Shuttle (event_attendance)
     event_attendance: data.event_attendance,
+    // Wedding party fields (025-guest-page-fixes)
+    gender: data.gender,
+    wedding_party_side: data.wedding_party_side,
+    wedding_party_role: data.wedding_party_role,
   };
 }

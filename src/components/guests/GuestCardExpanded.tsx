@@ -20,6 +20,7 @@ interface GuestCardExpandedProps {
 }
 
 export function GuestCardExpanded({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   guest: _guest,
   isExpanded,
   saveStatus,
@@ -30,8 +31,8 @@ export function GuestCardExpanded({
   return (
     <div
       className={cn(
-        'transition-all duration-300 ease-in-out overflow-hidden',
-        isExpanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
+        'transition-all duration-300 ease-in-out',
+        isExpanded ? 'max-h-[2000px] opacity-100 overflow-y-auto' : 'max-h-0 opacity-0 overflow-hidden'
       )}
     >
       <div className="border-t border-gray-200">

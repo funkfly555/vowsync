@@ -8,7 +8,7 @@
  * @task T040, T041, T044, T045, T046
  */
 
-import { X, Loader2, Info, Download, CheckSquare, Square, Users } from 'lucide-react';
+import { X, Loader2, Info, Download, CheckSquare, Square, Users, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
@@ -33,7 +33,9 @@ interface BulkActionsBarProps {
   onExportSelected?: () => void;
   onExportAll?: () => void;
   onSendEmail?: () => void;
+  onDeleteSelected?: () => void; // 025-guest-page-fixes
   isAssigning?: boolean;
+  isDeleting?: boolean; // 025-guest-page-fixes
 }
 
 export function BulkActionsBar({
@@ -48,10 +50,12 @@ export function BulkActionsBar({
   onExportSelected,
   onExportAll,
   onSendEmail,
+  onDeleteSelected,
   isAssigning = false,
+  isDeleting = false,
 }: BulkActionsBarProps) {
   const hasSelection = selectedCount > 0;
-  const isDisabled = !hasSelection || isAssigning;
+  const isDisabled = !hasSelection || isAssigning || isDeleting;
 
   const handleAssignTable = (tableNumber: string | null) => {
     if (onAssignTable) {
@@ -235,6 +239,19 @@ export function BulkActionsBar({
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        {/* Delete Selected Button (025-guest-page-fixes) */}
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={isDisabled}
+          onClick={onDeleteSelected}
+          className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 hover:border-red-300"
+        >
+          {isDeleting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+          <Trash2 className="h-4 w-4 mr-2" />
+          Delete ({selectedCount})
+        </Button>
       </div>
     </div>
   );

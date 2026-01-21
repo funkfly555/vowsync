@@ -28,6 +28,7 @@ import { NoSearchResults } from '@/components/guests/NoSearchResults';
 import { GuestFilters as GuestFiltersComponent } from '@/components/guests/GuestFilters';
 import { GuestModal } from '@/components/guests/GuestModal';
 import { DeleteGuestDialog } from '@/components/guests/DeleteGuestDialog';
+import { BulkDeleteDialog } from '@/components/guests/BulkDeleteDialog';
 import { AttendanceMatrix } from '@/components/guests/AttendanceMatrix';
 import { BulkTableAssignModal } from '@/components/guests/BulkTableAssignModal';
 import { useGuestMutations } from '@/hooks/useGuestMutations';
@@ -67,7 +68,10 @@ export function GuestListPage() {
   const [isBulkSeatingOpen, setIsBulkSeatingOpen] = useState(false);
 
   // Mutations
-  const { deleteGuest, bulkAssignTable } = useGuestMutations(weddingId || '');
+  const { deleteGuest, bulkAssignTable, bulkDeleteGuests } = useGuestMutations(weddingId || '');
+
+  // Bulk delete dialog state (025-guest-page-fixes)
+  const [isBulkDeleteDialogOpen, setIsBulkDeleteDialogOpen] = useState(false);
 
   // Fetch events for event filter dropdown
   const { data: events = [] } = useWeddingEvents(weddingId || '');
@@ -151,8 +155,7 @@ export function GuestListPage() {
     setIsGuestModalOpen(true);
   };
 
-  // Delete handler - triggered from GuestCard dropdown menu
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // Delete handler - triggered from GuestCard delete button (025-guest-page-fixes)
   const handleDeleteGuest = (id: string) => {
     const guest = guests.find((g) => g.id === id);
     if (guest) {
@@ -160,8 +163,6 @@ export function GuestListPage() {
       setIsDeleteDialogOpen(true);
     }
   };
-  // Make TypeScript happy by using the function in a no-op expression
-  void handleDeleteGuest;
 
   const handleConfirmDelete = async () => {
     if (!deletingGuest) return;
@@ -193,6 +194,37 @@ export function GuestListPage() {
     if (!open) {
       setDeletingGuest(null);
     }
+  };
+
+  // Bulk delete handlers (025-guest-page-fixes)
+  const handleBulkDeleteClick = () => {
+    if (selectedGuests.size > 0) {
+      setIsBulkDeleteDialogOpen(true);
+    }
+  };
+
+  const handleConfirmBulkDelete = async () => {
+    if (selectedGuests.size === 0) return;
+
+    try {
+      await bulkDeleteGuests.mutateAsync(Array.from(selectedGuests));
+      toast.success(`${selectedGuests.size} guest(s) have been deleted.`);
+      setIsBulkDeleteDialogOpen(false);
+      // Clear selections and expanded states for deleted guests
+      setSelectedGuests(new Set());
+      setExpandedCards((prev) => {
+        const next = new Set(prev);
+        selectedGuests.forEach((id) => next.delete(id));
+        return next;
+      });
+    } catch (error) {
+      console.error('Error bulk deleting guests:', error);
+      toast.error('Failed to delete guests. Please try again.');
+    }
+  };
+
+  const handleBulkDeleteDialogClose = (open: boolean) => {
+    setIsBulkDeleteDialogOpen(open);
   };
 
   // Bulk table assignment handler
@@ -352,7 +384,9 @@ export function GuestListPage() {
           onAssignSeats={handleOpenBulkSeating}
           onExportSelected={exportSelected}
           onExportAll={exportAll}
+          onDeleteSelected={handleBulkDeleteClick}
           isAssigning={bulkAssignTable.isPending}
+          isDeleting={bulkDeleteGuests.isPending}
         />
       )}
 
@@ -367,6 +401,7 @@ export function GuestListPage() {
               isSelected={selectedGuests.has(guest.id)}
               onToggleExpand={handleToggleExpand}
               onToggleSelect={handleToggleSelect}
+              onDelete={handleDeleteGuest}
             />
           ))}
         </div>
@@ -414,6 +449,15 @@ export function GuestListPage() {
         onComplete={() => {
           setSelectedGuests(new Set());
         }}
+      />
+
+      {/* Bulk Delete Confirmation Dialog (025-guest-page-fixes) */}
+      <BulkDeleteDialog
+        open={isBulkDeleteDialogOpen}
+        onOpenChange={handleBulkDeleteDialogClose}
+        selectedCount={selectedGuests.size}
+        onConfirm={handleConfirmBulkDelete}
+        isDeleting={bulkDeleteGuests.isPending}
       />
     </div>
   );

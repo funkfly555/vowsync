@@ -13,6 +13,36 @@ export type InvitationStatus = 'pending' | 'invited' | 'confirmed' | 'declined';
 
 export type RsvpMethod = 'email' | 'phone' | 'in_person' | 'online';
 
+// =============================================================================
+// Wedding Party Types (025-guest-page-fixes)
+// =============================================================================
+
+/**
+ * Guest gender options
+ * @feature 025-guest-page-fixes
+ */
+export type Gender = 'male' | 'female';
+
+/**
+ * Wedding party side (Bride or Groom)
+ * @feature 025-guest-page-fixes
+ */
+export type WeddingPartySide = 'bride' | 'groom';
+
+/**
+ * Wedding party roles - some are side-specific
+ * @feature 025-guest-page-fixes
+ */
+export type WeddingPartyRole =
+  | 'best_man'        // Groom side only
+  | 'groomsmen'       // Groom side only
+  | 'maid_of_honor'   // Bride side only
+  | 'bridesmaids'     // Bride side only
+  | 'parent'          // Both sides
+  | 'close_relative'  // Both sides
+  | 'relative'        // Both sides
+  | 'other';          // Both sides
+
 /**
  * Full guest entity from database
  */
@@ -43,6 +73,10 @@ export interface Guest {
   plus_one_starter_choice: number | null;
   plus_one_main_choice: number | null;
   plus_one_dessert_choice: number | null;
+  // Wedding Party (025-guest-page-fixes)
+  gender: Gender | null;
+  wedding_party_side: WeddingPartySide | null;
+  wedding_party_role: WeddingPartyRole | null;
   email: string | null;
   phone: string | null;
   email_valid: boolean;
@@ -162,6 +196,53 @@ export const GUEST_TYPE_CONFIG: Record<GuestType, { label: string }> = {
 };
 
 // =============================================================================
+// Wedding Party Configuration (025-guest-page-fixes)
+// =============================================================================
+
+/**
+ * Gender display configuration
+ * Uses Lucide icons: User for male, UserCheck for female
+ * @feature 025-guest-page-fixes
+ */
+export const GENDER_CONFIG: Record<Gender, { label: string; iconName: 'User' | 'UserCheck' }> = {
+  male: { label: 'Male', iconName: 'User' },
+  female: { label: 'Female', iconName: 'UserCheck' },
+};
+
+/**
+ * Wedding party side labels
+ * @feature 025-guest-page-fixes
+ */
+export const WEDDING_PARTY_SIDE_CONFIG: Record<WeddingPartySide, { label: string }> = {
+  bride: { label: "Bride's Side" },
+  groom: { label: "Groom's Side" },
+};
+
+/**
+ * Wedding party roles available per side
+ * @feature 025-guest-page-fixes
+ */
+export const WEDDING_PARTY_ROLES_BY_SIDE: Record<WeddingPartySide, WeddingPartyRole[]> = {
+  bride: ['maid_of_honor', 'bridesmaids', 'parent', 'close_relative', 'relative', 'other'],
+  groom: ['best_man', 'groomsmen', 'parent', 'close_relative', 'relative', 'other'],
+};
+
+/**
+ * Wedding party role display labels
+ * @feature 025-guest-page-fixes
+ */
+export const WEDDING_PARTY_ROLE_CONFIG: Record<WeddingPartyRole, { label: string }> = {
+  best_man: { label: 'Best Man' },
+  groomsmen: { label: 'Groomsmen' },
+  maid_of_honor: { label: 'Maid of Honor' },
+  bridesmaids: { label: 'Bridesmaids' },
+  parent: { label: 'Parent' },
+  close_relative: { label: 'Close Relative' },
+  relative: { label: 'Relative' },
+  other: { label: 'Other' },
+};
+
+// =============================================================================
 // Form Types (Phase 6B - Guest CRUD)
 // =============================================================================
 
@@ -229,6 +310,11 @@ export interface GuestFormData {
 
   // Events
   event_attendance: EventAttendanceFormData[];
+
+  // Wedding Party (025-guest-page-fixes)
+  gender: Gender | null;
+  wedding_party_side: WeddingPartySide | null;
+  wedding_party_role: WeddingPartyRole | null;
 }
 
 /**
@@ -258,6 +344,10 @@ export const DEFAULT_GUEST_FORM_DATA: GuestFormData = {
   plus_one_main_choice: null,
   plus_one_dessert_choice: null,
   event_attendance: [],
+  // Wedding Party (025-guest-page-fixes)
+  gender: null,
+  wedding_party_side: null,
+  wedding_party_role: null,
 };
 
 /**
@@ -463,6 +553,11 @@ export interface GuestEditFormData {
   guest_type: GuestType;
   invitation_status: InvitationStatus;
 
+  // Wedding Party (025-guest-page-fixes)
+  gender: Gender | null;
+  wedding_party_side: WeddingPartySide | null;
+  wedding_party_role: WeddingPartyRole | null;
+
   // Plus One (Basic Info Tab)
   has_plus_one: boolean;
   plus_one_name: string;
@@ -483,10 +578,15 @@ export interface GuestEditFormData {
   allergies: string;
   dietary_notes: string;
 
-  // Meals Tab
+  // Meals Tab - Primary Guest
   starter_choice: number | null;
   main_choice: number | null;
   dessert_choice: number | null;
+
+  // Meals Tab - Plus One (025-guest-page-fixes)
+  plus_one_starter_choice: number | null;
+  plus_one_main_choice: number | null;
+  plus_one_dessert_choice: number | null;
 
   // Events & Shuttle Tab
   event_attendance: EventAttendanceFormData[];
@@ -501,6 +601,10 @@ export const DEFAULT_GUEST_EDIT_FORM_DATA: GuestEditFormData = {
   phone: '',
   guest_type: 'adult',
   invitation_status: 'pending',
+  // Wedding Party (025-guest-page-fixes)
+  gender: null,
+  wedding_party_side: null,
+  wedding_party_role: null,
   has_plus_one: false,
   plus_one_name: '',
   plus_one_confirmed: false,
@@ -516,5 +620,9 @@ export const DEFAULT_GUEST_EDIT_FORM_DATA: GuestEditFormData = {
   starter_choice: null,
   main_choice: null,
   dessert_choice: null,
+  // Plus One Meals (025-guest-page-fixes)
+  plus_one_starter_choice: null,
+  plus_one_main_choice: null,
+  plus_one_dessert_choice: null,
   event_attendance: [],
 };

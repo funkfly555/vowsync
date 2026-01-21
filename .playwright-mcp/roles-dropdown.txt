@@ -1,0 +1,3890 @@
+### Page state
+- Page URL: http://localhost:5173/weddings/20abb59e-b1ce-4753-813c-7143a9a3f47b/guests
+- Page Title: vowsync-app
+- Page Snapshot:
+```yaml
+- generic:
+  - generic:
+    - generic:
+      - banner:
+        - generic:
+          - generic:
+            - heading [level=1]: Wedding Planner
+          - generic:
+            - button:
+              - img
+            - button:
+              - img
+              - generic: Profile
+      - complementary:
+        - navigation:
+          - button:
+            - img
+            - generic: Home
+          - button:
+            - img
+            - generic: Guests
+          - button:
+            - img
+            - generic: Menu
+          - button:
+            - img
+            - generic: Emails
+          - button:
+            - img
+            - generic: Vendors
+          - button:
+            - img
+            - generic: Events & Shuttles
+          - button:
+            - img
+            - generic: Items
+          - button:
+            - img
+            - generic: Repurposing
+          - button:
+            - img
+            - generic: Budget
+          - button:
+            - img
+            - generic: Bar Orders
+          - button:
+            - img
+            - generic: Tasks
+          - button:
+            - img
+            - generic: Activity
+          - button:
+            - img
+            - generic: Docs
+        - navigation:
+          - button:
+            - img
+            - generic: Settings
+          - button:
+            - img
+            - generic: Logout
+      - dialog:
+        - generic:
+          - generic: Menu
+          - button:
+            - img
+        - navigation:
+          - button:
+            - img
+            - generic: Home
+          - button:
+            - img
+            - generic: Guests
+          - button:
+            - img
+            - generic: Menu
+          - button:
+            - img
+            - generic: Emails
+          - button:
+            - img
+            - generic: Vendors
+          - button:
+            - img
+            - generic: Events & Shuttles
+          - button:
+            - img
+            - generic: Items
+          - button:
+            - img
+            - generic: Repurposing
+          - button:
+            - img
+            - generic: Budget
+          - button:
+            - img
+            - generic: Bar Orders
+          - button:
+            - img
+            - generic: Tasks
+          - button:
+            - img
+            - generic: Activity
+          - button:
+            - img
+            - generic: Docs
+        - navigation:
+          - button:
+            - img
+            - generic: Settings
+          - button:
+            - img
+            - generic: Logout
+      - main:
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - heading [level=1]: Guests
+                - paragraph: 34 guests + 12 plus ones = 46 total
+              - generic:
+                - button:
+                  - img
+                  - text: Expand All
+                - button:
+                  - img
+                  - text: Attendance Matrix
+                - button:
+                  - img
+                  - text: Add Guest
+            - generic:
+              - generic:
+                - img
+                - textbox:
+                  - /placeholder: Search guests by name...
+              - generic:
+                - generic:
+                  - generic: "Filters:"
+                  - combobox:
+                    - generic: All Types
+                    - img
+                  - combobox:
+                    - generic: All Statuses
+                    - img
+                  - button:
+                    - text: All Tables
+                    - img
+                  - combobox:
+                    - generic: All Events
+                    - img
+                - generic:
+                  - button:
+                    - text: Export
+                    - img
+            - generic:
+              - generic:
+                - button:
+                  - generic: Select All
+                - generic: 3 of 34 selected
+                - button:
+                  - img
+                  - text: Clear
+              - generic:
+                - button:
+                  - img
+                  - text: Export
+                - button:
+                  - img
+                  - text: Assign Seats
+                - button: Quick Table
+                - button: Send Email
+                - button:
+                  - img
+                  - text: Delete (3)
+            - generic:
+              - generic:
+                - button [expanded]:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Amanda Scott
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - img
+                    - generic:
+                      - generic: RSVP
+                      - generic: To Be Sent
+                    - generic:
+                      - generic: Table
+                      - generic: Table 1
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - generic:
+                      - navigation:
+                        - button:
+                          - img
+                          - generic: Basic Info
+                        - button:
+                          - img
+                          - generic: RSVP
+                        - button:
+                          - img
+                          - generic: Seating
+                        - button:
+                          - img
+                          - generic: Dietary
+                        - button:
+                          - img
+                          - generic: Meals
+                        - button:
+                          - img
+                          - generic: Events & Shuttles
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - heading [level=3]: Primary Guest
+                            - generic:
+                              - generic: Name *
+                              - textbox:
+                                - /placeholder: Guest name
+                                - text: Amanda Scott
+                            - generic:
+                              - text: Email
+                              - textbox:
+                                - /placeholder: guest@example.com
+                                - text: amanda.scott@email.com
+                            - generic:
+                              - text: Phone
+                              - textbox:
+                                - /placeholder: +1 (555) 123-4567
+                                - text: +27 82 123 4527
+                            - generic:
+                              - text: Guest Type
+                              - combobox:
+                                - generic: Adult
+                                - img
+                            - generic:
+                              - text: Gender
+                              - combobox:
+                                - generic: Female
+                                - img
+                            - generic:
+                              - text: Wedding Party Side
+                              - radiogroup:
+                                - generic:
+                                  - radio
+                                  - generic: None
+                                - generic:
+                                  - radio [checked]:
+                                    - generic:
+                                      - img
+                                  - generic: Bride's Side
+                                - generic:
+                                  - radio
+                                  - generic: Groom's Side
+                            - generic:
+                              - text: Wedding Party Role
+                              - combobox [expanded]:
+                                - generic: None
+                                - img
+                          - generic:
+                            - generic:
+                              - heading [level=3]:
+                                - img
+                                - text: Plus One
+                              - generic:
+                                - generic: Enabled
+                                - switch [checked]
+                            - generic:
+                              - generic: Plus One Name *
+                              - textbox:
+                                - /placeholder: Plus one's name
+                            - generic:
+                              - paragraph: Plus One Information
+                              - paragraph: The plus one will be included in the guest count and seated at the same table as the primary guest.
+                    - generic:
+                      - generic:
+                        - img
+                        - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox [checked]:
+                          - generic:
+                            - img
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Ana Martinez
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: Invited
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: Ana Martinez
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: ana.martinez@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4513
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Disabled
+                              - switch
+                          - generic:
+                            - img
+                            - paragraph: Enable the toggle above to add a plus one for this guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox [checked]:
+                          - generic:
+                            - img
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Andrew Anderson
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: Invited
+                    - generic:
+                      - generic: Table
+                      - generic: Table 1
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: Andrew Anderson
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: andrew.anderson@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4518
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Enabled
+                              - switch [checked]
+                          - generic:
+                            - generic: Plus One Name *
+                            - textbox:
+                              - /placeholder: Plus one's name
+                          - generic:
+                            - paragraph: Plus One Information
+                            - paragraph: The plus one will be included in the guest count and seated at the same table as the primary guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox [checked]:
+                          - generic:
+                            - img
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Camila Santos
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: Confirmed
+                    - generic:
+                      - generic: Table
+                      - generic: Table 1
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: Camila Santos
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: camila.santos@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4509
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Disabled
+                              - switch
+                          - generic:
+                            - img
+                            - paragraph: Enable the toggle above to add a plus one for this guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Carlos Rodriguez
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: Confirmed
+                    - generic:
+                      - generic: Table
+                      - generic: Table 1
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: Carlos Rodriguez
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: carlos.rodriguez@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4502
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Disabled
+                              - switch
+                          - generic:
+                            - img
+                            - paragraph: Enable the toggle above to add a plus one for this guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Carmen Lopez
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: Invited
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: Carmen Lopez
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: carmen.lopez@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4517
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Disabled
+                              - switch
+                          - generic:
+                            - img
+                            - paragraph: Enable the toggle above to add a plus one for this guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Christopher Davis
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: Invited
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: Christopher Davis
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: christopher.davis@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4520
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Disabled
+                              - switch
+                          - generic:
+                            - img
+                            - paragraph: Enable the toggle above to add a plus one for this guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Daniel Mitchell
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: Confirmed
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: Daniel Mitchell
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: daniel.mitchell@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4506
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Enabled
+                              - switch [checked]
+                          - generic:
+                            - generic: Plus One Name *
+                            - textbox:
+                              - /placeholder: Plus one's name
+                          - generic:
+                            - paragraph: Plus One Information
+                            - paragraph: The plus one will be included in the guest count and seated at the same table as the primary guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: David Thompson
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: Confirmed
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: David Thompson
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: david.thompson@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4510
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Enabled
+                              - switch [checked]
+                          - generic:
+                            - generic: Plus One Name *
+                            - textbox:
+                              - /placeholder: Plus one's name
+                          - generic:
+                            - paragraph: Plus One Information
+                            - paragraph: The plus one will be included in the guest count and seated at the same table as the primary guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Elena Fernandez
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: Confirmed
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: Elena Fernandez
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: elena.fernandez@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4507
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Disabled
+                              - switch
+                          - generic:
+                            - img
+                            - paragraph: Enable the toggle above to add a plus one for this guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Frikkie
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: To Be Sent
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 1 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: Frikkie
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Disabled
+                              - switch
+                          - generic:
+                            - img
+                            - paragraph: Enable the toggle above to add a plus one for this guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Isabella Gomez
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: Confirmed
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: Isabella Gomez
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: isabella.gomez@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4511
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Disabled
+                              - switch
+                          - generic:
+                            - img
+                            - paragraph: Enable the toggle above to add a plus one for this guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: James Wilson
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: Confirmed
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: James Wilson
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: james.wilson@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4512
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Enabled
+                              - switch [checked]
+                          - generic:
+                            - generic: Plus One Name *
+                            - textbox:
+                              - /placeholder: Plus one's name
+                          - generic:
+                            - paragraph: Plus One Information
+                            - paragraph: The plus one will be included in the guest count and seated at the same table as the primary guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Jennifer Clark
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: Declined
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: Jennifer Clark
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: jennifer.clark@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4529
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Disabled
+                              - switch
+                          - generic:
+                            - img
+                            - paragraph: Enable the toggle above to add a plus one for this guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Kevin Harris
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: To Be Sent
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: Kevin Harris
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: kevin.harris@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4524
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Enabled
+                              - switch [checked]
+                          - generic:
+                            - generic: Plus One Name *
+                            - textbox:
+                              - /placeholder: Plus one's name
+                          - generic:
+                            - paragraph: Plus One Information
+                            - paragraph: The plus one will be included in the guest count and seated at the same table as the primary guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Laura Garcia
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: Invited
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: Laura Garcia
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: laura.garcia@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4515
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Disabled
+                              - switch
+                          - generic:
+                            - img
+                            - paragraph: Enable the toggle above to add a plus one for this guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Maria Rodriguez
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: Confirmed
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: Maria Rodriguez
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: maria.rodriguez@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4501
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Disabled
+                              - switch
+                          - generic:
+                            - img
+                            - paragraph: Enable the toggle above to add a plus one for this guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Michael Chen
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: Confirmed
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: Michael Chen
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: michael.chen@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4508
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Enabled
+                              - switch [checked]
+                          - generic:
+                            - generic: Plus One Name *
+                            - textbox:
+                              - /placeholder: Plus one's name
+                          - generic:
+                            - paragraph: Plus One Information
+                            - paragraph: The plus one will be included in the guest count and seated at the same table as the primary guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Miguel Torres
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: To Be Sent
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: Miguel Torres
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: miguel.torres@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4522
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Disabled
+                              - switch
+                          - generic:
+                            - img
+                            - paragraph: Enable the toggle above to add a plus one for this guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Monica Cruz
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: To Be Sent
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: Monica Cruz
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: monica.cruz@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4525
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Disabled
+                              - switch
+                          - generic:
+                            - img
+                            - paragraph: Enable the toggle above to add a plus one for this guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Patricia Mitchell
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: Confirmed
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: Patricia Mitchell
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: patricia.mitchell@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4503
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Disabled
+                              - switch
+                          - generic:
+                            - img
+                            - paragraph: Enable the toggle above to add a plus one for this guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Peter Young
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: To Be Sent
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: Peter Young
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: peter.young@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4528
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Enabled
+                              - switch [checked]
+                          - generic:
+                            - generic: Plus One Name *
+                            - textbox:
+                              - /placeholder: Plus one's name
+                          - generic:
+                            - paragraph: Plus One Information
+                            - paragraph: The plus one will be included in the guest count and seated at the same table as the primary guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Rachel White
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: To Be Sent
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: Rachel White
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: rachel.white@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4523
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Disabled
+                              - switch
+                          - generic:
+                            - img
+                            - paragraph: Enable the toggle above to add a plus one for this guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Richard King
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: Declined
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: Richard King
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: richard.king@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4530
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Disabled
+                              - switch
+                          - generic:
+                            - img
+                            - paragraph: Enable the toggle above to add a plus one for this guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Robert Mitchell
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: Confirmed
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: Robert Mitchell
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: robert.mitchell@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4504
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Disabled
+                              - switch
+                          - generic:
+                            - img
+                            - paragraph: Enable the toggle above to add a plus one for this guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Rosa Hernandez
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: To Be Sent
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: Rosa Hernandez
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: rosa.hernandez@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4521
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Disabled
+                              - switch
+                          - generic:
+                            - img
+                            - paragraph: Enable the toggle above to add a plus one for this guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Sofia Rodriguez
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: Confirmed
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: Sofia Rodriguez
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: sofia.rodriguez@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4505
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Enabled
+                              - switch [checked]
+                          - generic:
+                            - generic: Plus One Name *
+                            - textbox:
+                              - /placeholder: Plus one's name
+                          - generic:
+                            - paragraph: Plus One Information
+                            - paragraph: The plus one will be included in the guest count and seated at the same table as the primary guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Steven Lee
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: To Be Sent
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: Steven Lee
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: steven.lee@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4526
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Enabled
+                              - switch [checked]
+                          - generic:
+                            - generic: Plus One Name *
+                            - textbox:
+                              - /placeholder: Plus one's name
+                          - generic:
+                            - paragraph: Plus One Information
+                            - paragraph: The plus one will be included in the guest count and seated at the same table as the primary guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: TEST ADDED INFO
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: To Be Sent
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 1 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: TEST ADDED INFO
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Disabled
+                              - switch
+                          - generic:
+                            - img
+                            - paragraph: Enable the toggle above to add a plus one for this guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: TEST FFS
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: To Be Sent
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 1 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: TEST FFS
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Disabled
+                              - switch
+                          - generic:
+                            - img
+                            - paragraph: Enable the toggle above to add a plus one for this guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Thomas Brown
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: Invited
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: Thomas Brown
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: thomas.brown@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4514
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Enabled
+                              - switch [checked]
+                          - generic:
+                            - generic: Plus One Name *
+                            - textbox:
+                              - /placeholder: Plus one's name
+                          - generic:
+                            - paragraph: Plus One Information
+                            - paragraph: The plus one will be included in the guest count and seated at the same table as the primary guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: TTT-TEST
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: To Be Sent
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 1 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: TTT-TEST
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Disabled
+                              - switch
+                          - generic:
+                            - img
+                            - paragraph: Enable the toggle above to add a plus one for this guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Victoria Reyes
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: Invited
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: Victoria Reyes
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: victoria.reyes@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4519
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Disabled
+                              - switch
+                          - generic:
+                            - img
+                            - paragraph: Enable the toggle above to add a plus one for this guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+              - generic:
+                - button:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - checkbox
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: William Taylor
+                    - generic:
+                      - generic: Type
+                      - generic: Adult
+                    - generic:
+                      - generic: RSVP
+                      - generic: Invited
+                    - generic:
+                      - generic: Table
+                      - generic: —
+                    - generic:
+                      - generic: Events
+                      - generic: 0 of 5
+                    - generic:
+                      - button:
+                        - img
+                      - button:
+                        - img
+                - generic:
+                  - generic:
+                    - navigation:
+                      - button:
+                        - img
+                        - generic: Basic Info
+                      - button:
+                        - img
+                        - generic: RSVP
+                      - button:
+                        - img
+                        - generic: Seating
+                      - button:
+                        - img
+                        - generic: Dietary
+                      - button:
+                        - img
+                        - generic: Meals
+                      - button:
+                        - img
+                        - generic: Events & Shuttles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - heading [level=3]: Primary Guest
+                          - generic:
+                            - generic: Name *
+                            - textbox:
+                              - /placeholder: Guest name
+                              - text: William Taylor
+                          - generic:
+                            - text: Email
+                            - textbox:
+                              - /placeholder: guest@example.com
+                              - text: william.taylor@email.com
+                          - generic:
+                            - text: Phone
+                            - textbox:
+                              - /placeholder: +1 (555) 123-4567
+                              - text: +27 82 123 4516
+                          - generic:
+                            - text: Guest Type
+                            - combobox:
+                              - generic: Adult
+                              - img
+                          - generic:
+                            - text: Gender
+                            - combobox:
+                              - generic: None
+                              - img
+                          - generic:
+                            - text: Wedding Party Side
+                            - radiogroup:
+                              - generic:
+                                - radio [checked]:
+                                  - generic:
+                                    - img
+                                - generic: None
+                              - generic:
+                                - radio
+                                - generic: Bride's Side
+                              - generic:
+                                - radio
+                                - generic: Groom's Side
+                        - generic:
+                          - generic:
+                            - heading [level=3]:
+                              - img
+                              - text: Plus One
+                            - generic:
+                              - generic: Enabled
+                              - switch [checked]
+                          - generic:
+                            - generic: Plus One Name *
+                            - textbox:
+                              - /placeholder: Plus one's name
+                          - generic:
+                            - paragraph: Plus One Information
+                            - paragraph: The plus one will be included in the guest count and seated at the same table as the primary guest.
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Auto-save enabled
+    - region "Notifications alt+T"
+  - listbox [ref=e4299]:
+    - option "None" [active] [selected] [ref=e4300]:
+      - img [ref=e4303]
+      - generic [ref=e4305]: None
+    - option "Maid of Honor" [ref=e4306]:
+      - generic [ref=e4308]: Maid of Honor
+    - option "Bridesmaids" [ref=e4309]:
+      - generic [ref=e4311]: Bridesmaids
+    - option "Parent" [ref=e4312]:
+      - generic [ref=e4314]: Parent
+    - option "Close Relative" [ref=e4315]:
+      - generic [ref=e4317]: Close Relative
+    - option "Relative" [ref=e4318]:
+      - generic [ref=e4320]: Relative
+    - option "Other" [ref=e4321]:
+      - generic [ref=e4323]: Other
+```

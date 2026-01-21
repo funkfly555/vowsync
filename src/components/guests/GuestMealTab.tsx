@@ -53,7 +53,6 @@ export function GuestMealTab({ form, weddingId }: GuestMealTabProps) {
   const plusOneMainChoice = watch('plus_one_main_choice');
   const plusOneDessertChoice = watch('plus_one_dessert_choice');
   const hasPlusOne = watch('has_plus_one');
-  const plusOneName = watch('plus_one_name');
   const invitationStatus = watch('invitation_status');
 
   // Fetch meal options from database
@@ -229,10 +228,6 @@ export function GuestMealTab({ form, weddingId }: GuestMealTabProps) {
 
           {hasPlusOne ? (
             <>
-              <p className="text-sm text-gray-500">
-                {plusOneName || 'Plus One'}
-              </p>
-
               {/* Starter */}
               <div className="space-y-2">
                 <Label>{COURSE_LABELS.starter}</Label>

@@ -26,8 +26,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-import { GuestEditFormData, RsvpMethod, INVITATION_STATUS_CONFIG } from '@/types/guest';
+import { Checkbox } from '@/components/ui/checkbox';
+import { GuestEditFormData, RsvpMethod, InvitationStatus, INVITATION_STATUS_CONFIG } from '@/types/guest';
 
+const INVITATION_STATUSES: InvitationStatus[] = ['pending', 'invited', 'confirmed', 'declined'];
 const RSVP_METHODS: { value: RsvpMethod; label: string }[] = [
   { value: 'email', label: 'Email' },
   { value: 'phone', label: 'Phone' },
@@ -56,6 +58,26 @@ export function RsvpTab() {
         {/* Primary Guest RSVP Column */}
         <div className="space-y-4">
           <h3 className="font-medium text-gray-900 border-b pb-2">Primary Guest RSVP</h3>
+
+          {/* Invitation Status (moved from Basic Info - 025-guest-page-fixes) */}
+          <div className="space-y-2">
+            <Label htmlFor="invitation_status">Invitation Status</Label>
+            <Select
+              value={invitationStatus}
+              onValueChange={(value) => setValue('invitation_status', value as InvitationStatus, { shouldDirty: true })}
+            >
+              <SelectTrigger id="invitation_status">
+                <SelectValue placeholder="Select status" />
+              </SelectTrigger>
+              <SelectContent>
+                {INVITATION_STATUSES.map((status) => (
+                  <SelectItem key={status} value={status}>
+                    {INVITATION_STATUS_CONFIG[status].label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
           {/* RSVP Deadline */}
           <div className="space-y-2">
@@ -182,7 +204,7 @@ export function RsvpTab() {
 
           {hasPlusOne ? (
             <>
-              {/* Read-only Plus One RSVP Info */}
+              {/* Plus One RSVP Info */}
               <div className="p-4 bg-gray-50 rounded-lg space-y-3">
                 <div>
                   <p className="text-sm text-gray-500">Plus One</p>
@@ -198,19 +220,30 @@ export function RsvpTab() {
                     {INVITATION_STATUS_CONFIG[invitationStatus].label}
                   </span>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-500">Attendance</p>
-                  <p className="font-medium">
-                    {plusOneConfirmed ? '✓ Confirmed' : 'Not confirmed'}
-                  </p>
-                </div>
+              </div>
+
+              {/* Plus One Confirmed Checkbox (moved from Basic Info - 025-guest-page-fixes) */}
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <Checkbox
+                  id="plus_one_confirmed"
+                  checked={plusOneConfirmed}
+                  onCheckedChange={(checked) =>
+                    setValue('plus_one_confirmed', checked === true, { shouldDirty: true })
+                  }
+                />
+                <Label
+                  htmlFor="plus_one_confirmed"
+                  className="text-sm font-normal cursor-pointer"
+                >
+                  Plus one attendance confirmed
+                </Label>
               </div>
 
               {/* Note about Plus One RSVP */}
               <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700">
                 <p className="font-medium">Note</p>
                 <p className="mt-1 text-blue-600">
-                  The plus one follows the primary guest's RSVP status. To update plus one details, use the Basic Info tab.
+                  The plus one follows the primary guest's invitation status. To update plus one name, use the Basic Info tab.
                 </p>
               </div>
             </>
