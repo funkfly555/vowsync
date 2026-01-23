@@ -68,7 +68,9 @@ export function GuestCardCollapsed({
       : '—';
 
   // Capitalize guest type for display
-  const guestTypeDisplay = guest.guest_type.charAt(0).toUpperCase() + guest.guest_type.slice(1);
+  const guestTypeDisplay = guest.guest_type
+    ? guest.guest_type.charAt(0).toUpperCase() + guest.guest_type.slice(1)
+    : '—';
 
   return (
     <div

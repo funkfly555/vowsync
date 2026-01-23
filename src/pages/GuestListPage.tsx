@@ -1,12 +1,14 @@
 /**
  * GuestListPage - Main guest list page component
  * Phase 021 redesign: Expandable cards with 5-tab interface
+ * Phase 026: Card/Table view toggle with localStorage persistence
  * @feature 006-guest-list
  * @feature 007-guest-crud-attendance
  * @feature 021-guest-page-redesign
+ * @feature 026-guest-view-toggle
  */
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Plus, Grid3X3, ChevronsDownUp, ChevronsUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -19,6 +21,8 @@ import {
   ExpandedCardsState,
   SelectedGuestsState,
 } from '@/types/guest';
+import type { GuestViewMode } from '@/types/guest-table';
+import { getViewPreference, setViewPreference } from '@/lib/guest-table-utils';
 
 // Components
 import { GuestCard } from '@/components/guests/GuestCard';
@@ -31,6 +35,8 @@ import { DeleteGuestDialog } from '@/components/guests/DeleteGuestDialog';
 import { BulkDeleteDialog } from '@/components/guests/BulkDeleteDialog';
 import { AttendanceMatrix } from '@/components/guests/AttendanceMatrix';
 import { BulkTableAssignModal } from '@/components/guests/BulkTableAssignModal';
+import { ViewToggle } from '@/components/guests/ViewToggle';
+import { GuestTableView } from '@/components/guests/table';
 import { useGuestMutations } from '@/hooks/useGuestMutations';
 import { toast } from 'sonner';
 
@@ -47,6 +53,14 @@ function hasActiveFilters(filters: GuestFiltersState): boolean {
 
 export function GuestListPage() {
   const { weddingId } = useParams<{ weddingId: string }>();
+
+  // View mode state with localStorage persistence (Phase 026)
+  const [viewMode, setViewMode] = useState<GuestViewMode>(() => getViewPreference());
+
+  // Persist view preference to localStorage
+  useEffect(() => {
+    setViewPreference(viewMode);
+  }, [viewMode]);
 
   // Card state management (Phase 021)
   const [expandedCards, setExpandedCards] = useState<ExpandedCardsState>(new Set());
@@ -317,6 +331,11 @@ export function GuestListPage() {
         </div>
       </div>
 
+      {/* View Toggle (Phase 026) */}
+      <div className="flex items-center justify-between">
+        <ViewToggle activeView={viewMode} onViewChange={setViewMode} />
+      </div>
+
       {/* Filters */}
       <GuestFiltersComponent
         filters={{
@@ -390,21 +409,33 @@ export function GuestListPage() {
         />
       )}
 
-      {/* Guest Cards List - Card-based layout (Design 3) */}
+      {/* Guest Content - Card or Table View (Phase 026) */}
       {!isLoading && !isError && guests.length > 0 && (
-        <div className="space-y-3">
-          {guests.map((guest) => (
-            <GuestCard
-              key={guest.id}
-              guest={guest}
-              isExpanded={expandedCards.has(guest.id)}
-              isSelected={selectedGuests.has(guest.id)}
-              onToggleExpand={handleToggleExpand}
-              onToggleSelect={handleToggleSelect}
-              onDelete={handleDeleteGuest}
-            />
-          ))}
-        </div>
+        viewMode === 'card' ? (
+          // Card View - Original card-based layout (Design 3)
+          <div className="space-y-3">
+            {guests.map((guest) => (
+              <GuestCard
+                key={guest.id}
+                guest={guest}
+                isExpanded={expandedCards.has(guest.id)}
+                isSelected={selectedGuests.has(guest.id)}
+                onToggleExpand={handleToggleExpand}
+                onToggleSelect={handleToggleSelect}
+                onDelete={handleDeleteGuest}
+              />
+            ))}
+          </div>
+        ) : (
+          // Table View - Comprehensive table display (Phase 026)
+          <GuestTableView
+            weddingId={weddingId}
+            filters={debouncedFilters}
+            selectedGuests={selectedGuests}
+            onToggleSelect={handleToggleSelect}
+            onSelectAll={allSelected ? deselectAll : selectAll}
+          />
+        )
       )}
 
       {/* Empty states */}
