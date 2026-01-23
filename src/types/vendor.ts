@@ -9,19 +9,26 @@
 
 /**
  * Vendor type enumeration
+ * Updated to match database values
  */
 export type VendorType =
   | 'Catering'
   | 'Photography'
   | 'Videography'
   | 'Flowers'
+  | 'Florist'
   | 'Music/DJ'
+  | 'Entertainment'
   | 'Venue'
   | 'Transportation'
   | 'Officiant'
   | 'Hair/Makeup'
+  | 'Hair & Makeup'
   | 'Rentals'
   | 'Decor'
+  | 'Cake'
+  | 'Stationery'
+  | 'Beverages'
   | 'Other';
 
 /**
@@ -325,13 +332,19 @@ export const VENDOR_TYPE_CONFIG: Record<VendorType, { label: string; icon: strin
   Photography: { label: 'Photography', icon: 'Camera' },
   Videography: { label: 'Videography', icon: 'Video' },
   Flowers: { label: 'Flowers', icon: 'Flower2' },
+  Florist: { label: 'Florist', icon: 'Flower2' },
   'Music/DJ': { label: 'Music/DJ', icon: 'Music' },
+  Entertainment: { label: 'Entertainment', icon: 'Music' },
   Venue: { label: 'Venue', icon: 'Building2' },
   Transportation: { label: 'Transportation', icon: 'Car' },
   Officiant: { label: 'Officiant', icon: 'Users' },
   'Hair/Makeup': { label: 'Hair/Makeup', icon: 'Scissors' },
+  'Hair & Makeup': { label: 'Hair & Makeup', icon: 'Scissors' },
   Rentals: { label: 'Rentals', icon: 'Package' },
   Decor: { label: 'Decor', icon: 'Palette' },
+  Cake: { label: 'Cake', icon: 'Cake' },
+  Stationery: { label: 'Stationery', icon: 'FileText' },
+  Beverages: { label: 'Beverages', icon: 'Wine' },
   Other: { label: 'Other', icon: 'MoreHorizontal' },
 };
 

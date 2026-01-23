@@ -24,7 +24,8 @@ interface VendorOverviewTabProps {
 }
 
 export function VendorOverviewTab({ vendor, vendorId }: VendorOverviewTabProps) {
-  const typeConfig = VENDOR_TYPE_CONFIG[vendor.vendor_type];
+  // Defensive fallback for unknown vendor types
+  const typeConfig = VENDOR_TYPE_CONFIG[vendor.vendor_type] || { label: vendor.vendor_type, icon: 'MoreHorizontal' };
 
   return (
     <div className="grid gap-6 md:grid-cols-2">
