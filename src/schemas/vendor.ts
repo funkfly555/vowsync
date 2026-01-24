@@ -11,19 +11,26 @@ import { z } from 'zod';
 
 /**
  * Vendor type options for select dropdown
+ * Must match VendorType in types/vendor.ts
  */
 export const VENDOR_TYPES = [
   'Catering',
   'Photography',
   'Videography',
   'Flowers',
+  'Florist',
   'Music/DJ',
+  'Entertainment',
   'Venue',
   'Transportation',
   'Officiant',
   'Hair/Makeup',
+  'Hair & Makeup',
   'Rentals',
   'Decor',
+  'Cake',
+  'Stationery',
+  'Beverages',
   'Other',
 ] as const;
 

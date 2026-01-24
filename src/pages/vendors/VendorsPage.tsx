@@ -1,14 +1,15 @@
 /**
  * VendorsPage Component
- * @feature 008-vendor-management, 027-vendor-view-toggle
+ * @feature 008-vendor-management, 027-vendor-view-toggle, 028-vendor-card-expandable
  * @task T018
  *
  * Main vendor list page with header, view toggle, and add button
+ * Enhanced with expandable card functionality
  */
 
 import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { Plus } from 'lucide-react';
+import { Plus, ChevronsUpDown, ChevronsDownUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { VendorList } from '@/components/vendors/VendorList';
 import { VendorTableView } from '@/components/vendors/table';
@@ -35,6 +36,9 @@ export function VendorsPage() {
 
   // Selection state (shared between Card and Table views)
   const [selectedVendors, setSelectedVendors] = useState<Set<string>>(new Set());
+
+  // Expanded cards state for card view
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
 
   const { vendors, isLoading, isError, error, refetch } = useVendors({
     weddingId: weddingId || '',
@@ -79,13 +83,31 @@ export function VendorsPage() {
     });
   }, [vendors]);
 
+  // Handle expand/collapse individual card
+  const handleToggleExpand = useCallback((vendorId: string) => {
+    setExpandedCards((prev) => {
+      const next = new Set(prev);
+      if (next.has(vendorId)) {
+        next.delete(vendorId);
+      } else {
+        next.add(vendorId);
+      }
+      return next;
+    });
+  }, []);
+
+  // Handle expand all cards
+  const handleExpandAll = useCallback(() => {
+    setExpandedCards(new Set(vendors.map((v) => v.id)));
+  }, [vendors]);
+
+  // Handle collapse all cards
+  const handleCollapseAll = useCallback(() => {
+    setExpandedCards(new Set());
+  }, []);
+
   const handleAddVendor = () => {
     setEditingVendor(null);
-    setIsModalOpen(true);
-  };
-
-  const handleEditVendor = (vendor: VendorDisplay) => {
-    setEditingVendor(vendor);
     setIsModalOpen(true);
   };
 
@@ -138,6 +160,29 @@ export function VendorsPage() {
           </p>
         </div>
         <div className="flex items-center gap-4">
+          {/* Expand/Collapse All buttons - only show in card view */}
+          {viewMode === 'card' && vendors.length > 0 && (
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleExpandAll}
+                disabled={expandedCards.size === vendors.length}
+              >
+                <ChevronsUpDown className="h-4 w-4 mr-1" />
+                Expand All
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleCollapseAll}
+                disabled={expandedCards.size === 0}
+              >
+                <ChevronsDownUp className="h-4 w-4 mr-1" />
+                Collapse All
+              </Button>
+            </div>
+          )}
           <ViewToggle activeView={viewMode} onViewChange={setViewMode} />
           <Button onClick={handleAddVendor}>
             <Plus className="h-4 w-4 mr-2" />
@@ -154,9 +199,12 @@ export function VendorsPage() {
           filters={filters}
           onFiltersChange={setFilters}
           onAddVendor={handleAddVendor}
-          onEditVendor={handleEditVendor}
           onDeleteVendor={handleDeleteVendor}
           isLoading={isLoading}
+          expandedCards={expandedCards}
+          selectedVendors={selectedVendors}
+          onToggleExpand={handleToggleExpand}
+          onToggleSelect={handleToggleSelect}
         />
       ) : (
         <VendorTableView

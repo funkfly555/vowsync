@@ -60,8 +60,9 @@ export function useVendorMutations({ weddingId }: UseVendorMutationsParams) {
   });
 
   // Update vendor mutation
+  // Accepts partial data for auto-save scenarios
   const updateVendor = useMutation({
-    mutationFn: async ({ vendorId, data }: { vendorId: string; data: VendorSchemaType }) => {
+    mutationFn: async ({ vendorId, data }: { vendorId: string; data: Partial<VendorSchemaType> }) => {
       const { data: vendor, error } = await supabase
         .from('vendors')
         .update({ ...data, updated_at: new Date().toISOString() })

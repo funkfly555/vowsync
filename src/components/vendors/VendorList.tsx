@@ -1,9 +1,9 @@
 /**
  * VendorList Component
- * @feature 008-vendor-management
- * @task T017, T041
+ * @feature 008-vendor-management, 028-vendor-card-expandable
+ * @task T017, T041, T046-T057
  *
- * Responsive grid display with search and filters (FR-001, FR-003, FR-004)
+ * Vertical list display with expandable cards, search, and filters
  */
 
 import { useState, useEffect } from 'react';
@@ -21,9 +21,13 @@ interface VendorListProps {
   filters: VendorFiltersType;
   onFiltersChange: (filters: VendorFiltersType) => void;
   onAddVendor: () => void;
-  onEditVendor: (vendor: VendorDisplay) => void;
   onDeleteVendor: (vendor: VendorDisplay) => void;
   isLoading: boolean;
+  // Expandable card props
+  expandedCards: Set<string>;
+  selectedVendors: Set<string>;
+  onToggleExpand: (vendorId: string) => void;
+  onToggleSelect: (vendorId: string) => void;
 }
 
 export function VendorList({
@@ -32,9 +36,12 @@ export function VendorList({
   filters,
   onFiltersChange,
   onAddVendor,
-  onEditVendor,
   onDeleteVendor,
   isLoading,
+  expandedCards,
+  selectedVendors,
+  onToggleExpand,
+  onToggleSelect,
 }: VendorListProps) {
   const [searchInput, setSearchInput] = useState(filters.search);
   const debouncedSearch = useDebounce(searchInput, 300);
@@ -70,10 +77,10 @@ export function VendorList({
           <div className="h-10 bg-gray-100 rounded-md animate-pulse" />
         </div>
 
-        {/* Cards skeleton */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="h-48 bg-gray-100 rounded-lg animate-pulse" />
+        {/* Cards skeleton - vertical list for expandable cards */}
+        <div className="space-y-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="h-20 bg-gray-100 rounded-lg animate-pulse" />
           ))}
         </div>
       </div>
@@ -100,7 +107,7 @@ export function VendorList({
         <VendorFilters filters={filters} onFiltersChange={onFiltersChange} />
       </div>
 
-      {/* Vendor grid or empty state */}
+      {/* Vendor list or empty state */}
       {vendors.length === 0 ? (
         <VendorEmptyState
           hasFilters={hasFilters}
@@ -108,14 +115,17 @@ export function VendorList({
           onClearFilters={handleClearFilters}
         />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="space-y-4">
           {vendors.map((vendor) => (
             <VendorCard
               key={vendor.id}
               vendor={vendor}
               weddingId={weddingId}
-              onEdit={onEditVendor}
-              onDelete={onDeleteVendor}
+              isExpanded={expandedCards.has(vendor.id)}
+              isSelected={selectedVendors.has(vendor.id)}
+              onToggleExpand={onToggleExpand}
+              onToggleSelect={onToggleSelect}
+              onDelete={() => onDeleteVendor(vendor)}
             />
           ))}
         </div>
