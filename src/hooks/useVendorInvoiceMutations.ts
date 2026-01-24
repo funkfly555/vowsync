@@ -187,6 +187,12 @@ export function useUpdateInvoice() {
       queryClient.invalidateQueries({ queryKey: ['vendor-invoices', variables.vendorId] });
       // T014: Also invalidate totals when invoice amount changes
       queryClient.invalidateQueries({ queryKey: ['vendor-totals', variables.vendorId] });
+      // T053: Invalidate budget queries when invoice amounts change
+      // This ensures budget line item projected_cost stays in sync
+      if (variables.data.amount !== undefined) {
+        queryClient.invalidateQueries({ queryKey: ['budget-categories'] });
+        queryClient.invalidateQueries({ queryKey: ['budget-line-items'] });
+      }
       toast.success('Invoice updated successfully');
     },
     onError: (error) => {
@@ -251,7 +257,11 @@ export function useDeleteInvoice() {
       queryClient.invalidateQueries({ queryKey: ['vendor-invoices', variables.vendorId] });
       // T014: Also invalidate totals when invoice is deleted
       queryClient.invalidateQueries({ queryKey: ['vendor-totals', variables.vendorId] });
-      toast.success('Invoice deleted successfully');
+      // T053: Invalidate budget queries - budget line items deleted via ON DELETE CASCADE
+      // Database triggers automatically recalculate category and wedding totals
+      queryClient.invalidateQueries({ queryKey: ['budget-categories'] });
+      queryClient.invalidateQueries({ queryKey: ['budget-line-items'] });
+      toast.success('Invoice deleted and budget updated');
     },
     onError: (error) => {
       toast.error('Failed to delete invoice', {

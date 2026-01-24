@@ -1,9 +1,10 @@
 /**
  * useVendorPaymentMutations Hook - TanStack Query mutations for vendor payments
  * @feature 009-vendor-payments-invoices
+ * @feature 029-budget-vendor-integration
  * T020: Create payment mutation
  * T023: Mark as paid mutation
- * T026: Update payment mutation
+ * T026: Update payment mutation (029: with budget line item update)
  * T029: Delete payment mutation
  */
 
@@ -11,8 +12,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase';
 import type { VendorPaymentSchedule, VendorPaymentScheduleFormData, MarkAsPaidFormData, VendorInvoice } from '@/types/vendor';
+import type { PaymentStatus } from '@/types/budget';
 import { calculateInvoiceStatusFromPayment } from '@/lib/vendorInvoiceStatus';
 import { logActivity, activityDescriptions } from '@/lib/activityLog';
+import { determinePaymentStatus } from '@/lib/budgetCalculations';
 
 // =============================================================================
 // T020: Create Payment Mutation
@@ -157,6 +160,35 @@ async function createPaymentFromInvoice({
     throw invoiceError;
   }
 
+  // T026-T027: Step 4: Update budget line item if one exists for this invoice
+  if (markAsPaid) {
+    const { data: lineItem } = await supabase
+      .from('budget_line_items')
+      .select('id, actual_cost, projected_cost')
+      .eq('vendor_invoice_id', invoice.id)
+      .single();
+
+    if (lineItem) {
+      // Calculate new actual cost and payment status
+      const newActualCost = (lineItem.actual_cost || 0) + data.amount;
+      const invoiceTotal = invoice.total_amount;
+      const newPaymentStatus: PaymentStatus = determinePaymentStatus(newActualCost, invoiceTotal);
+
+      const { error: lineItemError } = await supabase
+        .from('budget_line_items')
+        .update({
+          actual_cost: newActualCost,
+          payment_status: newPaymentStatus,
+        })
+        .eq('id', lineItem.id);
+
+      if (lineItemError) {
+        // T028: Log error but don't fail the payment
+        console.error('Error updating budget line item:', lineItemError);
+      }
+    }
+  }
+
   return { payment, invoice: updatedInvoice };
 }
 
@@ -178,6 +210,9 @@ export function useCreatePaymentFromInvoice() {
       queryClient.invalidateQueries({ queryKey: ['vendor-payments-with-invoices', variables.vendorId] });
       queryClient.invalidateQueries({ queryKey: ['vendor-invoices', variables.vendorId] });
       queryClient.invalidateQueries({ queryKey: ['vendor-totals', variables.vendorId] });
+      // T026: Invalidate budget queries when payment updates budget line item
+      queryClient.invalidateQueries({ queryKey: ['budget-categories'] });
+      queryClient.invalidateQueries({ queryKey: ['budget-line-items'] });
 
       // Show appropriate success message based on whether payment was marked as paid
       if (variables.markAsPaid !== false) {

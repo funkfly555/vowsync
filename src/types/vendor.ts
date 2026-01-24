@@ -187,6 +187,9 @@ export interface VendorFormData {
   account_number: string;
   branch_code: string;
   swift_code: string;
+
+  // Budget Integration (Feature 029)
+  default_budget_category_id: string;
 }
 
 /**
@@ -216,6 +219,7 @@ export const DEFAULT_VENDOR_FORM: VendorFormData = {
   account_number: '',
   branch_code: '',
   swift_code: '',
+  default_budget_category_id: '',
 };
 
 // =============================================================================

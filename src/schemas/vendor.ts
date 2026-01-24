@@ -120,7 +120,8 @@ export const vendorFormSchema = z.object({
     .max(20, 'SWIFT code must be less than 20 characters'),
 
   // Budget Integration (Feature 029 - T014)
-  default_budget_category_id: z.string().uuid().nullable().optional(),
+  // Form uses empty string for "none", UUID for valid selection
+  default_budget_category_id: z.string(),
 }).refine(
   // FR-021: Validate contract_expiry_date > contract_date
   (data) => {

@@ -1,7 +1,9 @@
 /**
  * Budget Category Zod Validation Schema
  * @feature 011-budget-tracking
+ * @feature 029-budget-vendor-integration
  * T003: Zod validation for budget category forms
+ * T033: Category type validation with conditional custom_name
  */
 
 import { z } from 'zod';
@@ -11,6 +13,7 @@ import { z } from 'zod';
  * FR-012: category_name required, max 100 chars
  * FR-013: projected_amount required, >= 0, max 9,999,999.99
  * FR-014: actual_amount >= 0, max 9,999,999.99, defaults to 0
+ * T033: category_type_id required, custom_name required when "Other/Custom"
  */
 export const budgetCategorySchema = z.object({
   category_name: z
@@ -30,6 +33,13 @@ export const budgetCategorySchema = z.object({
     .max(1000, 'Notes must be less than 1000 characters')
     .optional()
     .nullable(),
+  // Feature 029: Category type fields
+  category_type_id: z.string().optional(),
+  custom_name: z
+    .string()
+    .max(100, 'Custom name must be less than 100 characters')
+    .optional()
+    .nullable(),
 });
 
 export type BudgetCategoryFormValues = z.infer<typeof budgetCategorySchema>;
@@ -42,10 +52,13 @@ export const defaultBudgetCategoryValues: BudgetCategoryFormValues = {
   projected_amount: 0,
   actual_amount: 0,
   notes: '',
+  category_type_id: '',
+  custom_name: '',
 };
 
 /**
  * Transform form values to database insert format
+ * T034: Include category_type_id and custom_name
  */
 export function toBudgetCategoryInsert(
   values: BudgetCategoryFormValues,
@@ -56,6 +69,8 @@ export function toBudgetCategoryInsert(
   projected_amount: number;
   actual_amount: number;
   notes: string | null;
+  category_type_id: string | null;
+  custom_name: string | null;
 } {
   return {
     wedding_id: weddingId,
@@ -63,22 +78,29 @@ export function toBudgetCategoryInsert(
     projected_amount: values.projected_amount,
     actual_amount: values.actual_amount,
     notes: values.notes?.trim() || null,
+    category_type_id: values.category_type_id || null,
+    custom_name: values.custom_name?.trim() || null,
   };
 }
 
 /**
  * Transform form values to database update format
+ * T034: Include category_type_id and custom_name
  */
 export function toBudgetCategoryUpdate(values: BudgetCategoryFormValues): {
   category_name: string;
   projected_amount: number;
   actual_amount: number;
   notes: string | null;
+  category_type_id: string | null;
+  custom_name: string | null;
 } {
   return {
     category_name: values.category_name.trim(),
     projected_amount: values.projected_amount,
     actual_amount: values.actual_amount,
     notes: values.notes?.trim() || null,
+    category_type_id: values.category_type_id || null,
+    custom_name: values.custom_name?.trim() || null,
   };
 }

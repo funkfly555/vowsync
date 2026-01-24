@@ -144,12 +144,16 @@ export interface BudgetLineItemWithInvoice extends BudgetLineItem {
 
 /**
  * Form data for create/edit budget category modal
+ * Updated for Feature 029: Budget-Vendor Integration
  */
 export interface BudgetCategoryFormData {
   category_name: string;
   projected_amount: number;
   actual_amount: number;
   notes?: string;
+  // Feature 029: Category type fields
+  category_type_id?: string;
+  custom_name?: string | null;
 }
 
 /**

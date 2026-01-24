@@ -1,7 +1,9 @@
 /**
  * RecordPaymentModal - Modal for recording payments against invoices
  * @feature 028-vendor-card-expandable
+ * @feature 029-budget-vendor-integration
  * @task Payments & Invoices Redesign
+ * @task T022-T029: Payment recording with budget updates
  */
 
 import { useState, useEffect } from 'react';
@@ -38,8 +40,11 @@ import {
 } from '@/components/ui/form';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useCreatePaymentFromInvoice } from '@/hooks/useVendorPaymentMutations';
+import { useBudgetLineItemByInvoice } from '@/hooks/useBudgetLineItems';
+import { useBudgetCategory } from '@/hooks/useBudgetCategories';
 import { VendorInvoice, PAYMENT_METHOD_OPTIONS } from '@/types/vendor';
 import { formatCurrency } from '@/lib/vendorInvoiceStatus';
+import { BudgetImpactPreview } from './BudgetImpactPreview';
 
 interface InvoiceWithBalance extends VendorInvoice {
   balance: number;
@@ -50,7 +55,8 @@ interface RecordPaymentModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   vendorId: string;
-  weddingId: string;
+  /** @deprecated weddingId is no longer needed - budget queries use invoice-based lookups */
+  weddingId?: string;
   invoices: InvoiceWithBalance[];
   preselectedInvoice?: VendorInvoice | null;
 }
@@ -71,13 +77,23 @@ export function RecordPaymentModal({
   open,
   onOpenChange,
   vendorId,
-  weddingId: _weddingId,
+  // weddingId is deprecated - budget queries use invoice-based lookups
   invoices,
   preselectedInvoice,
 }: RecordPaymentModalProps) {
   const { mutate: createPaymentFromInvoice, isPending } = useCreatePaymentFromInvoice();
   const [selectedInvoiceBalance, setSelectedInvoiceBalance] = useState<number>(0);
   const [showOverpayWarning, setShowOverpayWarning] = useState(false);
+  const [selectedInvoiceId, setSelectedInvoiceId] = useState<string>('');
+
+  // T024-T025: Get budget line item for selected invoice
+  const { lineItem: budgetLineItem } = useBudgetLineItemByInvoice(
+    selectedInvoiceId || undefined
+  );
+  // Get budget category for the line item
+  const { category: budgetCategory } = useBudgetCategory(
+    budgetLineItem?.budget_category_id || undefined
+  );
 
   const form = useForm<RecordPaymentFormData>({
     resolver: zodResolver(recordPaymentSchema),
@@ -129,6 +145,7 @@ export function RecordPaymentModal({
         notes: '',
       });
       setSelectedInvoiceBalance(initialBalance);
+      setSelectedInvoiceId(initialInvoiceId); // T025: Track for budget preview
       setShowOverpayWarning(false);
     }
   }, [open, preselectedInvoice, invoices]);
@@ -136,6 +153,7 @@ export function RecordPaymentModal({
   // Handle invoice selection change
   const handleInvoiceChange = (invoiceId: string) => {
     form.setValue('invoice_id', invoiceId);
+    setSelectedInvoiceId(invoiceId); // T025: Track for budget preview
     const invoice = invoices.find((inv) => inv.id === invoiceId);
     if (invoice) {
       form.setValue('amount', invoice.balance);
@@ -344,6 +362,17 @@ export function RecordPaymentModal({
                   </FormItem>
                 )}
               />
+
+              {/* T024-T025: Budget Impact Preview */}
+              {budgetCategory && budgetLineItem && watchAmount > 0 && (
+                <BudgetImpactPreview
+                  categoryName={budgetCategory.category_name}
+                  currentActual={budgetLineItem.actual_cost || 0}
+                  newActual={(budgetLineItem.actual_cost || 0) + watchAmount}
+                  projected={budgetLineItem.projected_cost || 0}
+                  paymentAmount={watchAmount}
+                />
+              )}
 
               <DialogFooter>
                 <Button

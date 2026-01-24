@@ -1,7 +1,9 @@
 /**
  * DeleteInvoiceDialog Component
  * @feature 009-vendor-payments-invoices
+ * @feature 029-budget-vendor-integration
  * T038: Confirmation dialog for deleting invoices
+ * T050: Mention budget impact when deleting invoice linked to budget
  */
 
 import {
@@ -14,8 +16,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Loader2, AlertTriangle } from 'lucide-react';
+import { Loader2, AlertTriangle, Tag } from 'lucide-react';
 import { useDeleteInvoice } from '@/hooks/useVendorInvoiceMutations';
+import { useBudgetLineItemByInvoice } from '@/hooks/useBudgetLineItems';
+import { useBudgetCategory } from '@/hooks/useBudgetCategories';
 import { formatCurrency } from '@/lib/vendorInvoiceStatus';
 import type { VendorInvoice } from '@/types/vendor';
 import { format } from 'date-fns';
@@ -37,6 +41,10 @@ export function DeleteInvoiceDialog({
 }: DeleteInvoiceDialogProps) {
   const deleteInvoice = useDeleteInvoice();
 
+  // T050: Check if this invoice has a linked budget line item
+  const { lineItem: budgetLineItem } = useBudgetLineItemByInvoice(invoice?.id);
+  const { category: budgetCategory } = useBudgetCategory(budgetLineItem?.budget_category_id);
+
   const handleDelete = async () => {
     if (!invoice) return;
 
@@ -54,6 +62,7 @@ export function DeleteInvoiceDialog({
   if (!invoice) return null;
 
   const isPaid = invoice.status === 'paid' || invoice.paid_date;
+  const hasBudgetLink = !!budgetLineItem;
 
   return (
     <AlertDialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
@@ -107,6 +116,18 @@ export function DeleteInvoiceDialog({
                   <p className="text-orange-800">
                     <strong>Warning:</strong> This invoice has been marked as paid.
                     Deleting it will remove the payment record from your tracking history.
+                  </p>
+                </div>
+              )}
+
+              {/* T050: Budget impact warning */}
+              {hasBudgetLink && (
+                <div className="flex items-start gap-2 rounded-lg border border-purple-200 bg-purple-50 p-3 text-sm">
+                  <Tag className="h-4 w-4 text-purple-600 mt-0.5 flex-shrink-0" />
+                  <p className="text-purple-800">
+                    <strong>Budget Impact:</strong> This invoice is linked to the{' '}
+                    <span className="font-medium">{budgetCategory?.category_name || 'budget'}</span>{' '}
+                    category. Deleting it will automatically update the budget totals.
                   </p>
                 </div>
               )}

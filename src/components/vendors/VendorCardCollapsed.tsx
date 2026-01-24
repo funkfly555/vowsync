@@ -2,7 +2,9 @@
  * VendorCardCollapsed - Collapsed card view with horizontal layout
  * Shows company name, type, contract status, and payment summary
  * @feature 028-vendor-card-expandable
+ * @feature 029-budget-vendor-integration
  * @task T022-T034
+ * @task T041: Show linked budget category badge
  */
 
 import { ChevronRight, ChevronDown, MoreVertical, Trash2 } from 'lucide-react';
@@ -16,6 +18,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
+import { BudgetCategoryBadge } from './BudgetCategoryBadge';
 
 interface VendorCardCollapsedProps {
   vendor: VendorDisplay;
@@ -136,6 +139,16 @@ export function VendorCardCollapsed({
           <div className="text-xs text-gray-500 uppercase">Payments</div>
           <div className="text-sm text-gray-900">{paymentSummary}</div>
         </div>
+
+        {/* T041: Budget Category Column */}
+        {vendor.defaultBudgetCategory && (
+          <div className="min-w-[140px]">
+            <div className="text-xs text-gray-500 uppercase">Budget</div>
+            <BudgetCategoryBadge
+              categoryName={vendor.defaultBudgetCategory.category_name}
+            />
+          </div>
+        )}
 
         {/* Right: Delete + Menu */}
         <div className="ml-auto flex-shrink-0 flex items-center gap-1" onClick={handleMenuClick}>

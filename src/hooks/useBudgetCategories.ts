@@ -113,20 +113,30 @@ async function fetchBudgetCategoriesWithTypes(
       category_type:budget_category_types(*)
     `
     )
-    .eq('wedding_id', weddingId)
-    .order('category_name', { ascending: true });
+    .eq('wedding_id', weddingId);
 
   if (error) {
     console.error('Error fetching budget categories with types:', error);
     throw error;
   }
 
-  return (data as BudgetCategoryRowWithType[]).map(transformBudgetCategoryWithType);
+  // T035: Sort by category_type.display_order, then by category_name
+  const transformed = (data as BudgetCategoryRowWithType[]).map(transformBudgetCategoryWithType);
+  return transformed.sort((a, b) => {
+    // Categories with types come first, sorted by display_order
+    const orderA = a.category_type?.displayOrder ?? 999;
+    const orderB = b.category_type?.displayOrder ?? 999;
+    if (orderA !== orderB) {
+      return orderA - orderB;
+    }
+    // Within same display order, sort alphabetically
+    return a.category_name.localeCompare(b.category_name);
+  });
 }
 
 /**
  * T013: Hook to fetch all budget categories for a wedding with category type joins
- * Sorted by category_name ascending (alphabetical)
+ * T035: Sorted by category_type.display_order, then by category_name
  * Includes joined category_type data for display
  */
 export function useBudgetCategoriesWithTypes(

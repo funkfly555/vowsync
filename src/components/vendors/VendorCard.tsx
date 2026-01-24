@@ -31,7 +31,7 @@ interface TabContentProps {
 function TabContent({ tab, vendor, weddingId }: TabContentProps) {
   switch (tab) {
     case 'overview':
-      return <OverviewTab />;
+      return <OverviewTab weddingId={weddingId} />;
     case 'contract':
       return <ContractTab vendor={vendor} />;
     case 'payments-invoices':
@@ -240,6 +240,8 @@ function vendorToFormData(vendor: VendorDisplay): VendorFormData {
     account_number: vendor.account_number || '',
     branch_code: vendor.branch_code || '',
     swift_code: vendor.swift_code || '',
+    // Budget Integration (Feature 029)
+    default_budget_category_id: vendor.default_budget_category_id || '',
   };
 }
 
@@ -272,5 +274,7 @@ function formDataToVendorUpdate(data: VendorFormData): Partial<VendorSchemaType>
     insurance_verified: data.insurance_verified,
     insurance_expiry_date: data.insurance_expiry_date || null,
     // Note: Banking fields are NOT included - they are read-only
+    // Budget Integration (Feature 029)
+    default_budget_category_id: data.default_budget_category_id || null,
   };
 }

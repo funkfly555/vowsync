@@ -63,6 +63,8 @@ function vendorToFormData(vendor: VendorDisplay): VendorFormData {
     account_number: vendor.account_number || '',
     branch_code: vendor.branch_code || '',
     swift_code: vendor.swift_code || '',
+    // Budget Integration (Feature 029)
+    default_budget_category_id: vendor.default_budget_category_id || '',
   };
 }
 
