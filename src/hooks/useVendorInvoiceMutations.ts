@@ -1,7 +1,9 @@
 /**
  * useVendorInvoiceMutations Hook - TanStack Query mutations for vendor invoices
  * @feature 009-vendor-payments-invoices
+ * @feature 029-budget-vendor-integration
  * T036: Create, update, delete invoice mutations
+ * T019-T021: Invoice creation with budget line item integration
  */
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -29,7 +31,9 @@ async function createInvoice({ vendorId, data }: CreateInvoiceVariables): Promis
     .single();
 
   const vatAmount = calculateVAT(data.amount);
+  const invoiceTotal = data.amount + vatAmount;
 
+  // Step 1: Create invoice
   const { data: invoice, error } = await supabase
     .from('vendor_invoices')
     .insert({
@@ -50,6 +54,29 @@ async function createInvoice({ vendorId, data }: CreateInvoiceVariables): Promis
   if (error) {
     console.error('Error creating invoice:', error);
     throw error;
+  }
+
+  // T019-T020: Step 2: Create budget line item if budget category is provided
+  if (data.budget_category_id) {
+    const { error: lineItemError } = await supabase
+      .from('budget_line_items')
+      .insert({
+        budget_category_id: data.budget_category_id,
+        vendor_id: vendorId,
+        vendor_invoice_id: invoice.id,
+        item_description: `Invoice ${data.invoice_number}`,
+        projected_cost: invoiceTotal, // Invoice total as projected cost
+        actual_cost: 0, // No payments yet
+        payment_status: 'unpaid',
+        notes: data.notes || null,
+      });
+
+    if (lineItemError) {
+      // T021: Log error but don't fail the invoice creation
+      console.error('Error creating budget line item:', lineItemError);
+      // Note: Invoice was created successfully, budget line item failed
+      // In production, consider rolling back or alerting user
+    }
   }
 
   // Log activity (fire-and-forget)
@@ -75,6 +102,12 @@ export function useCreateInvoice() {
       queryClient.invalidateQueries({ queryKey: ['vendor-invoices', variables.vendorId] });
       // T014: Also invalidate totals when invoice is created
       queryClient.invalidateQueries({ queryKey: ['vendor-totals', variables.vendorId] });
+      // T019: Invalidate budget categories when budget line item is created
+      if (variables.data.budget_category_id) {
+        // Invalidate all budget-related queries to reflect new line item
+        queryClient.invalidateQueries({ queryKey: ['budget-categories'] });
+        queryClient.invalidateQueries({ queryKey: ['budget-line-items'] });
+      }
       toast.success('Invoice added successfully');
     },
     onError: (error) => {

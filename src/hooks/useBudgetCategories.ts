@@ -1,15 +1,29 @@
 /**
  * useBudgetCategories Hook - TanStack Query hooks for budget category data
  * @feature 011-budget-tracking
+ * @feature 029-budget-vendor-integration
  * T005: Fetch budget categories for a wedding
+ * T013: Include category_type joins
  */
 
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
-import type { BudgetCategory } from '@/types/budget';
+import type {
+  BudgetCategory,
+  BudgetCategoryWithType,
+  BudgetCategoryTypeRow,
+} from '@/types/budget';
+import { transformBudgetCategoryType } from '@/types/budget';
 
 // =============================================================================
-// Fetch All Budget Categories for Wedding
+// Query Keys
+// =============================================================================
+
+export const budgetCategoriesQueryKey = (weddingId: string) =>
+  ['budget-categories', weddingId] as const;
+
+// =============================================================================
+// Fetch All Budget Categories for Wedding (Basic)
 // =============================================================================
 
 interface UseBudgetCategoriesReturn {
@@ -41,8 +55,86 @@ async function fetchBudgetCategories(weddingId: string): Promise<BudgetCategory[
  */
 export function useBudgetCategories(weddingId: string | undefined): UseBudgetCategoriesReturn {
   const { data, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ['budget-categories', weddingId],
+    queryKey: budgetCategoriesQueryKey(weddingId || ''),
     queryFn: () => fetchBudgetCategories(weddingId!),
+    enabled: !!weddingId,
+  });
+
+  return {
+    categories: data || [],
+    isLoading,
+    isError,
+    error: error as Error | null,
+    refetch,
+  };
+}
+
+// =============================================================================
+// Fetch Budget Categories with Type Joins (Feature 029)
+// =============================================================================
+
+interface UseBudgetCategoriesWithTypesReturn {
+  categories: BudgetCategoryWithType[];
+  isLoading: boolean;
+  isError: boolean;
+  error: Error | null;
+  refetch: () => void;
+}
+
+/**
+ * Database response type with joined category_type data
+ */
+interface BudgetCategoryRowWithType extends BudgetCategory {
+  category_type: BudgetCategoryTypeRow | null;
+}
+
+/**
+ * Transform database row to camelCase interface with nested type
+ */
+function transformBudgetCategoryWithType(
+  row: BudgetCategoryRowWithType
+): BudgetCategoryWithType {
+  return {
+    ...row,
+    category_type: row.category_type
+      ? transformBudgetCategoryType(row.category_type)
+      : null,
+  };
+}
+
+async function fetchBudgetCategoriesWithTypes(
+  weddingId: string
+): Promise<BudgetCategoryWithType[]> {
+  const { data, error } = await supabase
+    .from('budget_categories')
+    .select(
+      `
+      *,
+      category_type:budget_category_types(*)
+    `
+    )
+    .eq('wedding_id', weddingId)
+    .order('category_name', { ascending: true });
+
+  if (error) {
+    console.error('Error fetching budget categories with types:', error);
+    throw error;
+  }
+
+  return (data as BudgetCategoryRowWithType[]).map(transformBudgetCategoryWithType);
+}
+
+/**
+ * T013: Hook to fetch all budget categories for a wedding with category type joins
+ * Sorted by category_name ascending (alphabetical)
+ * Includes joined category_type data for display
+ */
+export function useBudgetCategoriesWithTypes(
+  weddingId: string | undefined
+): UseBudgetCategoriesWithTypesReturn {
+  const { data, isLoading, isError, error, refetch } = useQuery({
+    queryKey: [...budgetCategoriesQueryKey(weddingId || ''), 'with-types'],
+    queryFn: () => fetchBudgetCategoriesWithTypes(weddingId!),
     enabled: !!weddingId,
   });
 

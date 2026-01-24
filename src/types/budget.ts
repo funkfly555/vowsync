@@ -1,7 +1,73 @@
 /**
  * Budget Tracking TypeScript Types
  * @feature 011-budget-tracking
+ * @feature 029-budget-vendor-integration
  */
+
+// =============================================================================
+// Budget Category Types (Feature 029)
+// =============================================================================
+
+/**
+ * Budget category type - predefined wedding budget categories
+ * T007: BudgetCategoryType interface
+ */
+export interface BudgetCategoryType {
+  id: string;
+  name: string;
+  displayOrder: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/**
+ * Database row format for budget_category_types (snake_case)
+ */
+export interface BudgetCategoryTypeRow {
+  id: string;
+  name: string;
+  display_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+/**
+ * Transform database row to camelCase interface
+ */
+export function transformBudgetCategoryType(row: BudgetCategoryTypeRow): BudgetCategoryType {
+  return {
+    id: row.id,
+    name: row.name,
+    displayOrder: row.display_order,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+// =============================================================================
+// Payment Status Types (Feature 029)
+// =============================================================================
+
+/**
+ * T008: Payment status for budget line items
+ */
+export type PaymentStatus = 'unpaid' | 'partially_paid' | 'paid';
+
+/**
+ * Determine payment status based on amounts paid vs total
+ */
+export function determinePaymentStatus(
+  totalPaid: number,
+  invoiceTotal: number
+): PaymentStatus {
+  if (totalPaid >= invoiceTotal) {
+    return 'paid';
+  }
+  if (totalPaid > 0) {
+    return 'partially_paid';
+  }
+  return 'unpaid';
+}
 
 // =============================================================================
 // Database Entity Types
@@ -19,12 +85,57 @@ export interface BudgetCategory {
   id: string;
   wedding_id: string;
   category_name: string;
+  category_type_id: string | null; // Feature 029
+  custom_name: string | null; // Feature 029
   projected_amount: number;
   actual_amount: number;
   variance: number; // Generated column: actual_amount - projected_amount
   notes: string | null;
   created_at: string;
   updated_at: string;
+}
+
+/**
+ * Budget category with joined category type data
+ * Feature 029
+ */
+export interface BudgetCategoryWithType extends BudgetCategory {
+  category_type: BudgetCategoryType | null;
+}
+
+// =============================================================================
+// Budget Line Item Types (Feature 029)
+// =============================================================================
+
+/**
+ * T008: Database entity - mirrors Supabase budget_line_items table
+ * Updated for vendor invoice integration
+ */
+export interface BudgetLineItem {
+  id: string;
+  budget_category_id: string;
+  vendor_id: string | null;
+  vendor_invoice_id: string | null;
+  item_description: string;
+  projected_cost: number;
+  actual_cost: number;
+  variance: number;
+  payment_status: PaymentStatus;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/**
+ * Budget line item with joined vendor invoice data
+ */
+export interface BudgetLineItemWithInvoice extends BudgetLineItem {
+  vendor_invoice?: {
+    id: string;
+    invoice_number: string;
+    amount: number;
+    vat_amount: number;
+  } | null;
 }
 
 // =============================================================================
@@ -81,6 +192,27 @@ export interface BudgetOverview {
 export interface BudgetCategoryDisplay extends BudgetCategory {
   statusBadge: BudgetStatusBadge;
   percentUsed: number;
+}
+
+/**
+ * T009: Enhanced budget category display with computed financial fields
+ * Feature 029: Budget-Vendor Integration
+ */
+export interface BudgetCategoryEnhancedDisplay extends BudgetCategoryWithType {
+  /** Amount invoiced but not yet paid (projected - actual) */
+  invoicedUnpaid: number;
+  /** Total committed = actual + invoicedUnpaid = projected */
+  totalCommitted: number;
+  /** Remaining budget (projected - totalCommitted) */
+  remaining: number;
+  /** Percentage of budget spent (actual / projected * 100) */
+  percentageSpent: number;
+  /** True if spending is >= 90% but < 100% */
+  isNearLimit: boolean;
+  /** True if actual > projected (over budget) */
+  isOverBudget: boolean;
+  /** Status badge for display */
+  statusBadge: BudgetStatusBadge;
 }
 
 // =============================================================================

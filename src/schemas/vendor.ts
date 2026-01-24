@@ -1,6 +1,7 @@
 /**
  * Vendor Zod Validation Schemas
  * @feature 008-vendor-management
+ * @feature 029-budget-vendor-integration
  */
 
 import { z } from 'zod';
@@ -117,6 +118,9 @@ export const vendorFormSchema = z.object({
     .max(20, 'Branch code must be less than 20 characters'),
   swift_code: z.string()
     .max(20, 'SWIFT code must be less than 20 characters'),
+
+  // Budget Integration (Feature 029 - T014)
+  default_budget_category_id: z.string().uuid().nullable().optional(),
 }).refine(
   // FR-021: Validate contract_expiry_date > contract_date
   (data) => {
@@ -173,6 +177,8 @@ export const vendorSchema = z.object({
   account_number: z.string().transform(val => val || null),
   branch_code: z.string().transform(val => val || null),
   swift_code: z.string().transform(val => val || null),
+  // Budget Integration (Feature 029 - T014)
+  default_budget_category_id: z.string().uuid().nullable().optional().transform(val => val || null),
 });
 
 export type VendorSchemaType = z.infer<typeof vendorSchema>;
@@ -209,6 +215,8 @@ export const vendorDbSchema = z.object({
   status: vendorStatusSchema,
   created_at: z.string(),
   updated_at: z.string(),
+  // Budget Integration (Feature 029 - T014)
+  default_budget_category_id: z.string().uuid().nullable(),
 });
 
 export type VendorDbSchemaType = z.infer<typeof vendorDbSchema>;

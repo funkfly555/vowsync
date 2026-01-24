@@ -75,6 +75,9 @@ export interface Vendor {
   status: VendorStatus;
   created_at: string;
   updated_at: string;
+
+  // Budget Integration (Feature 029)
+  default_budget_category_id: string | null;
 }
 
 // =============================================================================
@@ -115,6 +118,13 @@ export interface VendorDisplay extends Vendor {
   contractStatus: ContractStatusBadge;
   paymentStatus: PaymentStatusBadge;
   maskedAccountNumber: string | null;
+  /** T010: Default budget category for invoice allocation (Feature 029) */
+  default_budget_category_id: string | null;
+  /** Joined budget category data */
+  defaultBudgetCategory?: {
+    id: string;
+    category_name: string;
+  } | null;
 }
 
 // =============================================================================
@@ -440,6 +450,8 @@ export interface VendorInvoiceFormData {
   vat_amount: number;
   payment_schedule_id?: string | null;
   notes?: string;
+  // Budget Integration (Feature 029)
+  budget_category_id?: string;
 }
 
 // =============================================================================

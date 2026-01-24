@@ -1,7 +1,9 @@
 /**
  * AddInvoiceModal - Modal for creating new invoices
  * @feature 028-vendor-card-expandable
+ * @feature 029-budget-vendor-integration
  * @task Payments & Invoices Redesign
+ * @task T015-T021: Invoice creation with budget integration
  */
 
 import { useState, useEffect } from 'react';
@@ -28,8 +30,17 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useCreateInvoice } from '@/hooks/useVendorInvoiceMutations';
 import { useVendorInvoices } from '@/hooks/useVendorInvoices';
+import { useBudgetCategories } from '@/hooks/useBudgetCategories';
+import { useVendor } from '@/hooks/useVendors';
 import { calculateVAT, calculateTotal, formatCurrency } from '@/lib/vendorInvoiceStatus';
 
 interface AddInvoiceModalProps {
@@ -39,12 +50,13 @@ interface AddInvoiceModalProps {
   weddingId: string;
 }
 
-// Form validation schema
+// Form validation schema - T016: Add budgetCategoryId field
 const addInvoiceSchema = z.object({
   invoice_number: z.string().min(1, 'Invoice number is required'),
   invoice_date: z.string().min(1, 'Invoice date is required'),
   due_date: z.string().min(1, 'Due date is required'),
   amount: z.number().min(0.01, 'Amount must be greater than 0'),
+  budget_category_id: z.string().min(1, 'Budget category is required'), // T016
   notes: z.string().optional(),
 }).refine(
   (data) => {
@@ -65,10 +77,14 @@ export function AddInvoiceModal({
   open,
   onOpenChange,
   vendorId,
-  weddingId: _weddingId,
+  weddingId,
 }: AddInvoiceModalProps) {
   const { mutate: createInvoice, isPending } = useCreateInvoice();
   const { invoices } = useVendorInvoices(vendorId);
+  // T015: Fetch wedding's budget categories
+  const { categories: budgetCategories, isLoading: categoriesLoading } = useBudgetCategories(weddingId);
+  // T018: Fetch vendor to get default budget category
+  const { vendor } = useVendor(vendorId);
 
   const [calculatedVat, setCalculatedVat] = useState(0);
   const [calculatedTotal, setCalculatedTotal] = useState(0);
@@ -111,6 +127,7 @@ export function AddInvoiceModal({
       invoice_date: format(new Date(), 'yyyy-MM-dd'),
       due_date: format(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'), // 30 days from now
       amount: 0,
+      budget_category_id: '', // T016
       notes: '',
     },
   });
@@ -126,7 +143,7 @@ export function AddInvoiceModal({
     setCalculatedTotal(total);
   }, [watchAmount]);
 
-  // Reset form when modal opens
+  // Reset form when modal opens - T018: Pre-fill with vendor's default budget category
   useEffect(() => {
     if (open) {
       form.reset({
@@ -134,14 +151,16 @@ export function AddInvoiceModal({
         invoice_date: format(new Date(), 'yyyy-MM-dd'),
         due_date: format(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'),
         amount: 0,
+        budget_category_id: vendor?.default_budget_category_id || '', // T018: Pre-fill from vendor default
         notes: '',
       });
       setCalculatedVat(0);
       setCalculatedTotal(0);
     }
-  }, [open, invoices]);
+  }, [open, invoices, vendor]);
 
   const onSubmit = (data: AddInvoiceFormData) => {
+    // T019-T020: Include budget category for budget line item creation
     createInvoice(
       {
         vendorId,
@@ -152,6 +171,7 @@ export function AddInvoiceModal({
           amount: data.amount,
           vat_amount: calculatedVat,
           notes: data.notes,
+          budget_category_id: data.budget_category_id, // T019: Pass budget category for line item creation
         },
       },
       {
@@ -257,6 +277,36 @@ export function AddInvoiceModal({
                 <span className="font-mono text-[#D4A5A5]">{formatCurrency(calculatedTotal)}</span>
               </div>
             </div>
+
+            {/* T017: Budget category dropdown */}
+            <FormField
+              control={form.control}
+              name="budget_category_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Budget Category *</FormLabel>
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    disabled={categoriesLoading}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select budget category" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {budgetCategories.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.category_name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <FormField
               control={form.control}
