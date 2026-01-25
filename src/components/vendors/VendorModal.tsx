@@ -121,7 +121,7 @@ export function VendorModal({ open, onClose, onSuccess, vendor, weddingId }: Ven
               </TabsList>
 
               <TabsContent value="basic" className="mt-6">
-                <VendorBasicInfoTab form={form} />
+                <VendorBasicInfoTab form={form} weddingId={weddingId} />
               </TabsContent>
 
               <TabsContent value="contract" className="mt-6">

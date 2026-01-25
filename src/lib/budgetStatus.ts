@@ -45,8 +45,9 @@ export function formatCurrencyValue(amount: number): string {
  * Calculate budget status badge based on actual/projected ratio
  * FR-008: Status thresholds
  * - On Track: actual < 90% of projected (green)
- * - 90% Spent: actual >= 90% AND actual <= projected (orange)
- * - Over Budget: actual > projected (red, shows "Over by R X")
+ * - Near Budget: actual >= 90% AND actual < 100% of projected (orange)
+ * - At Budget: actual = 100% of projected (orange)
+ * - Over Budget: actual > projected (red, with overAmount for formatted display)
  *
  * Edge case: When projected = 0, always show "On Track"
  */
@@ -70,20 +71,31 @@ export function calculateBudgetStatus(
   // Over Budget: actual > projected
   if (actualAmount > projectedAmount) {
     return {
-      label: `Over by ${formatCurrency(overAmount)}`,
+      label: 'Over Budget',
       status: 'over-budget',
       color: 'text-red-700',
       bgColor: 'bg-red-100',
+      overAmount, // Component will format this with user's currency
     };
   }
 
-  // Warning: actual >= 90% of projected
-  if (percentUsed >= 90) {
+  // At Budget: actual = 100% of projected (within small tolerance for floating point)
+  if (percentUsed >= 99.99) {
     return {
-      label: '90% Spent',
-      status: 'warning',
+      label: 'At Budget',
+      status: 'at-budget',
       color: 'text-orange-700',
       bgColor: 'bg-orange-100',
+    };
+  }
+
+  // Near Budget: actual >= 90% of projected
+  if (percentUsed >= 90) {
+    return {
+      label: 'Near Budget',
+      status: 'near-budget',
+      color: 'text-amber-700',
+      bgColor: 'bg-amber-100',
     };
   }
 

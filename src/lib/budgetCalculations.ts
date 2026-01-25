@@ -142,9 +142,10 @@ export function validatePaymentAmount(
  */
 export function getBudgetWarningLevel(
   percentageSpent: number
-): 'on-track' | 'warning' | 'over-budget' {
-  if (percentageSpent >= 100) return 'over-budget';
-  if (percentageSpent >= 90) return 'warning';
+): 'on-track' | 'near-budget' | 'at-budget' | 'over-budget' {
+  if (percentageSpent > 100) return 'over-budget';
+  if (percentageSpent >= 99.99) return 'at-budget'; // Account for floating point precision
+  if (percentageSpent >= 90) return 'near-budget';
   return 'on-track';
 }
 

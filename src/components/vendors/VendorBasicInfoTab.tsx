@@ -1,6 +1,7 @@
 /**
  * VendorBasicInfoTab Component
  * @feature 008-vendor-management
+ * @feature 029-budget-vendor-integration
  * @task T021
  *
  * Basic information form tab for vendor modal
@@ -25,12 +26,17 @@ import {
 } from '@/components/ui/select';
 import { VendorFormData, VENDOR_TYPE_CONFIG, VENDOR_STATUS_CONFIG, VendorType, VendorStatus } from '@/types/vendor';
 import { VENDOR_TYPES, VENDOR_STATUSES } from '@/schemas/vendor';
+import { useBudgetCategories } from '@/hooks/useBudgetCategories';
 
 interface VendorBasicInfoTabProps {
   form: UseFormReturn<VendorFormData>;
+  weddingId: string;
 }
 
-export function VendorBasicInfoTab({ form }: VendorBasicInfoTabProps) {
+export function VendorBasicInfoTab({ form, weddingId }: VendorBasicInfoTabProps) {
+  // Fetch wedding's budget categories for dropdown
+  const { categories: budgetCategories, isLoading: categoriesLoading } = useBudgetCategories(weddingId);
+
   return (
     <div className="space-y-4">
       {/* Vendor Type */}
@@ -54,6 +60,40 @@ export function VendorBasicInfoTab({ form }: VendorBasicInfoTabProps) {
                 ))}
               </SelectContent>
             </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      {/* Default Budget Category - Feature 029 */}
+      <FormField
+        control={form.control}
+        name="default_budget_category_id"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Default Budget Category</FormLabel>
+            <Select
+              value={field.value || '__none__'}
+              onValueChange={(value) => field.onChange(value === '__none__' ? '' : value)}
+              disabled={categoriesLoading}
+            >
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder={categoriesLoading ? 'Loading...' : 'Select budget category'} />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value="__none__">None</SelectItem>
+                {budgetCategories.map((category) => (
+                  <SelectItem key={category.id} value={category.id}>
+                    {category.category_name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              Invoices from this vendor will default to this budget category
+            </p>
             <FormMessage />
           </FormItem>
         )}

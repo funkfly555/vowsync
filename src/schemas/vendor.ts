@@ -179,7 +179,8 @@ export const vendorSchema = z.object({
   branch_code: z.string().transform(val => val || null),
   swift_code: z.string().transform(val => val || null),
   // Budget Integration (Feature 029 - T014)
-  default_budget_category_id: z.string().uuid().nullable().optional().transform(val => val || null),
+  // Allow empty string (no category) or valid UUID, transform empty to null for database
+  default_budget_category_id: z.union([z.literal(''), z.string().uuid()]).transform(val => val || null),
 });
 
 export type VendorSchemaType = z.infer<typeof vendorSchema>;

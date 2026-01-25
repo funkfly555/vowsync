@@ -379,6 +379,7 @@ export const VENDOR_STATUS_CONFIG: Record<VendorStatus, { label: string }> = {
 export interface VendorPaymentSchedule {
   id: string;
   vendor_id: string;
+  vendor_invoice_id: string | null; // Links payment to invoice for multi-payment tracking
   milestone_name: string;
   due_date: string;
   amount: number;

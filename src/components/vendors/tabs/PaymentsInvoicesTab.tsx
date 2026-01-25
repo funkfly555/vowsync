@@ -21,6 +21,7 @@ import {
   Search,
   CheckCircle2,
   AlertTriangle,
+  Trash2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -52,6 +53,7 @@ import { formatCurrency } from '@/lib/vendorInvoiceStatus';
 import { cn } from '@/lib/utils';
 import { AddInvoiceModal } from '../modals/AddInvoiceModal';
 import { RecordPaymentModal } from '../modals/RecordPaymentModal';
+import { DeleteInvoiceDialog } from '../DeleteInvoiceDialog';
 
 interface PaymentsInvoicesTabProps {
   vendorId: string;
@@ -107,7 +109,9 @@ export function PaymentsInvoicesTab({ vendorId, weddingId }: PaymentsInvoicesTab
   const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
   const [isAddInvoiceOpen, setIsAddInvoiceOpen] = useState(false);
   const [isRecordPaymentOpen, setIsRecordPaymentOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedInvoiceForPayment, setSelectedInvoiceForPayment] = useState<VendorInvoice | null>(null);
+  const [selectedInvoiceForDelete, setSelectedInvoiceForDelete] = useState<VendorInvoice | null>(null);
 
   // Calculate invoices with payment data
   const invoicesWithPayments = useMemo<InvoiceWithPayments[]>(() => {
@@ -117,11 +121,12 @@ export function PaymentsInvoicesTab({ vendorId, weddingId }: PaymentsInvoicesTab
     today.setHours(0, 0, 0, 0);
 
     return invoices.map((invoice) => {
-      // Find the payment linked TO this invoice (invoice has payment_schedule_id pointing to payment)
-      const linkedPayment = invoice.payment_schedule_id
-        ? payments?.find((p) => p.id === invoice.payment_schedule_id && p.status === 'paid')
-        : null;
-      const totalPaid = linkedPayment ? linkedPayment.amount : 0;
+      // Find ALL paid payments linked to this invoice via vendor_invoice_id
+      // This supports multiple partial payments against a single invoice
+      const linkedPayments = payments?.filter(
+        (p) => p.vendor_invoice_id === invoice.id && p.status === 'paid'
+      ) || [];
+      const totalPaid = linkedPayments.reduce((sum, p) => sum + (p.amount || 0), 0);
       const balance = invoice.total_amount - totalPaid;
 
       // Check if overdue
@@ -191,6 +196,18 @@ export function PaymentsInvoicesTab({ vendorId, weddingId }: PaymentsInvoicesTab
   const handleRecordPayment = () => {
     setSelectedInvoiceForPayment(null);
     setIsRecordPaymentOpen(true);
+  };
+
+  // Open delete dialog for a specific invoice
+  const handleDeleteInvoice = (invoice: VendorInvoice) => {
+    setSelectedInvoiceForDelete(invoice);
+    setIsDeleteDialogOpen(true);
+  };
+
+  // Close delete dialog
+  const handleDeleteClose = () => {
+    setIsDeleteDialogOpen(false);
+    setSelectedInvoiceForDelete(null);
   };
 
   // Get row background color based on status
@@ -418,6 +435,20 @@ export function PaymentsInvoicesTab({ vendorId, weddingId }: PaymentsInvoicesTab
                               <TooltipContent>Send Reminder</TooltipContent>
                             </Tooltip>
                           )}
+
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+                                onClick={() => handleDeleteInvoice(invoice)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Delete Invoice</TooltipContent>
+                          </Tooltip>
                         </TooltipProvider>
                       </div>
                     </TableCell>
@@ -496,6 +527,14 @@ export function PaymentsInvoicesTab({ vendorId, weddingId }: PaymentsInvoicesTab
         )}
         preselectedInvoice={selectedInvoiceForPayment}
       />
+
+      <DeleteInvoiceDialog
+        open={isDeleteDialogOpen}
+        onClose={handleDeleteClose}
+        onSuccess={handleDeleteClose}
+        vendorId={vendorId}
+        invoice={selectedInvoiceForDelete}
+      />
     </div>
   );
 }
@@ -506,8 +545,8 @@ interface PaymentHistoryItemProps {
 }
 
 function PaymentHistoryItem({ payment, invoices }: PaymentHistoryItemProps) {
-  // Find invoice linked to this payment (invoice.payment_schedule_id points to payment.id)
-  const linkedInvoice = invoices.find((inv) => inv.payment_schedule_id === payment.id);
+  // Find invoice linked to this payment via vendor_invoice_id on the payment
+  const linkedInvoice = invoices.find((inv) => inv.id === payment.vendor_invoice_id);
 
   // Determine if this was a full or partial payment
   const isFullPayment = linkedInvoice

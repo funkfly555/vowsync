@@ -6,7 +6,7 @@
  * @task T015-T021: Invoice creation with budget integration
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { format } from 'date-fns';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -143,9 +143,13 @@ export function AddInvoiceModal({
     setCalculatedTotal(total);
   }, [watchAmount]);
 
+  // Track previous open state to prevent infinite re-renders
+  const prevOpenRef = useRef(false);
+
   // Reset form when modal opens - T018: Pre-fill with vendor's default budget category
+  // Only reset when modal actually opens (open transitions from false to true)
   useEffect(() => {
-    if (open) {
+    if (open && !prevOpenRef.current) {
       form.reset({
         invoice_number: generateNextInvoiceNumber(),
         invoice_date: format(new Date(), 'yyyy-MM-dd'),
@@ -157,7 +161,8 @@ export function AddInvoiceModal({
       setCalculatedVat(0);
       setCalculatedTotal(0);
     }
-  }, [open, invoices, vendor]);
+    prevOpenRef.current = open;
+  }, [open, vendor?.default_budget_category_id]);
 
   const onSubmit = (data: AddInvoiceFormData) => {
     // T019-T020: Include budget category for budget line item creation

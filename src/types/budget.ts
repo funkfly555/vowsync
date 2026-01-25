@@ -175,9 +175,11 @@ export const DEFAULT_BUDGET_CATEGORY_FORM: BudgetCategoryFormData = {
  */
 export interface BudgetStatusBadge {
   label: string;
-  status: 'on-track' | 'warning' | 'over-budget';
+  status: 'on-track' | 'near-budget' | 'at-budget' | 'over-budget';
   color: string;
   bgColor: string;
+  /** For 'over-budget' status, the amount over (for formatted display) */
+  overAmount?: number;
 }
 
 /**
@@ -245,8 +247,13 @@ export const BUDGET_STATUS_CONFIG = {
     color: 'text-green-700',
     bgColor: 'bg-green-100',
   },
-  warning: {
-    label: '90% Spent',
+  'near-budget': {
+    label: 'Near Budget',
+    color: 'text-amber-700',
+    bgColor: 'bg-amber-100',
+  },
+  'at-budget': {
+    label: 'At Budget',
     color: 'text-orange-700',
     bgColor: 'bg-orange-100',
   },

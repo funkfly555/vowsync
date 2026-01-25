@@ -114,11 +114,22 @@ async function createPaymentFromInvoice({
   const today = new Date().toISOString().split('T')[0];
   const paymentPaidDate = paidDate || today;
 
-  // Step 1: Create the payment (auto-mark as paid if markAsPaid is true)
+  // Step 1: Get existing paid payments for this invoice to calculate cumulative total
+  const { data: existingPayments } = await supabase
+    .from('vendor_payment_schedule')
+    .select('amount')
+    .eq('vendor_invoice_id', invoice.id)
+    .eq('status', 'paid');
+
+  const existingPaidTotal = existingPayments?.reduce((sum, p) => sum + (p.amount || 0), 0) ?? 0;
+
+  // Step 2: Create the payment (auto-mark as paid if markAsPaid is true)
+  // Link to invoice via vendor_invoice_id for multi-payment tracking
   const { data: payment, error: paymentError } = await supabase
     .from('vendor_payment_schedule')
     .insert({
       vendor_id: vendorId,
+      vendor_invoice_id: invoice.id, // Link payment to invoice for cumulative tracking
       milestone_name: data.milestone_name,
       due_date: data.due_date,
       amount: data.amount,
@@ -135,13 +146,14 @@ async function createPaymentFromInvoice({
     throw paymentError;
   }
 
-  // Step 2: Calculate the new invoice status based on payment amount
-  // Use the existing helper to determine if payment covers full invoice or partial
+  // Step 3: Calculate the new invoice status based on CUMULATIVE payment total
+  // Use cumulative paid amount (existing + new) to determine if fully paid or partial
+  const cumulativePaidTotal = markAsPaid ? existingPaidTotal + data.amount : existingPaidTotal;
   const newInvoiceStatus = markAsPaid
-    ? calculateInvoiceStatusFromPayment(data.amount, invoice.total_amount)
+    ? calculateInvoiceStatusFromPayment(cumulativePaidTotal, invoice.total_amount)
     : invoice.status; // Keep original status if not marking as paid
 
-  // Step 3: Link the invoice to the payment AND update its status
+  // Step 4: Link the invoice to the payment AND update its status
   const { data: updatedInvoice, error: invoiceError } = await supabase
     .from('vendor_invoices')
     .update({
@@ -160,7 +172,7 @@ async function createPaymentFromInvoice({
     throw invoiceError;
   }
 
-  // T026-T027: Step 4: Update budget line item if one exists for this invoice
+  // T026-T027: Step 5: Update budget line item if one exists for this invoice
   if (markAsPaid) {
     const { data: lineItem } = await supabase
       .from('budget_line_items')

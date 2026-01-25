@@ -113,15 +113,15 @@ export function OverviewTab({ weddingId }: OverviewTabProps) {
           <div className="space-y-2">
             <Label htmlFor="default_budget_category_id">Default Budget Category</Label>
             <Select
-              value={defaultBudgetCategoryId || ''}
-              onValueChange={(value) => setValue('default_budget_category_id', value || '', { shouldDirty: true })}
+              value={defaultBudgetCategoryId || '__none__'}
+              onValueChange={(value) => setValue('default_budget_category_id', value === '__none__' ? '' : value, { shouldDirty: true })}
               disabled={categoriesLoading}
             >
               <SelectTrigger id="default_budget_category_id">
                 <SelectValue placeholder={categoriesLoading ? 'Loading...' : 'Select budget category'} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">None</SelectItem>
+                <SelectItem value="__none__">None</SelectItem>
                 {budgetCategories.map((category) => (
                   <SelectItem key={category.id} value={category.id}>
                     {category.category_name}
