@@ -81,6 +81,7 @@ export function useBarOrders({ weddingId }: UseBarOrdersParams): UseBarOrdersRet
     queryKey: barOrderKeys.list(weddingId),
     queryFn: () => fetchBarOrders(weddingId),
     enabled: !!weddingId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {

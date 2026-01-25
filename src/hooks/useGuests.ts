@@ -125,6 +125,7 @@ export function useGuests({ weddingId, page, filters }: UseGuestsParams): UseGue
       return fetchGuests(weddingId, page, filters);
     },
     enabled: !!weddingId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   // Transform guests and apply client-side filters (search, invitation status)
@@ -176,6 +177,7 @@ export function useWeddingEvents(weddingId: string) {
       return data || [];
     },
     enabled: !!weddingId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
 
@@ -229,6 +231,7 @@ export function useGuest(guestId: string | undefined): UseGuestReturn {
       };
     },
     enabled: !!guestId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {
@@ -269,6 +272,7 @@ export function useWeddingEventsForAttendance(weddingId: string) {
       return data || [];
     },
     enabled: !!weddingId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
 
@@ -337,6 +341,7 @@ export function useGuestCards({ weddingId, filters }: UseGuestCardsParams): UseG
       });
     },
     enabled: !!weddingId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   // Apply client-side filters
@@ -434,6 +439,7 @@ export function useGuestsByTable(
       return guests || [];
     },
     enabled: !!weddingId && !!tableNumber,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {

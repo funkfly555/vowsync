@@ -58,6 +58,7 @@ export function useBudgetCategories(weddingId: string | undefined): UseBudgetCat
     queryKey: budgetCategoriesQueryKey(weddingId || ''),
     queryFn: () => fetchBudgetCategories(weddingId!),
     enabled: !!weddingId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {
@@ -146,6 +147,7 @@ export function useBudgetCategoriesWithTypes(
     queryKey: [...budgetCategoriesQueryKey(weddingId || ''), 'with-types'],
     queryFn: () => fetchBudgetCategoriesWithTypes(weddingId!),
     enabled: !!weddingId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {
@@ -191,6 +193,7 @@ export function useBudgetCategory(categoryId: string | undefined): UseBudgetCate
     queryKey: ['budget-category', categoryId],
     queryFn: () => fetchBudgetCategory(categoryId!),
     enabled: !!categoryId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {

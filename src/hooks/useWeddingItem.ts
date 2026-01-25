@@ -50,6 +50,7 @@ export function useWeddingItem(itemId: string | undefined): UseWeddingItemReturn
     queryKey: weddingItemKeys.detail(itemId!),
     queryFn: () => fetchWeddingItem(itemId!),
     enabled: !!itemId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {

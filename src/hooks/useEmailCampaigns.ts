@@ -100,6 +100,7 @@ export function useEmailCampaigns({
     queryKey,
     queryFn: () => fetchEmailCampaigns(weddingId, filters),
     enabled: !!weddingId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   // Apply client-side search filter

@@ -180,6 +180,7 @@ export function useTasks({ weddingId, filters }: UseTasksParams): UseTasksReturn
     queryKey: taskKeys.list(weddingId),
     queryFn: () => fetchTasks(weddingId),
     enabled: !!weddingId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   // Apply client-side filters
@@ -209,6 +210,7 @@ export function useTask(taskId: string | undefined): UseTaskReturn {
     queryKey: taskKeys.detail(taskId!),
     queryFn: () => fetchTask(taskId!),
     enabled: !!taskId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {
@@ -255,6 +257,7 @@ export function useVendorsForDropdown(weddingId: string): UseVendorsForDropdownR
       return data || [];
     },
     enabled: !!weddingId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {

@@ -68,6 +68,7 @@ export function useBarOrder(orderId: string | undefined): UseBarOrderReturn {
     queryKey: barOrderKeys.detail(orderId!),
     queryFn: () => fetchBarOrder(orderId!),
     enabled: !!orderId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {
@@ -123,6 +124,7 @@ export function useEventsForDropdown(weddingId: string) {
       }));
     },
     enabled: !!weddingId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
 
@@ -148,6 +150,7 @@ export function useVendorsForDropdown(weddingId: string) {
       }));
     },
     enabled: !!weddingId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
 
@@ -179,5 +182,6 @@ export function useEventGuestCount(eventId: string | null) {
       return adultCount;
     },
     enabled: !!eventId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }

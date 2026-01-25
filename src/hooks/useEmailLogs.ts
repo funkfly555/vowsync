@@ -147,6 +147,7 @@ export function useEmailLogs({
     queryKey: emailLogKeys.list(params),
     queryFn: () => fetchEmailLogs(params),
     enabled: !!(campaignId || weddingId),
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {
@@ -217,6 +218,7 @@ export function useEmailLogStats(campaignId: string | undefined) {
     queryKey: [...emailLogKeys.list({ campaignId }), 'stats'],
     queryFn: () => fetchEmailLogStats(campaignId!),
     enabled: !!campaignId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {

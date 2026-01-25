@@ -44,6 +44,7 @@ export function useVendorPayments(vendorId: string | undefined): UseVendorPaymen
     queryKey: ['vendor-payments', vendorId],
     queryFn: () => fetchVendorPayments(vendorId!),
     enabled: !!vendorId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {
@@ -124,6 +125,7 @@ export function useVendorPaymentsWithInvoices(vendorId: string | undefined): Use
     queryKey: ['vendor-payments-with-invoices', vendorId],
     queryFn: () => fetchVendorPaymentsWithInvoices(vendorId!),
     enabled: !!vendorId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {
@@ -169,6 +171,7 @@ export function useVendorPayment(paymentId: string | undefined): UseVendorPaymen
     queryKey: ['vendor-payment', paymentId],
     queryFn: () => fetchVendorPayment(paymentId!),
     enabled: !!paymentId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {

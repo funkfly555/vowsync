@@ -59,6 +59,7 @@ export function useMealOptions({ weddingId }: UseMealOptionsParams): UseMealOpti
     queryKey,
     queryFn: () => fetchMealOptions(weddingId),
     enabled: !!weddingId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   const mealOptions = data || [];
@@ -291,6 +292,7 @@ export function useMealSelectionStats(weddingId: string): UseMealSelectionStatsR
     queryKey: ['meal_selection_stats', weddingId],
     queryFn: () => fetchMealSelectionStats(weddingId),
     enabled: !!weddingId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {

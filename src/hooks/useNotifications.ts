@@ -114,6 +114,7 @@ export function useNotifications(options: UseNotificationsOptions = {}): UseNoti
     queryKey: ['notifications', 'list', user?.id, limit, offset, typeFilter, priorityFilter, statusFilter],
     queryFn: () => fetchNotifications(user!.id, options),
     enabled: !!user?.id,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {

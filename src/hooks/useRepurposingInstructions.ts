@@ -75,6 +75,7 @@ export function useRepurposingInstructions({
     queryKey: repurposingKeys.list(weddingId),
     queryFn: () => fetchRepurposingInstructions(weddingId),
     enabled: !!weddingId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {
@@ -113,6 +114,7 @@ export function useWeddingItemsForDropdown(weddingId: string) {
       return data || [];
     },
     enabled: !!weddingId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
 
@@ -141,6 +143,7 @@ export function useEventsForDropdown(weddingId: string) {
       return data || [];
     },
     enabled: !!weddingId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
 
@@ -166,6 +169,7 @@ export function useVendorsForDropdown(weddingId: string) {
       return data || [];
     },
     enabled: !!weddingId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
 
@@ -192,5 +196,6 @@ export function useItemsWithInstructions(weddingId: string) {
       return [...new Set(data?.map((d) => d.wedding_item_id) || [])];
     },
     enabled: !!weddingId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }

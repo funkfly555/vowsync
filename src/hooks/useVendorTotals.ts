@@ -64,6 +64,7 @@ export function useVendorTotals(vendorId: string | undefined): UseVendorTotalsRe
     queryKey: ['vendor-totals', vendorId],
     queryFn: () => fetchVendorTotals(vendorId!),
     enabled: !!vendorId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {

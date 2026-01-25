@@ -32,6 +32,7 @@ export function useWeddings(filters: WeddingListFilters) {
       if (error) throw error;
       return data as Wedding[];
     },
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
 
@@ -51,6 +52,7 @@ export function useWedding(id: string) {
       return data as Wedding;
     },
     enabled: !!id,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
 

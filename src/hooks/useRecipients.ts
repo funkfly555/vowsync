@@ -220,6 +220,7 @@ export function useRecipients({
       }
     },
     enabled: !!weddingId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   const recipients = data || [];

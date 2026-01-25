@@ -64,6 +64,7 @@ export function useRepurposingInstruction({
     queryKey: repurposingKeys.detail(instructionId),
     queryFn: () => fetchRepurposingInstruction(instructionId),
     enabled: !!instructionId && enabled,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {

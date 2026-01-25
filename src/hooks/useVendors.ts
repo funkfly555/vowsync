@@ -57,6 +57,7 @@ export function useVendors({ weddingId, filters }: UseVendorsParams): UseVendors
     queryKey,
     queryFn: () => fetchVendors(weddingId),
     enabled: !!weddingId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   // Transform vendors and apply client-side filters
@@ -144,6 +145,7 @@ export function useVendor(vendorId: string | undefined): UseVendorReturn {
     queryKey: ['vendor', vendorId],
     queryFn: () => fetchVendor(vendorId!),
     enabled: !!vendorId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {

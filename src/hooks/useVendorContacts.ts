@@ -45,6 +45,7 @@ export function useVendorContacts(vendorId: string | undefined): UseVendorContac
     queryKey: ['vendor-contacts', vendorId],
     queryFn: () => fetchVendorContacts(vendorId!),
     enabled: !!vendorId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {
@@ -90,6 +91,7 @@ export function useVendorContact(contactId: string | undefined): UseVendorContac
     queryKey: ['vendor-contact', contactId],
     queryFn: () => fetchVendorContact(contactId!),
     enabled: !!contactId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {

@@ -44,6 +44,7 @@ export function useVendorInvoices(vendorId: string | undefined): UseVendorInvoic
     queryKey: ['vendor-invoices', vendorId],
     queryFn: () => fetchVendorInvoices(vendorId!),
     enabled: !!vendorId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {
@@ -89,6 +90,7 @@ export function useVendorInvoice(invoiceId: string | undefined): UseVendorInvoic
     queryKey: ['vendor-invoice', invoiceId],
     queryFn: () => fetchVendorInvoice(invoiceId!),
     enabled: !!invoiceId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {

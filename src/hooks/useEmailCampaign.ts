@@ -60,6 +60,7 @@ export function useEmailCampaign(campaignId: string | undefined): UseEmailCampai
     queryKey: emailCampaignKeys.detail(campaignId || ''),
     queryFn: () => fetchEmailCampaign(campaignId!),
     enabled: !!campaignId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {

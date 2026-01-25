@@ -21,6 +21,7 @@ export function useEvents(weddingId: string) {
       return data as Event[];
     },
     enabled: !!weddingId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
 
@@ -42,6 +43,7 @@ export function useEvent(eventId: string) {
       return data as EventWithWedding;
     },
     enabled: !!eventId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
 
@@ -59,6 +61,7 @@ export function useUsedEventOrders(weddingId: string) {
       return data?.map((e) => e.event_order) ?? [];
     },
     enabled: !!weddingId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
 
@@ -252,5 +255,6 @@ export function useEventHasGuests(eventId: string) {
       return (count ?? 0) > 0;
     },
     enabled: !!eventId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }

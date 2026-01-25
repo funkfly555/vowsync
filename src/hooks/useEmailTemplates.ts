@@ -102,6 +102,7 @@ export function useEmailTemplates({
     queryKey,
     queryFn: () => fetchEmailTemplates(consultantId, filters),
     enabled: !!consultantId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   // Apply client-side search filter
@@ -155,5 +156,6 @@ export function useDefaultTemplate(consultantId: string, templateType: TemplateT
       return data as EmailTemplate;
     },
     enabled: !!consultantId && !!templateType,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }

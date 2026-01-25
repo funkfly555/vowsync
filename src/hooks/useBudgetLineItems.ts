@@ -52,6 +52,7 @@ export function useBudgetLineItems(categoryId: string | undefined): UseBudgetLin
     queryKey: budgetLineItemsQueryKey(categoryId || ''),
     queryFn: () => fetchBudgetLineItems(categoryId!),
     enabled: !!categoryId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {
@@ -104,6 +105,7 @@ export function useBudgetLineItemByInvoice(
     queryKey: budgetLineItemByInvoiceQueryKey(invoiceId || ''),
     queryFn: () => fetchBudgetLineItemByInvoice(invoiceId!),
     enabled: !!invoiceId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {

@@ -146,6 +146,7 @@ export function useAttendanceMatrix({ weddingId }: UseAttendanceMatrixOptions) {
     queryKey: ['attendanceMatrix', weddingId],
     queryFn: () => fetchAttendanceMatrix(weddingId),
     enabled: !!weddingId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   // Mutation for batch saving attendance changes

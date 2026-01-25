@@ -57,6 +57,7 @@ export function useEmailTemplate(templateId: string | undefined): UseEmailTempla
     queryKey: emailTemplateKeys.detail(templateId || ''),
     queryFn: () => fetchEmailTemplate(templateId!),
     enabled: !!templateId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {

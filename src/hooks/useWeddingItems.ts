@@ -65,6 +65,7 @@ export function useWeddingItems({ weddingId }: UseWeddingItemsParams): UseWeddin
     queryKey: weddingItemKeys.list(weddingId),
     queryFn: () => fetchWeddingItems(weddingId),
     enabled: !!weddingId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {
@@ -103,5 +104,6 @@ export function useEventsForItems(weddingId: string) {
       return data || [];
     },
     enabled: !!weddingId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
