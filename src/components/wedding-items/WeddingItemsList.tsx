@@ -1,16 +1,24 @@
 /**
- * WeddingItemsList - List view of wedding items with cards
- * @feature 013-wedding-items
- * @task T017
+ * WeddingItemsList - List view of wedding items with cards or table
+ * @feature 013-wedding-items, 031-items-card-table-view
+ * @task T017, T014, T019
  */
 
 import { Package, Plus, SearchX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { WeddingItemWithQuantities } from '@/types/weddingItem';
-import { WeddingItemCard } from './WeddingItemCard';
+import type { ItemViewMode, ItemEventColumnMeta } from '@/types/item-table';
+import { ItemCard } from './ItemCard';
+import { ItemTableView } from './table/ItemTableView';
 
 interface WeddingItemsListProps {
   items: WeddingItemWithQuantities[];
+  events?: ItemEventColumnMeta[];
+  weddingId: string;
+  viewMode?: ItemViewMode;
+  selectedItems?: Set<string>;
+  onSelectItem?: (id: string, selected: boolean) => void;
+  onSelectAll?: (itemIds: string[]) => void;
   onAddItem: () => void;
   onEditItem: (item: WeddingItemWithQuantities) => void;
   onDeleteItem: (item: WeddingItemWithQuantities) => void;
@@ -26,9 +34,9 @@ interface WeddingItemsListProps {
  */
 function LoadingSkeleton() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
       {[1, 2, 3, 4, 5, 6].map((i) => (
-        <div key={i} className="h-48 bg-gray-100 rounded-lg animate-pulse" />
+        <div key={i} className="h-20 border-b border-gray-200 animate-pulse bg-gray-50" />
       ))}
     </div>
   );
@@ -86,15 +94,24 @@ function NoResultsState({ onClearFilters }: NoResultsStateProps) {
 }
 
 /**
- * Main list component displaying wedding items in a responsive grid
+ * Main list component displaying wedding items
+ * Card view: Vertical list with expandable cards (like Guests)
+ * Table view: Horizontal scrollable table with sorting and filtering
  */
 export function WeddingItemsList({
   items,
+  events = [],
+  weddingId,
+  viewMode = 'card',
+  selectedItems = new Set(),
+  onSelectItem,
+  onSelectAll,
   onAddItem,
   onEditItem,
   onDeleteItem,
-  onQuantityChange,
-  updatingItemId,
+  // Card view uses inline editing with auto-save, so these are only for table view
+  onQuantityChange: _onQuantityChange,
+  updatingItemId: _updatingItemId,
   isLoading,
   hasActiveFilters = false,
   onClearFilters,
@@ -111,16 +128,41 @@ export function WeddingItemsList({
     return <EmptyState onAddItem={onAddItem} />;
   }
 
+  // T014: Table view - FLAT spreadsheet layout with inline editing (like Guest table)
+  if (viewMode === 'table' && onSelectItem && onSelectAll) {
+    return (
+      <ItemTableView
+        items={items}
+        events={events}
+        weddingId={weddingId}
+        selectedItems={selectedItems}
+        onSelectItem={onSelectItem}
+        onSelectAll={onSelectAll}
+        onEditItem={onEditItem}
+        onDeleteItem={onDeleteItem}
+      />
+    );
+  }
+
+  // T019: Card view with expandable ItemCard components
+  // Vertical list layout (like GuestsPage) - NOT grid
+  // Adapter function: toggle selection based on current state
+  const handleToggleSelect = (itemId: string) => {
+    if (onSelectItem) {
+      const isCurrentlySelected = selectedItems.has(itemId);
+      onSelectItem(itemId, !isCurrentlySelected);
+    }
+  };
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
       {items.map((item) => (
-        <WeddingItemCard
+        <ItemCard
           key={item.id}
           item={item}
-          onEdit={onEditItem}
+          isSelected={selectedItems.has(item.id)}
+          onToggleSelect={handleToggleSelect}
           onDelete={onDeleteItem}
-          onQuantityChange={onQuantityChange}
-          isUpdatingQuantity={updatingItemId === item.id}
         />
       ))}
     </div>
