@@ -39,9 +39,13 @@ function transformFormDataForInsert(
     plus_one_confirmed: data.plus_one_confirmed,
     table_number: data.table_number,
     table_position: data.table_position,
+    plus_one_table_position: data.plus_one_table_position,
     dietary_restrictions: data.dietary_restrictions || null,
     allergies: data.allergies || null,
     dietary_notes: data.dietary_notes || null,
+    plus_one_dietary_restrictions: data.plus_one_dietary_restrictions || null,
+    plus_one_allergies: data.plus_one_allergies || null,
+    plus_one_dietary_notes: data.plus_one_dietary_notes || null,
     starter_choice: data.starter_choice,
     main_choice: data.main_choice,
     dessert_choice: data.dessert_choice,
@@ -82,6 +86,9 @@ function transformFormDataForUpdate(
   if (data.dietary_restrictions !== undefined) result.dietary_restrictions = data.dietary_restrictions || null;
   if (data.allergies !== undefined) result.allergies = data.allergies || null;
   if (data.dietary_notes !== undefined) result.dietary_notes = data.dietary_notes || null;
+  if (data.plus_one_dietary_restrictions !== undefined) result.plus_one_dietary_restrictions = data.plus_one_dietary_restrictions || null;
+  if (data.plus_one_allergies !== undefined) result.plus_one_allergies = data.plus_one_allergies || null;
+  if (data.plus_one_dietary_notes !== undefined) result.plus_one_dietary_notes = data.plus_one_dietary_notes || null;
   if (data.starter_choice !== undefined) result.starter_choice = data.starter_choice;
   if (data.main_choice !== undefined) result.main_choice = data.main_choice;
   if (data.dessert_choice !== undefined) result.dessert_choice = data.dessert_choice;
@@ -92,6 +99,7 @@ function transformFormDataForUpdate(
   // Seating fields (024-guest-menu-management)
   if (data.table_number !== undefined) result.table_number = data.table_number;
   if (data.table_position !== undefined) result.table_position = data.table_position;
+  if (data.plus_one_table_position !== undefined) result.plus_one_table_position = data.plus_one_table_position;
   // Wedding party fields (025-guest-page-fixes)
   if (data.gender !== undefined) result.gender = data.gender;
   if (data.wedding_party_side !== undefined) result.wedding_party_side = data.wedding_party_side;

@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VowSync — Hybrid/Smart Budget | Approach A3</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #07070a;
+    --bg-surface: #0d0d12;
+    --bg-card: #111116;
+    --bg-elevated: #18181e;
+    --bg-hover: #1d1d25;
+    --border-subtle: rgba(255,255,255,0.05);
+    --border-medium: rgba(255,255,255,0.09);
+    --text-primary: #eeeef2;
+    --text-secondary: #8b8b98;
+    --text-muted: #4e4e5a;
+    --emerald: #34d399;
+    --emerald-dim: rgba(52,211,153,0.1);
+    --sky: #38bdf8;
+    --sky-dim: rgba(56,189,248,0.1);
+    --amber: #fbbf24;
+    --amber-dim: rgba(251,191,36,0.1);
+    --rose: #fb7185;
+    --rose-dim: rgba(251,113,133,0.08);
+    --violet: #a78bfa;
+    --violet-dim: rgba(167,139,250,0.1);
+    --orange: #fb923c;
+    --orange-dim: rgba(251,146,60,0.1);
+    --teal: #2dd4bf;
+    --teal-dim: rgba(45,212,191,0.1);
+    --indigo: #818cf8;
+    --indigo-dim: rgba(129,140,248,0.1);
+    --radius: 14px;
+    --radius-sm: 10px;
+    --radius-xs: 6px;
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'Inter', -apple-system, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--font-body);
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    top: -200px; right: -200px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(52,211,153,0.03) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -200px; left: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(129,140,248,0.02) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .page { max-width: 1340px; margin: 0 auto; padding: 32px 40px 80px; position: relative; z-index: 1; }
+
+  .approach-label {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 14px; background: var(--emerald-dim);
+    border: 1px solid rgba(52,211,153,0.2); border-radius: 20px;
+    font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--emerald); margin-bottom: 24px;
+  }
+  .approach-label .dot { width: 6px; height: 6px; background: var(--emerald); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  .approach-banner {
+    background: linear-gradient(135deg, rgba(52,211,153,0.05) 0%, rgba(129,140,248,0.03) 100%);
+    border: 1px solid rgba(52,211,153,0.1); border-radius: var(--radius);
+    padding: 14px 20px; margin-bottom: 28px;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 13px; color: var(--text-secondary);
+  }
+  .approach-banner strong { color: var(--emerald); }
+
+  .header { margin-bottom: 32px; }
+  .breadcrumb { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .breadcrumb a { color: var(--text-secondary); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--emerald); }
+  .breadcrumb .sep { opacity: 0.3; }
+  .header h1 { font-family: var(--font-display); font-size: 36px; font-weight: 700; letter-spacing: -0.5px; }
+  .header h1 span { color: var(--emerald); }
+  .header-sub { font-size: 14px; color: var(--text-secondary); margin-top: 6px; }
+
+  /* 5 Stat Cards */
+  .stat-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 24px;
+  }
+  .stat-card {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: var(--radius); padding: 18px 20px;
+    transition: border-color 0.2s, transform 0.15s; position: relative; overflow: hidden;
+  }
+  .stat-card:hover { border-color: var(--border-medium); transform: translateY(-1px); }
+  .stat-card .glow {
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+  .stat-label {
+    font-size: 10px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 1.2px; color: var(--text-muted); margin-bottom: 8px;
+  }
+  .stat-value {
+    font-family: var(--font-display); font-size: 26px; font-weight: 700; line-height: 1;
+  }
+  .stat-sub { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+
+  /* Segmented Progress */
+  .progress-section {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: var(--radius); padding: 20px 24px; margin-bottom: 24px;
+  }
+  .progress-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
+  }
+  .progress-header span { font-size: 12px; color: var(--text-muted); }
+  .progress-header strong { font-size: 13px; color: var(--text-primary); }
+  .segmented-bar {
+    width: 100%; height: 12px;
+    background: rgba(255,255,255,0.03); border-radius: 6px;
+    overflow: hidden; display: flex; position: relative;
+  }
+  .seg-fill {
+    height: 100%; transition: width 0.8s ease;
+  }
+  .seg-fill.paid { background: var(--emerald); }
+  .seg-fill.invoiced {
+    background: repeating-linear-gradient(
+      -45deg, var(--sky), var(--sky) 3px, rgba(56,189,248,0.3) 3px, rgba(56,189,248,0.3) 6px
+    );
+  }
+  .seg-fill.estimated {
+    background: repeating-linear-gradient(
+      -45deg, var(--orange), var(--orange) 3px, rgba(251,146,60,0.3) 3px, rgba(251,146,60,0.3) 6px
+    );
+    opacity: 0.6;
+  }
+  .seg-fill.other {
+    background: repeating-linear-gradient(
+      -45deg, var(--violet), var(--violet) 3px, rgba(167,139,250,0.3) 3px, rgba(167,139,250,0.3) 6px
+    );
+    opacity: 0.4;
+  }
+  .seg-legend {
+    display: flex; gap: 16px; margin-top: 10px; font-size: 11px; color: var(--text-muted); flex-wrap: wrap;
+  }
+  .seg-legend-item { display: flex; align-items: center; gap: 6px; }
+  .seg-legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+  .seg-legend-dot.striped {
+    background: repeating-linear-gradient(-45deg, currentColor, currentColor 2px, transparent 2px, transparent 4px);
+    opacity: 0.8;
+  }
+
+  /* Categories Table */
+  .table-wrap {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: var(--radius); overflow: hidden; margin-bottom: 28px;
+  }
+  .table-header {
+    padding: 16px 20px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .table-header h2 { font-family: var(--font-display); font-size: 18px; font-weight: 600; }
+  .budget-table { width: 100%; border-collapse: collapse; }
+  .budget-table thead th {
+    font-size: 10px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 1.2px; color: var(--text-muted);
+    padding: 12px 16px; text-align: left;
+    border-bottom: 1px solid var(--border-subtle); background: var(--bg-elevated);
+  }
+  .budget-table thead th:not(:first-child) { text-align: right; }
+  .budget-table tbody tr {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.15s; cursor: pointer;
+  }
+  .budget-table tbody tr:last-child { border-bottom: none; }
+  .budget-table tbody tr:hover { background: var(--bg-hover); }
+  .budget-table td {
+    padding: 14px 16px; font-size: 13px; color: var(--text-primary);
+  }
+  .budget-table td:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
+
+  .cat-name { display: flex; align-items: center; gap: 10px; font-weight: 500; }
+  .cat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .amount-zero { color: var(--text-muted); }
+
+  /* Mini multi-bar in table */
+  .mini-bar {
+    width: 90px; height: 5px; background: rgba(255,255,255,0.03);
+    border-radius: 3px; overflow: hidden; display: flex; margin-left: auto;
+  }
+  .mini-seg { height: 100%; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px; border-radius: 20px;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.3px;
+  }
+  .badge-green { background: var(--emerald-dim); color: var(--emerald); }
+  .badge-sky { background: var(--sky-dim); color: var(--sky); }
+  .badge-amber { background: var(--amber-dim); color: var(--amber); }
+  .badge-rose { background: var(--rose-dim); color: var(--rose); }
+  .badge-violet { background: var(--violet-dim); color: var(--violet); }
+
+  /* Auto-categorized indicator */
+  .auto-tag {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-size: 9px; font-weight: 600; color: var(--violet);
+    background: var(--violet-dim); padding: 2px 6px; border-radius: 4px;
+    text-transform: uppercase; letter-spacing: 0.5px; margin-left: 6px;
+  }
+
+  .table-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 20px; background: var(--bg-elevated);
+    border-top: 1px solid var(--border-subtle); font-size: 12px; color: var(--text-secondary);
+  }
+  .table-footer strong { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--text-primary); }
+
+  /* Three Column Layout */
+  .three-col {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 28px;
+  }
+
+  /* Pie Panel */
+  .chart-panel {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: var(--radius); padding: 22px;
+  }
+  .panel-title { font-family: var(--font-display); font-size: 16px; font-weight: 600; margin-bottom: 18px; }
+  .pie-wrap { position: relative; width: 150px; height: 150px; margin: 0 auto 16px; }
+  .pie-wrap svg { width: 150px; height: 150px; transform: rotate(-90deg); }
+  .pie-center {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center;
+  }
+  .pie-center-label { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
+  .pie-center-val { font-family: var(--font-display); font-size: 18px; font-weight: 700; }
+  .legend-compact { display: flex; flex-direction: column; gap: 5px; }
+  .legend-c { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-secondary); }
+  .legend-d { width: 6px; height: 6px; border-radius: 2px; flex-shrink: 0; }
+  .legend-c .lv { margin-left: auto; color: var(--text-primary); font-weight: 500; font-variant-numeric: tabular-nums; font-size: 10px; }
+
+  /* Activity Stream */
+  .stream-panel {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: var(--radius); overflow: hidden;
+  }
+  .stream-header {
+    padding: 16px 20px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .stream-header h3 { font-family: var(--font-display); font-size: 16px; font-weight: 600; }
+  .stream-items { max-height: 360px; overflow-y: auto; }
+  .stream-date {
+    padding: 8px 20px; font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted);
+    background: var(--bg-elevated); border-bottom: 1px solid var(--border-subtle);
+  }
+  .stream-entry {
+    padding: 12px 20px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; align-items: flex-start; gap: 12px;
+    transition: background 0.15s; font-size: 13px;
+  }
+  .stream-entry:hover { background: var(--bg-hover); }
+  .stream-icon {
+    width: 28px; height: 28px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; flex-shrink: 0; margin-top: 1px;
+  }
+  .stream-content { flex: 1; }
+  .stream-desc { color: var(--text-secondary); line-height: 1.4; }
+  .stream-desc strong { color: var(--text-primary); font-weight: 600; }
+  .stream-meta { font-size: 11px; color: var(--text-muted); margin-top: 3px; display: flex; align-items: center; gap: 8px; }
+  .stream-amount { font-family: var(--font-display); font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+  .stream-entry.superseded { opacity: 0.4; }
+  .stream-entry.superseded .stream-desc { text-decoration: line-through; }
+
+  /* Reconciliation Alert */
+  .recon-alert {
+    background: var(--bg-card); border: 1px solid rgba(251,113,133,0.15);
+    border-radius: var(--radius); overflow: hidden;
+  }
+  .recon-header {
+    padding: 16px 20px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .recon-header h3 { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--rose); }
+  .recon-header .count {
+    padding: 2px 8px; border-radius: 10px;
+    background: var(--rose-dim); color: var(--rose);
+    font-size: 11px; font-weight: 700;
+  }
+  .recon-item {
+    padding: 14px 20px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .recon-item:last-child { border-bottom: none; }
+  .recon-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--rose); flex-shrink: 0; animation: pulse 2s infinite; }
+  .recon-info { flex: 1; }
+  .recon-title { font-size: 13px; font-weight: 500; }
+  .recon-desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .recon-btn {
+    padding: 6px 14px; border-radius: var(--radius-xs);
+    background: var(--rose-dim); border: 1px solid rgba(251,113,133,0.2);
+    color: var(--rose); font-size: 11px; font-weight: 600;
+    cursor: pointer; font-family: var(--font-body); transition: all 0.2s;
+  }
+  .recon-btn:hover { background: rgba(251,113,133,0.15); border-color: rgba(251,113,133,0.3); }
+
+  /* Animations */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .ani { animation: fadeUp 0.5s ease forwards; opacity: 0; }
+  .d1 { animation-delay: 0.05s; } .d2 { animation-delay: 0.1s; } .d3 { animation-delay: 0.15s; }
+  .d4 { animation-delay: 0.2s; } .d5 { animation-delay: 0.25s; } .d6 { animation-delay: 0.3s; }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
+
+  @media (max-width: 1100px) {
+    .stat-grid { grid-template-columns: repeat(3, 1fr); }
+    .three-col { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .page { padding: 20px 16px 60px; }
+    .header h1 { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="approach-label ani d1"><span class="dot"></span>Approach A3 — Hybrid / Smart</div>
+
+  <div class="approach-banner ani d1">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+    <span><strong>Smart Budget Sync:</strong> Costs auto-flow from all sources with intelligent categorization. Reconciliation engine prevents double-counting. Estimates upgrade to invoices seamlessly.</span>
+  </div>
+
+  <header class="header ani d2">
+    <div class="breadcrumb">
+      <a href="#">Weddings</a><span class="sep">/</span>
+      <a href="#">Thompson-Williams</a><span class="sep">/</span>
+      <span style="color:var(--text-secondary)">Budget</span>
+    </div>
+    <h1>Budget <span>Overview</span></h1>
+    <p class="header-sub">March 15, 2026 · 47 days away · <span style="color:var(--emerald)">Smart Sync active</span></p>
+  </header>
+
+  <!-- 5 Stat Cards -->
+  <div class="stat-grid ani d3">
+    <div class="stat-card">
+      <div class="glow" style="background:linear-gradient(90deg,transparent,var(--indigo),transparent)"></div>
+      <div class="stat-label">Total Budget</div>
+      <div class="stat-value" style="color:var(--indigo)">R500,000</div>
+      <div class="stat-sub">8 categories</div>
+    </div>
+    <div class="stat-card">
+      <div class="glow" style="background:linear-gradient(90deg,transparent,var(--sky),transparent)"></div>
+      <div class="stat-label">Invoiced</div>
+      <div class="stat-value" style="color:var(--sky)">R273,000</div>
+      <div class="stat-sub">R233k paid · R40k outstanding</div>
+    </div>
+    <div class="stat-card">
+      <div class="glow" style="background:linear-gradient(90deg,transparent,var(--orange),transparent)"></div>
+      <div class="stat-label">Estimated</div>
+      <div class="stat-value" style="color:var(--orange)">R95,500</div>
+      <div class="stat-sub">Items + Bar + Other</div>
+    </div>
+    <div class="stat-card">
+      <div class="glow" style="background:linear-gradient(90deg,transparent,var(--emerald),transparent)"></div>
+      <div class="stat-label">Total Spent</div>
+      <div class="stat-value" style="color:var(--emerald)">R368,500</div>
+      <div class="stat-sub">73.7% of budget utilized</div>
+    </div>
+    <div class="stat-card">
+      <div class="glow" style="background:linear-gradient(90deg,transparent,var(--violet),transparent)"></div>
+      <div class="stat-label">Remaining</div>
+      <div class="stat-value" style="color:var(--violet)">R131,500</div>
+      <div class="stat-sub">26.3% available</div>
+    </div>
+  </div>
+
+  <!-- Segmented Progress Bar -->
+  <div class="progress-section ani d3">
+    <div class="progress-header">
+      <span>Budget Utilization — All Sources</span>
+      <strong>R368,500 / R500,000</strong>
+    </div>
+    <div class="segmented-bar">
+      <div class="seg-fill paid" style="width:46.6%"></div>
+      <div class="seg-fill invoiced" style="width:8%"></div>
+      <div class="seg-fill estimated" style="width:18%"></div>
+      <div class="seg-fill other" style="width:1.1%"></div>
+    </div>
+    <div class="seg-legend">
+      <div class="seg-legend-item">
+        <div class="seg-legend-dot" style="background:var(--emerald)"></div> Paid (R233,000)
+      </div>
+      <div class="seg-legend-item">
+        <div class="seg-legend-dot striped" style="color:var(--sky)"></div> Invoiced Unpaid (R40,000)
+      </div>
+      <div class="seg-legend-item">
+        <div class="seg-legend-dot striped" style="color:var(--orange)"></div> Estimated — Items & Bar (R90,000)
+      </div>
+      <div class="seg-legend-item">
+        <div class="seg-legend-dot striped" style="color:var(--violet)"></div> Other Estimates (R5,500)
+      </div>
+    </div>
+  </div>
+
+  <!-- Categories Table -->
+  <div class="table-wrap ani d4">
+    <div class="table-header">
+      <h2>Budget Categories</h2>
+      <span style="font-size:12px;color:var(--text-muted)">Click a row to expand cost breakdown</span>
+    </div>
+    <table class="budget-table">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Projected</th>
+          <th>Invoiced</th>
+          <th>Estimated</th>
+          <th>Total</th>
+          <th>Variance</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="cat-name"><span class="cat-dot" style="background:#e76f51"></span>Venue & Catering</div></td>
+          <td>R180,000</td>
+          <td style="color:var(--sky)">R165,000</td>
+          <td class="amount-zero">—</td>
+          <td style="font-weight:600">R165,000</td>
+          <td style="color:var(--emerald)">-R15,000</td>
+          <td><span class="badge badge-green">On Track</span></td>
+        </tr>
+        <tr>
+          <td><div class="cat-name"><span class="cat-dot" style="background:#e9c46a"></span>Flowers & Decor</div></td>
+          <td>R65,000</td>
+          <td style="color:var(--sky)">R45,000</td>
+          <td class="amount-zero">—</td>
+          <td style="font-weight:600">R45,000</td>
+          <td style="color:var(--emerald)">-R20,000</td>
+          <td><span class="badge badge-sky">Under Budget</span></td>
+        </tr>
+        <tr>
+          <td><div class="cat-name"><span class="cat-dot" style="background:#2a9d8f"></span>Photography</div></td>
+          <td>R35,000</td>
+          <td style="color:var(--sky)">R35,000</td>
+          <td class="amount-zero">—</td>
+          <td style="font-weight:600">R35,000</td>
+          <td style="color:var(--text-muted)">R0</td>
+          <td><span class="badge badge-green">✓ Fully Paid</span></td>
+        </tr>
+        <tr>
+          <td><div class="cat-name"><span class="cat-dot" style="background:#264653"></span>Music & Entertainment</div></td>
+          <td>R25,000</td>
+          <td style="color:var(--sky)">R20,000</td>
+          <td class="amount-zero">—</td>
+          <td style="font-weight:600">R20,000</td>
+          <td style="color:var(--emerald)">-R5,000</td>
+          <td><span class="badge badge-green">On Track</span></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="cat-name">
+              <span class="cat-dot" style="background:#f4a261"></span>Rentals & Equipment
+              <span class="auto-tag">✦ Auto</span>
+            </div>
+          </td>
+          <td>R50,000</td>
+          <td class="amount-zero">—</td>
+          <td style="color:var(--orange)">R48,000</td>
+          <td style="font-weight:600">R48,000</td>
+          <td style="color:var(--emerald)">-R2,000</td>
+          <td><span class="badge badge-green">On Track</span></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="cat-name">
+              <span class="cat-dot" style="background:#8338ec"></span>Beverages
+              <span class="auto-tag">✦ Auto</span>
+            </div>
+          </td>
+          <td>R45,000</td>
+          <td class="amount-zero">—</td>
+          <td style="color:var(--orange)">R42,000</td>
+          <td style="font-weight:600">R42,000</td>
+          <td style="color:var(--emerald)">-R3,000</td>
+          <td><span class="badge badge-green">On Track</span></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="cat-name">
+              <span class="cat-dot" style="background:#ff006e"></span>Stationery
+              <span class="auto-tag">✦ Auto</span>
+            </div>
+          </td>
+          <td>R15,000</td>
+          <td style="color:var(--sky)">R8,000</td>
+          <td style="color:var(--orange)">R5,500</td>
+          <td style="font-weight:600">R13,500</td>
+          <td style="color:var(--emerald)">-R1,500</td>
+          <td><span class="badge badge-green">On Track</span></td>
+        </tr>
+        <tr>
+          <td><div class="cat-name"><span class="cat-dot" style="background:#606c38"></span>Transport</div></td>
+          <td>R10,000</td>
+          <td class="amount-zero">—</td>
+          <td class="amount-zero">—</td>
+          <td class="amount-zero">R0</td>
+          <td style="color:var(--emerald)">-R10,000</td>
+          <td><span class="badge badge-amber">No Costs</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="table-footer">
+      <div>
+        Projected: <strong>R500,000</strong>
+        <span style="margin:0 16px;color:var(--border-medium)">|</span>
+        Invoiced: <strong style="color:var(--sky)">R273,000</strong>
+        <span style="margin:0 16px;color:var(--border-medium)">|</span>
+        Estimated: <strong style="color:var(--orange)">R95,500</strong>
+      </div>
+      <div>
+        Total: <strong style="color:var(--emerald)">R368,500</strong>
+        <span style="margin:0 12px;color:var(--border-medium)">|</span>
+        Remaining: <strong style="color:var(--violet)">R131,500</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Three Column: Pie + Activity Stream + Reconciliation -->
+  <div class="three-col ani d5">
+
+    <!-- Pie Chart -->
+    <div class="chart-panel">
+      <div class="panel-title">Allocation</div>
+      <div class="pie-wrap">
+        <svg viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#e76f51" stroke-width="18" stroke-dasharray="90.48 160" stroke-dashoffset="0" opacity="0.85"/>
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#e9c46a" stroke-width="18" stroke-dasharray="32.67 217.81" stroke-dashoffset="-90.48" opacity="0.85"/>
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#2a9d8f" stroke-width="18" stroke-dasharray="17.59 232.89" stroke-dashoffset="-123.15" opacity="0.85"/>
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#264653" stroke-width="18" stroke-dasharray="12.57 237.91" stroke-dashoffset="-140.74" opacity="0.85"/>
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#f4a261" stroke-width="18" stroke-dasharray="25.13 225.35" stroke-dashoffset="-153.31" opacity="0.85"/>
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#8338ec" stroke-width="18" stroke-dasharray="22.62 227.86" stroke-dashoffset="-178.44" opacity="0.85"/>
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#ff006e" stroke-width="18" stroke-dasharray="7.54 242.94" stroke-dashoffset="-201.06" opacity="0.85"/>
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#606c38" stroke-width="18" stroke-dasharray="5.03 245.45" stroke-dashoffset="-208.6" opacity="0.85"/>
+        </svg>
+        <div class="pie-center">
+          <div class="pie-center-label">Budget</div>
+          <div class="pie-center-val">R500k</div>
+        </div>
+      </div>
+      <div class="legend-compact">
+        <div class="legend-c"><span class="legend-d" style="background:#e76f51"></span>Venue<span class="lv">36%</span></div>
+        <div class="legend-c"><span class="legend-d" style="background:#e9c46a"></span>Flowers<span class="lv">13%</span></div>
+        <div class="legend-c"><span class="legend-d" style="background:#f4a261"></span>Rentals<span class="lv">10%</span></div>
+        <div class="legend-c"><span class="legend-d" style="background:#8338ec"></span>Beverages<span class="lv">9%</span></div>
+        <div class="legend-c"><span class="legend-d" style="background:#2a9d8f"></span>Photo<span class="lv">7%</span></div>
+        <div class="legend-c"><span class="legend-d" style="background:#264653"></span>Music<span class="lv">5%</span></div>
+        <div class="legend-c"><span class="legend-d" style="background:#ff006e"></span>Stationery<span class="lv">3%</span></div>
+        <div class="legend-c"><span class="legend-d" style="background:#606c38"></span>Transport<span class="lv">2%</span></div>
+      </div>
+    </div>
+
+    <!-- Activity Stream -->
+    <div class="stream-panel">
+      <div class="stream-header">
+        <h3>Cost Activity</h3>
+        <span style="font-size:11px;color:var(--text-muted)">Live feed</span>
+      </div>
+      <div class="stream-items">
+        <div class="stream-date">Today</div>
+        <div class="stream-entry">
+          <div class="stream-icon" style="background:var(--emerald-dim)">🪑</div>
+          <div class="stream-content">
+            <div class="stream-desc"><strong>Chairs ×200</strong> added to Rentals</div>
+            <div class="stream-meta">
+              Wedding Item · Elite Rentals
+              <span class="auto-tag" style="margin-left:0">✦ Auto-categorized</span>
+            </div>
+          </div>
+          <div class="stream-amount" style="color:var(--emerald)">+R12,500</div>
+        </div>
+        <div class="stream-entry">
+          <div class="stream-icon" style="background:var(--orange-dim)">🍷</div>
+          <div class="stream-content">
+            <div class="stream-desc"><strong>Reception Bar</strong> added to Beverages</div>
+            <div class="stream-meta">
+              Bar Order · Cape Cellars
+              <span class="auto-tag" style="margin-left:0">✦ Auto-categorized</span>
+            </div>
+          </div>
+          <div class="stream-amount" style="color:var(--orange)">+R42,000</div>
+        </div>
+        <div class="stream-date">Yesterday</div>
+        <div class="stream-entry">
+          <div class="stream-icon" style="background:var(--sky-dim)">📄</div>
+          <div class="stream-content">
+            <div class="stream-desc"><strong>INV-042</strong> — Bloom & Petal Florists</div>
+            <div class="stream-meta">Vendor Invoice · Flowers & Decor</div>
+          </div>
+          <div class="stream-amount" style="color:var(--sky)">+R15,000</div>
+        </div>
+        <div class="stream-entry superseded">
+          <div class="stream-icon" style="background:rgba(255,255,255,0.03)">↩️</div>
+          <div class="stream-content">
+            <div class="stream-desc"><strong>Flower arrangements</strong> superseded by INV-042</div>
+            <div class="stream-meta">Reconciled · was R12,000 estimate</div>
+          </div>
+          <div class="stream-amount" style="color:var(--text-muted)">-R12,000</div>
+        </div>
+        <div class="stream-date">Jan 24</div>
+        <div class="stream-entry">
+          <div class="stream-icon" style="background:var(--emerald-dim)">✅</div>
+          <div class="stream-content">
+            <div class="stream-desc"><strong>Lens & Light</strong> — fully paid</div>
+            <div class="stream-meta">Payment recorded · Photography</div>
+          </div>
+          <div class="stream-amount" style="color:var(--emerald)">R35,000</div>
+        </div>
+        <div class="stream-entry">
+          <div class="stream-icon" style="background:var(--violet-dim)">📝</div>
+          <div class="stream-content">
+            <div class="stream-desc"><strong>Place cards & menus</strong> added to Stationery</div>
+            <div class="stream-meta">
+              Stationery items
+              <span class="auto-tag" style="margin-left:0">✦ Auto</span>
+            </div>
+          </div>
+          <div class="stream-amount" style="color:var(--violet)">+R5,500</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reconciliation Alerts -->
+    <div class="recon-alert">
+      <div class="recon-header">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <h3>Reconciliation</h3>
+        <span class="count">1</span>
+      </div>
+
+      <div class="recon-item">
+        <div class="recon-dot"></div>
+        <div class="recon-info">
+          <div class="recon-title">Elite Rentals — Pending Invoice</div>
+          <div class="recon-desc">R48,000 in item estimates may overlap with upcoming invoice. Review when invoice arrives.</div>
+        </div>
+        <button class="recon-btn">Review →</button>
+      </div>
+
+      <div style="padding:16px 20px; border-top:1px solid var(--border-subtle);">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px;">Smart Sync Status</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;">
+            <span style="color:var(--emerald)">●</span>
+            <span style="color:var(--text-secondary)">Auto-categorization</span>
+            <span style="margin-left:auto;color:var(--emerald);font-weight:600;font-size:11px;">Active</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;">
+            <span style="color:var(--emerald)">●</span>
+            <span style="color:var(--text-secondary)">Double-count detection</span>
+            <span style="margin-left:auto;color:var(--emerald);font-weight:600;font-size:11px;">Active</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;">
+            <span style="color:var(--violet)">●</span>
+            <span style="color:var(--text-secondary)">Category rules</span>
+            <span style="margin-left:auto;color:var(--violet);font-weight:600;font-size:11px;">8 rules</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;">
+            <span style="color:var(--amber)">●</span>
+            <span style="color:var(--text-secondary)">Pending reconciliation</span>
+            <span style="margin-left:auto;color:var(--amber);font-weight:600;font-size:11px;">1 item</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</body>
+</html>

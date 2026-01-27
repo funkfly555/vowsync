@@ -151,6 +151,9 @@ export const dietarySchema = z.object({
   dietary_restrictions: z.string().max(500, 'Too long'),
   allergies: z.string().max(500, 'Too long'),
   dietary_notes: z.string().max(1000, 'Too long'),
+  plus_one_dietary_restrictions: z.string().max(500, 'Too long'),
+  plus_one_allergies: z.string().max(500, 'Too long'),
+  plus_one_dietary_notes: z.string().max(1000, 'Too long'),
 });
 
 /**
@@ -210,11 +213,17 @@ export const guestFormSchema = z.object({
   // Seating
   table_number: z.string().nullable(),
   table_position: z.number().min(1).max(10).nullable(),
+  plus_one_table_position: z.number().min(1).max(10).nullable(),
 
   // Dietary
   dietary_restrictions: z.string().max(500),
   allergies: z.string().max(500),
   dietary_notes: z.string().max(1000),
+
+  // Dietary - Plus One (033-guest-page-tweaks)
+  plus_one_dietary_restrictions: z.string().max(500),
+  plus_one_allergies: z.string().max(500),
+  plus_one_dietary_notes: z.string().max(1000),
 
   // Meal - Primary Guest
   starter_choice: z.number().min(1).max(5).nullable(),
@@ -297,11 +306,17 @@ export const guestEditSchema = z.object({
   // Seating Tab
   table_number: z.string().max(20, 'Table number too long'),
   table_position: z.number().min(1).max(10).nullable(),
+  plus_one_table_position: z.number().min(1).max(10).nullable(),
 
   // Dietary Tab
   dietary_restrictions: z.string().max(500, 'Too long'),
   allergies: z.string().max(500, 'Too long'),
   dietary_notes: z.string().max(1000, 'Too long'),
+
+  // Dietary Tab - Plus One (033-guest-page-tweaks)
+  plus_one_dietary_restrictions: z.string().max(500, 'Too long'),
+  plus_one_allergies: z.string().max(500, 'Too long'),
+  plus_one_dietary_notes: z.string().max(1000, 'Too long'),
 
   // Meals Tab - Primary Guest
   starter_choice: z.number().min(1).max(5).nullable(),

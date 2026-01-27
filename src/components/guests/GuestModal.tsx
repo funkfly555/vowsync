@@ -125,9 +125,13 @@ export function GuestModal({
         plus_one_confirmed: guest.plus_one_confirmed,
         table_number: guest.table_number,
         table_position: guest.table_position,
+        plus_one_table_position: guest.plus_one_table_position ?? null,
         dietary_restrictions: guest.dietary_restrictions || '',
         allergies: guest.allergies || '',
         dietary_notes: guest.dietary_notes || '',
+        plus_one_dietary_restrictions: guest.plus_one_dietary_restrictions || '',
+        plus_one_allergies: guest.plus_one_allergies || '',
+        plus_one_dietary_notes: guest.plus_one_dietary_notes || '',
         starter_choice: guest.starter_choice,
         main_choice: guest.main_choice,
         dessert_choice: guest.dessert_choice,
@@ -160,7 +164,8 @@ export function GuestModal({
       tabsWithErrors.add('rsvp');
     }
     // Seating tab errors - handled in form state
-    if (errors.dietary_restrictions || errors.allergies || errors.dietary_notes) {
+    if (errors.dietary_restrictions || errors.allergies || errors.dietary_notes ||
+        errors.plus_one_dietary_restrictions || errors.plus_one_allergies || errors.plus_one_dietary_notes) {
       tabsWithErrors.add('dietary');
     }
     if (errors.starter_choice || errors.main_choice || errors.dessert_choice) {
@@ -265,7 +270,12 @@ export function GuestModal({
                 </TabsContent>
 
                 <TabsContent value="seating" className="mt-0">
-                  <GuestSeatingTab form={form} />
+                  <GuestSeatingTab
+                    form={form}
+                    weddingId={weddingId}
+                    guestId={guestId}
+                    guestName={isEditMode && guest ? guest.name : undefined}
+                  />
                 </TabsContent>
 
                 <TabsContent value="dietary" className="mt-0">

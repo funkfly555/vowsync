@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VowSync — Budget Settings & Smart Categories (B3)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #0a0f1a;
+    --bg-primary: #0f1629;
+    --bg-card: #151d33;
+    --bg-card-hover: #1a2440;
+    --bg-surface: #1e2a4a;
+    --bg-input: #121a2e;
+    --border: #1e2d50;
+    --border-light: #253560;
+    --border-focus: #34d399;
+    --text-primary: #f0f4f8;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --text-dim: #475569;
+    --emerald: #34d399;
+    --emerald-dim: #059669;
+    --emerald-glow: rgba(52, 211, 153, 0.15);
+    --emerald-soft: rgba(52, 211, 153, 0.08);
+    --amber: #fbbf24;
+    --amber-dim: #d97706;
+    --amber-glow: rgba(251, 191, 36, 0.15);
+    --red: #f87171;
+    --red-glow: rgba(248, 113, 113, 0.12);
+    --blue: #60a5fa;
+    --blue-dim: #2563eb;
+    --blue-glow: rgba(96, 165, 250, 0.15);
+    --purple: #a78bfa;
+    --purple-glow: rgba(167, 139, 250, 0.12);
+    --pink: #f472b6;
+    --pink-glow: rgba(244, 114, 182, 0.12);
+    --cyan: #22d3ee;
+    --cyan-glow: rgba(34, 211, 238, 0.12);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --radius-xs: 6px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.3);
+    --shadow-lg: 0 8px 40px rgba(0,0,0,0.4);
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  /* ─── Page Container ─── */
+  .page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px 24px 60px;
+  }
+
+  /* ─── Breadcrumb ─── */
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .breadcrumb a {
+    color: var(--emerald);
+    text-decoration: none;
+    transition: var(--transition);
+  }
+  .breadcrumb a:hover { color: var(--emerald-dim); }
+  .breadcrumb .sep { opacity: 0.4; }
+
+  /* ─── Page Header ─── */
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .page-header h1 {
+    font-size: 28px;
+    line-height: 1.2;
+  }
+  .page-header .subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+  }
+
+  /* ─── Buttons ─── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--emerald), var(--emerald-dim));
+    color: #0a0f1a;
+    box-shadow: 0 2px 12px var(--emerald-glow);
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(52, 211, 153, 0.3);
+  }
+  .btn-secondary {
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border-light);
+  }
+  .btn-secondary:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--emerald);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover {
+    color: var(--text-primary);
+    border-color: var(--border-light);
+  }
+  .btn-sm {
+    padding: 6px 14px;
+    font-size: 13px;
+  }
+  .btn-xs {
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+  .btn svg {
+    width: 16px;
+    height: 16px;
+  }
+  .btn-icon {
+    padding: 8px;
+    border-radius: var(--radius-xs);
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  .btn-icon:hover {
+    color: var(--text-primary);
+    background: var(--bg-surface);
+    border-color: var(--border);
+  }
+  .btn-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* ─── Tabs ─── */
+  .tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 28px;
+    gap: 0;
+  }
+  .tab {
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    font-family: 'Inter', sans-serif;
+  }
+  .tab:hover { color: var(--text-secondary); }
+  .tab.active {
+    color: var(--emerald);
+    border-bottom-color: var(--emerald);
+  }
+  .tab svg {
+    width: 16px;
+    height: 16px;
+  }
+  .tab-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 1px 7px;
+    border-radius: 10px;
+    background: var(--emerald-glow);
+    color: var(--emerald);
+  }
+
+  /* ─── Settings Section ─── */
+  .settings-section {
+    margin-bottom: 32px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    gap: 16px;
+  }
+  .section-header h3 {
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-header h3 svg {
+    width: 20px;
+    height: 20px;
+    color: var(--emerald);
+  }
+  .section-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    max-width: 640px;
+  }
+
+  /* ─── Toggle Switch ─── */
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    transition: var(--transition);
+  }
+  .toggle-row:hover { border-color: var(--border-light); }
+  .toggle-info { flex: 1; }
+  .toggle-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+  .toggle-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .toggle-switch {
+    width: 44px;
+    height: 24px;
+    background: var(--bg-surface);
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+    transition: var(--transition);
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+  }
+  .toggle-switch.on {
+    background: var(--emerald);
+    border-color: var(--emerald);
+  }
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: white;
+    top: 2px;
+    left: 2px;
+    transition: var(--transition);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  }
+  .toggle-switch.on::after {
+    left: 22px;
+  }
+
+  /* ─── Rules Table ─── */
+  .rules-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .rules-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-surface);
+  }
+  .rules-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .rules-header h4 {
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .rules-count {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--emerald-glow);
+    color: var(--emerald);
+  }
+
+  .rules-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+  .rules-table thead th {
+    padding: 10px 16px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-card);
+  }
+  .rules-table tbody td {
+    padding: 12px 16px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .rules-table tbody tr:last-child td { border-bottom: none; }
+  .rules-table tbody tr {
+    transition: var(--transition);
+  }
+  .rules-table tbody tr:hover {
+    background: var(--bg-card-hover);
+  }
+  .rules-table tbody tr.disabled {
+    opacity: 0.45;
+  }
+
+  .rule-type-badge {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .type-default {
+    background: var(--blue-glow);
+    color: var(--blue);
+  }
+  .type-custom {
+    background: var(--purple-glow);
+    color: var(--purple);
+  }
+  .type-learned {
+    background: var(--emerald-glow);
+    color: var(--emerald);
+  }
+
+  .source-badge {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .src-item {
+    background: rgba(52, 211, 153, 0.1);
+    color: var(--emerald);
+    border: 1px solid rgba(52, 211, 153, 0.2);
+  }
+  .src-bar {
+    background: var(--amber-glow);
+    color: var(--amber);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+  }
+  .src-stationery {
+    background: var(--pink-glow);
+    color: var(--pink);
+    border: 1px solid rgba(244, 114, 182, 0.2);
+  }
+  .src-shopping {
+    background: var(--cyan-glow);
+    color: var(--cyan);
+    border: 1px solid rgba(34, 211, 238, 0.2);
+  }
+  .src-vendor {
+    background: var(--blue-glow);
+    color: var(--blue);
+    border: 1px solid rgba(96, 165, 250, 0.2);
+  }
+
+  .match-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .match-pill .field {
+    color: var(--text-muted);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .match-pill .value {
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+  .match-pill .op {
+    color: var(--emerald);
+    font-weight: 600;
+    font-size: 11px;
+  }
+
+  .category-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    background: var(--emerald-soft);
+    border: 1px solid rgba(52, 211, 153, 0.15);
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--emerald);
+  }
+  .category-chip svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .confidence-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .confidence-track {
+    width: 60px;
+    height: 6px;
+    background: var(--bg-input);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .confidence-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.6s ease;
+  }
+  .confidence-fill.high { background: var(--emerald); }
+  .confidence-fill.medium { background: var(--amber); }
+  .confidence-fill.low { background: var(--red); }
+  .confidence-text {
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .confidence-text.high { color: var(--emerald); }
+  .confidence-text.medium { color: var(--amber); }
+  .confidence-text.low { color: var(--red); }
+
+  .rule-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .priority-badge {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-surface);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+
+  /* ─── Rule Builder Card ─── */
+  .rule-builder {
+    background: var(--bg-card);
+    border: 2px dashed var(--border-light);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 24px;
+    transition: var(--transition);
+  }
+  .rule-builder:hover { border-color: var(--emerald); }
+  .rule-builder h4 {
+    font-size: 16px;
+    margin-bottom: 4px;
+    font-family: 'Fraunces', serif;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .rule-builder h4 svg {
+    width: 18px;
+    height: 18px;
+    color: var(--emerald);
+  }
+  .rule-builder-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+
+  .builder-row {
+    display: grid;
+    grid-template-columns: 160px 160px 1fr 200px auto;
+    gap: 12px;
+    align-items: end;
+    margin-bottom: 16px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .form-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+  .form-select, .form-input {
+    padding: 9px 12px;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    color: var(--text-primary);
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    transition: var(--transition);
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  .form-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 32px;
+  }
+  .form-select:focus, .form-input:focus {
+    outline: none;
+    border-color: var(--emerald);
+    box-shadow: 0 0 0 3px var(--emerald-glow);
+  }
+  .form-select option {
+    background: var(--bg-card);
+    color: var(--text-primary);
+  }
+
+  /* ─── Learning Insights Card ─── */
+  .learning-card {
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(52, 211, 153, 0.04) 100%);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+  .learning-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .learning-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--emerald-glow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .learning-icon svg {
+    width: 20px;
+    height: 20px;
+    color: var(--emerald);
+  }
+  .learning-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .learning-subtitle {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .learning-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .learning-item {
+    background: var(--bg-surface);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    border: 1px solid var(--border);
+  }
+  .learning-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .learning-item-label {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .learning-item-count {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--emerald);
+  }
+  .learning-item-value {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .learning-item-desc {
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .learning-item-bar {
+    height: 4px;
+    background: var(--bg-input);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+  .learning-item-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--emerald);
+    transition: width 0.8s ease;
+  }
+
+  /* ─── Stats Row ─── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    transition: var(--transition);
+  }
+  .stat-card:hover { border-color: var(--border-light); }
+  .stat-card-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .stat-card-value {
+    font-size: 24px;
+    font-weight: 600;
+    font-family: 'Fraunces', serif;
+    color: var(--text-primary);
+  }
+  .stat-card-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* ─── Category Mapping Visual ─── */
+  .mapping-visual {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .mapping-visual h4 {
+    font-size: 16px;
+    margin-bottom: 16px;
+    font-family: 'Fraunces', serif;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .mapping-visual h4 svg {
+    width: 18px;
+    height: 18px;
+    color: var(--emerald);
+  }
+
+  .mapping-flow {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  .mapping-sources, .mapping-targets {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .mapping-sources-title, .mapping-targets-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .mapping-source-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    color: var(--text-primary);
+    transition: var(--transition);
+  }
+  .mapping-source-item:hover { border-color: var(--border-light); }
+  .mapping-source-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-item { background: var(--emerald); }
+  .dot-bar { background: var(--amber); }
+  .dot-stationery { background: var(--pink); }
+  .dot-shopping { background: var(--cyan); }
+  .dot-vendor { background: var(--blue); }
+
+  .mapping-arrows {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding-top: 24px;
+  }
+  .mapping-arrow-line {
+    display: flex;
+    align-items: center;
+  }
+  .mapping-arrow-line svg {
+    width: 24px;
+    height: 24px;
+    color: var(--border-light);
+  }
+
+  .mapping-target-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--emerald-soft);
+    border: 1px solid rgba(52, 211, 153, 0.15);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--emerald);
+    transition: var(--transition);
+  }
+  .mapping-target-count {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--bg-surface);
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 1080px) {
+    .builder-row {
+      grid-template-columns: 1fr 1fr;
+    }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .learning-grid { grid-template-columns: 1fr; }
+    .mapping-flow { grid-template-columns: 1fr; gap: 12px; }
+    .mapping-arrows { flex-direction: row; padding-top: 0; }
+  }
+
+  /* ─── Scrollbar ─── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-deep); }
+  ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <a href="#">VowSync</a>
+    <span class="sep">›</span>
+    <a href="#">Thompson-Williams Wedding</a>
+    <span class="sep">›</span>
+    <a href="#">Budget</a>
+    <span class="sep">›</span>
+    <span style="color: var(--text-secondary)">Settings</span>
+  </div>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1>Budget Settings</h1>
+      <div class="subtitle">Configure smart categorization, automation rules, and budget sync preferences</div>
+    </div>
+    <div style="display: flex; gap: 12px; align-items: center;">
+      <button class="btn btn-ghost btn-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
+        Reset Defaults
+      </button>
+      <button class="btn btn-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Save Settings
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>
+      Smart Categories
+      <span class="tab-badge">12</span>
+    </button>
+    <button class="tab">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+      General
+    </button>
+    <button class="tab">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Reconciliation
+    </button>
+    <button class="tab">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Notifications
+    </button>
+  </div>
+
+  <!-- Stats Row -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-card-label">Total Rules</div>
+      <div class="stat-card-value">12</div>
+      <div class="stat-card-sub">7 default · 3 custom · 2 learned</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Auto-categorized</div>
+      <div class="stat-card-value" style="color: var(--emerald);">87%</div>
+      <div class="stat-card-sub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+        <span style="color: var(--emerald);">+12% from last month</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Avg. Confidence</div>
+      <div class="stat-card-value" style="color: var(--emerald);">92%</div>
+      <div class="stat-card-sub">Across all auto-assignments</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Manual Overrides</div>
+      <div class="stat-card-value">4</div>
+      <div class="stat-card-sub">3 this month · 1 last month</div>
+    </div>
+  </div>
+
+  <!-- Toggle Settings -->
+  <div class="settings-section">
+    <div class="section-header">
+      <h3>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        Auto-Categorization Settings
+      </h3>
+    </div>
+
+    <div class="toggle-row">
+      <div class="toggle-info">
+        <div class="toggle-label">Enable Auto-Categorization</div>
+        <div class="toggle-desc">Automatically assign budget categories when cost entries are created from items, bar orders, and other sources</div>
+      </div>
+      <div class="toggle-switch on"></div>
+    </div>
+
+    <div class="toggle-row">
+      <div class="toggle-info">
+        <div class="toggle-label">Show Suggestion Chips</div>
+        <div class="toggle-desc">Display category suggestions with confidence scores on cost entry forms</div>
+      </div>
+      <div class="toggle-switch on"></div>
+    </div>
+
+    <div class="toggle-row">
+      <div class="toggle-info">
+        <div class="toggle-label">Learn from Manual Overrides</div>
+        <div class="toggle-desc">When you manually change a category, create a new learned rule for future entries</div>
+      </div>
+      <div class="toggle-switch on"></div>
+    </div>
+
+    <div class="toggle-row">
+      <div class="toggle-info">
+        <div class="toggle-label">Auto-Reconciliation Prompts</div>
+        <div class="toggle-desc">Show reconciliation dialog when creating invoices that may overlap with existing estimated costs</div>
+      </div>
+      <div class="toggle-switch on"></div>
+    </div>
+
+    <div class="toggle-row">
+      <div class="toggle-info">
+        <div class="toggle-label">Auto-Create Cost Entries</div>
+        <div class="toggle-desc">Automatically create budget cost entries when saving wedding items and bar orders with costs</div>
+      </div>
+      <div class="toggle-switch on"></div>
+    </div>
+
+    <div class="toggle-row">
+      <div class="toggle-info">
+        <div class="toggle-label">Include VAT in Budget Tracking</div>
+        <div class="toggle-desc">Track invoice amounts inclusive of 15% VAT in the budget totals</div>
+      </div>
+      <div class="toggle-switch"></div>
+    </div>
+  </div>
+
+  <!-- Category Mapping Visual -->
+  <div class="mapping-visual">
+    <h4>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
+      Category Mapping Overview
+    </h4>
+    <div class="mapping-flow">
+      <div class="mapping-sources">
+        <div class="mapping-sources-title">Cost Sources</div>
+        <div class="mapping-source-item">
+          <span class="mapping-source-dot dot-item"></span>
+          Wedding Items
+          <span style="margin-left: auto; font-size: 11px; color: var(--text-muted);">6 rules</span>
+        </div>
+        <div class="mapping-source-item">
+          <span class="mapping-source-dot dot-bar"></span>
+          Bar Orders
+          <span style="margin-left: auto; font-size: 11px; color: var(--text-muted);">2 rules</span>
+        </div>
+        <div class="mapping-source-item">
+          <span class="mapping-source-dot dot-stationery"></span>
+          Stationery Items
+          <span style="margin-left: auto; font-size: 11px; color: var(--text-muted);">2 rules</span>
+        </div>
+        <div class="mapping-source-item">
+          <span class="mapping-source-dot dot-shopping"></span>
+          Shopping List
+          <span style="margin-left: auto; font-size: 11px; color: var(--text-muted);">1 rule</span>
+        </div>
+        <div class="mapping-source-item">
+          <span class="mapping-source-dot dot-vendor"></span>
+          Vendor Type
+          <span style="margin-left: auto; font-size: 11px; color: var(--text-muted);">1 rule</span>
+        </div>
+      </div>
+
+      <div class="mapping-arrows">
+        <div class="mapping-arrow-line">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </div>
+        <div style="font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600;">Maps to</div>
+        <div class="mapping-arrow-line">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </div>
+      </div>
+
+      <div class="mapping-targets">
+        <div class="mapping-targets-title">Budget Categories</div>
+        <div class="mapping-target-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          Venue & Catering
+          <span class="mapping-target-count">1 rule</span>
+        </div>
+        <div class="mapping-target-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3c0 1.5.5 2 2 3l1 1 1-1c1.5-1 2-1.5 2-3a3 3 0 0 0-3-3z"/><path d="M12 9v13"/><path d="M5 19c2-1 4-3.5 5-6"/><path d="M19 19c-2-1-4-3.5-5-6"/></svg>
+          Flowers & Decor
+          <span class="mapping-target-count">2 rules</span>
+        </div>
+        <div class="mapping-target-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/></svg>
+          Rentals & Equipment
+          <span class="mapping-target-count">4 rules</span>
+        </div>
+        <div class="mapping-target-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M12 2v4"/><path d="M16 2v4"/><path d="M4 6h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/></svg>
+          Beverages
+          <span class="mapping-target-count">2 rules</span>
+        </div>
+        <div class="mapping-target-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/></svg>
+          Stationery
+          <span class="mapping-target-count">3 rules</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Auto-Categorization Rules Table -->
+  <div class="settings-section">
+    <div class="section-header">
+      <h3>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>
+        Auto-Categorization Rules
+      </h3>
+    </div>
+    <div class="section-desc">
+      Rules determine which budget category a cost entry is automatically assigned to. Higher priority rules take precedence. Rules can be default (built-in), custom (user-created), or learned (from your manual overrides).
+    </div>
+
+    <div class="rules-card">
+      <div class="rules-header">
+        <div class="rules-header-left">
+          <h4>Active Rules</h4>
+          <span class="rules-count">12 rules</span>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-ghost btn-xs">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            Filter
+          </button>
+          <button class="btn btn-ghost btn-xs">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="m21 8-4-4-4 4"/><path d="M17 4v16"/></svg>
+            Sort
+          </button>
+        </div>
+      </div>
+
+      <table class="rules-table">
+        <thead>
+          <tr>
+            <th style="width: 40px;">#</th>
+            <th style="width: 70px;">Type</th>
+            <th style="width: 100px;">Source</th>
+            <th>Match Condition</th>
+            <th style="width: 180px;">Budget Category</th>
+            <th style="width: 120px;">Confidence</th>
+            <th style="width: 80px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Rule 1 -->
+          <tr>
+            <td><span class="priority-badge">1</span></td>
+            <td><span class="rule-type-badge type-default">Default</span></td>
+            <td><span class="source-badge src-item">Item</span></td>
+            <td>
+              <span class="match-pill">
+                <span class="field">Category</span>
+                <span class="op">=</span>
+                <span class="value">Tables</span>
+              </span>
+            </td>
+            <td>
+              <span class="category-chip">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/></svg>
+                Rentals
+              </span>
+            </td>
+            <td>
+              <div class="confidence-bar">
+                <div class="confidence-track">
+                  <div class="confidence-fill high" style="width: 95%;"></div>
+                </div>
+                <span class="confidence-text high">95%</span>
+              </div>
+            </td>
+            <td>
+              <div class="rule-actions">
+                <button class="btn-icon" title="Edit">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                </button>
+                <button class="btn-icon" title="Disable">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Rule 2 -->
+          <tr>
+            <td><span class="priority-badge">2</span></td>
+            <td><span class="rule-type-badge type-default">Default</span></td>
+            <td><span class="source-badge src-item">Item</span></td>
+            <td>
+              <span class="match-pill">
+                <span class="field">Category</span>
+                <span class="op">=</span>
+                <span class="value">Chairs</span>
+              </span>
+            </td>
+            <td>
+              <span class="category-chip">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/></svg>
+                Rentals
+              </span>
+            </td>
+            <td>
+              <div class="confidence-bar">
+                <div class="confidence-track">
+                  <div class="confidence-fill high" style="width: 95%;"></div>
+                </div>
+                <span class="confidence-text high">95%</span>
+              </div>
+            </td>
+            <td>
+              <div class="rule-actions">
+                <button class="btn-icon" title="Edit">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                </button>
+                <button class="btn-icon" title="Disable">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Rule 3 -->
+          <tr>
+            <td><span class="priority-badge">3</span></td>
+            <td><span class="rule-type-badge type-default">Default</span></td>
+            <td><span class="source-badge src-item">Item</span></td>
+            <td>
+              <span class="match-pill">
+                <span class="field">Category</span>
+                <span class="op">=</span>
+                <span class="value">Linens</span>
+              </span>
+            </td>
+            <td>
+              <span class="category-chip">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/></svg>
+                Rentals
+              </span>
+            </td>
+            <td>
+              <div class="confidence-bar">
+                <div class="confidence-track">
+                  <div class="confidence-fill high" style="width: 90%;"></div>
+                </div>
+                <span class="confidence-text high">90%</span>
+              </div>
+            </td>
+            <td>
+              <div class="rule-actions">
+                <button class="btn-icon" title="Edit">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                </button>
+                <button class="btn-icon" title="Disable">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Rule 4 -->
+          <tr>
+            <td><span class="priority-badge">4</span></td>
+            <td><span class="rule-type-badge type-default">Default</span></td>
+            <td><span class="source-badge src-item">Item</span></td>
+            <td>
+              <span class="match-pill">
+                <span class="field">Category</span>
+                <span class="op">=</span>
+                <span class="value">Flowers</span>
+              </span>
+            </td>
+            <td>
+              <span class="category-chip">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3c0 1.5.5 2 2 3l1 1 1-1c1.5-1 2-1.5 2-3a3 3 0 0 0-3-3z"/><path d="M12 9v13"/></svg>
+                Flowers & Decor
+              </span>
+            </td>
+            <td>
+              <div class="confidence-bar">
+                <div class="confidence-track">
+                  <div class="confidence-fill high" style="width: 98%;"></div>
+                </div>
+                <span class="confidence-text high">98%</span>
+              </div>
+            </td>
+            <td>
+              <div class="rule-actions">
+                <button class="btn-icon" title="Edit">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                </button>
+                <button class="btn-icon" title="Disable">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Rule 5 - Vendor Type -->
+          <tr>
+            <td><span class="priority-badge">5</span></td>
+            <td><span class="rule-type-badge type-default">Default</span></td>
+            <td><span class="source-badge src-vendor">Vendor</span></td>
+            <td>
+              <span class="match-pill">
+                <span class="field">Vendor Type</span>
+                <span class="op">=</span>
+                <span class="value">Florist</span>
+              </span>
+            </td>
+            <td>
+              <span class="category-chip">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3c0 1.5.5 2 2 3l1 1 1-1c1.5-1 2-1.5 2-3a3 3 0 0 0-3-3z"/><path d="M12 9v13"/></svg>
+                Flowers & Decor
+              </span>
+            </td>
+            <td>
+              <div class="confidence-bar">
+                <div class="confidence-track">
+                  <div class="confidence-fill high" style="width: 92%;"></div>
+                </div>
+                <span class="confidence-text high">92%</span>
+              </div>
+            </td>
+            <td>
+              <div class="rule-actions">
+                <button class="btn-icon" title="Edit">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                </button>
+                <button class="btn-icon" title="Disable">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Rule 6 - Bar Order (Default) -->
+          <tr>
+            <td><span class="priority-badge">6</span></td>
+            <td><span class="rule-type-badge type-default">Default</span></td>
+            <td><span class="source-badge src-bar">Bar</span></td>
+            <td>
+              <span class="match-pill">
+                <span class="field">Item Type</span>
+                <span class="op">contains</span>
+                <span class="value">Wine, Beer, Spirits</span>
+              </span>
+            </td>
+            <td>
+              <span class="category-chip">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M12 2v4"/><path d="M16 2v4"/></svg>
+                Beverages
+              </span>
+            </td>
+            <td>
+              <div class="confidence-bar">
+                <div class="confidence-track">
+                  <div class="confidence-fill high" style="width: 99%;"></div>
+                </div>
+                <span class="confidence-text high">99%</span>
+              </div>
+            </td>
+            <td>
+              <div class="rule-actions">
+                <button class="btn-icon" title="Edit">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                </button>
+                <button class="btn-icon" title="Disable">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Rule 7 - Bar Order Soft Drinks -->
+          <tr>
+            <td><span class="priority-badge">7</span></td>
+            <td><span class="rule-type-badge type-default">Default</span></td>
+            <td><span class="source-badge src-bar">Bar</span></td>
+            <td>
+              <span class="match-pill">
+                <span class="field">Item Type</span>
+                <span class="op">contains</span>
+                <span class="value">Soft Drinks, Mixers</span>
+              </span>
+            </td>
+            <td>
+              <span class="category-chip">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M12 2v4"/><path d="M16 2v4"/></svg>
+                Beverages
+              </span>
+            </td>
+            <td>
+              <div class="confidence-bar">
+                <div class="confidence-track">
+                  <div class="confidence-fill high" style="width: 95%;"></div>
+                </div>
+                <span class="confidence-text high">95%</span>
+              </div>
+            </td>
+            <td>
+              <div class="rule-actions">
+                <button class="btn-icon" title="Edit">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                </button>
+                <button class="btn-icon" title="Disable">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Rule 8 - Stationery (Default) -->
+          <tr>
+            <td><span class="priority-badge">8</span></td>
+            <td><span class="rule-type-badge type-default">Default</span></td>
+            <td><span class="source-badge src-stationery">Stationery</span></td>
+            <td>
+              <span class="match-pill">
+                <span class="field">Any</span>
+                <span class="op">→</span>
+                <span class="value">All stationery items</span>
+              </span>
+            </td>
+            <td>
+              <span class="category-chip">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/></svg>
+                Stationery
+              </span>
+            </td>
+            <td>
+              <div class="confidence-bar">
+                <div class="confidence-track">
+                  <div class="confidence-fill high" style="width: 100%;"></div>
+                </div>
+                <span class="confidence-text high">100%</span>
+              </div>
+            </td>
+            <td>
+              <div class="rule-actions">
+                <button class="btn-icon" title="Edit">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                </button>
+                <button class="btn-icon" title="Disable">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Rule 9 - Custom -->
+          <tr>
+            <td><span class="priority-badge">9</span></td>
+            <td><span class="rule-type-badge type-custom">Custom</span></td>
+            <td><span class="source-badge src-item">Item</span></td>
+            <td>
+              <span class="match-pill">
+                <span class="field">Supplier</span>
+                <span class="op">=</span>
+                <span class="value">Bloom & Co</span>
+              </span>
+            </td>
+            <td>
+              <span class="category-chip">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3c0 1.5.5 2 2 3l1 1 1-1c1.5-1 2-1.5 2-3a3 3 0 0 0-3-3z"/><path d="M12 9v13"/></svg>
+                Flowers & Decor
+              </span>
+            </td>
+            <td>
+              <div class="confidence-bar">
+                <div class="confidence-track">
+                  <div class="confidence-fill high" style="width: 88%;"></div>
+                </div>
+                <span class="confidence-text high">88%</span>
+              </div>
+            </td>
+            <td>
+              <div class="rule-actions">
+                <button class="btn-icon" title="Edit">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                </button>
+                <button class="btn-icon" title="Delete" style="color: var(--red);">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Rule 10 - Custom -->
+          <tr>
+            <td><span class="priority-badge">10</span></td>
+            <td><span class="rule-type-badge type-custom">Custom</span></td>
+            <td><span class="source-badge src-stationery">Stationery</span></td>
+            <td>
+              <span class="match-pill">
+                <span class="field">Type</span>
+                <span class="op">=</span>
+                <span class="value">Table Numbers</span>
+              </span>
+            </td>
+            <td>
+              <span class="category-chip">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/></svg>
+                Stationery
+              </span>
+            </td>
+            <td>
+              <div class="confidence-bar">
+                <div class="confidence-track">
+                  <div class="confidence-fill high" style="width: 85%;"></div>
+                </div>
+                <span class="confidence-text high">85%</span>
+              </div>
+            </td>
+            <td>
+              <div class="rule-actions">
+                <button class="btn-icon" title="Edit">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                </button>
+                <button class="btn-icon" title="Delete" style="color: var(--red);">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Rule 11 - Custom (Shopping) -->
+          <tr>
+            <td><span class="priority-badge">11</span></td>
+            <td><span class="rule-type-badge type-custom">Custom</span></td>
+            <td><span class="source-badge src-shopping">Shopping</span></td>
+            <td>
+              <span class="match-pill">
+                <span class="field">Category</span>
+                <span class="op">=</span>
+                <span class="value">Decorations</span>
+              </span>
+            </td>
+            <td>
+              <span class="category-chip">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3c0 1.5.5 2 2 3l1 1 1-1c1.5-1 2-1.5 2-3a3 3 0 0 0-3-3z"/><path d="M12 9v13"/></svg>
+                Flowers & Decor
+              </span>
+            </td>
+            <td>
+              <div class="confidence-bar">
+                <div class="confidence-track">
+                  <div class="confidence-fill medium" style="width: 72%;"></div>
+                </div>
+                <span class="confidence-text medium">72%</span>
+              </div>
+            </td>
+            <td>
+              <div class="rule-actions">
+                <button class="btn-icon" title="Edit">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                </button>
+                <button class="btn-icon" title="Delete" style="color: var(--red);">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Rule 12 - Learned -->
+          <tr>
+            <td><span class="priority-badge">12</span></td>
+            <td><span class="rule-type-badge type-learned">Learned</span></td>
+            <td><span class="source-badge src-item">Item</span></td>
+            <td>
+              <span class="match-pill">
+                <span class="field">Category</span>
+                <span class="op">=</span>
+                <span class="value">Candles</span>
+              </span>
+            </td>
+            <td>
+              <span class="category-chip">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3c0 1.5.5 2 2 3l1 1 1-1c1.5-1 2-1.5 2-3a3 3 0 0 0-3-3z"/><path d="M12 9v13"/></svg>
+                Flowers & Decor
+              </span>
+            </td>
+            <td>
+              <div class="confidence-bar">
+                <div class="confidence-track">
+                  <div class="confidence-fill medium" style="width: 68%;"></div>
+                </div>
+                <span class="confidence-text medium">68%</span>
+              </div>
+            </td>
+            <td>
+              <div class="rule-actions">
+                <button class="btn-icon" title="Promote to Custom">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+                </button>
+                <button class="btn-icon" title="Delete" style="color: var(--red);">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Custom Rule Builder -->
+  <div class="settings-section">
+    <div class="section-header">
+      <h3>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+        Add Custom Rule
+      </h3>
+    </div>
+
+    <div class="rule-builder">
+      <h4>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        Custom Rule Builder
+      </h4>
+      <div class="rule-builder-desc">
+        Create a rule to automatically categorize costs. When a cost entry matches the source type and condition, it will be assigned the specified budget category.
+      </div>
+
+      <div class="builder-row">
+        <div class="form-group">
+          <label class="form-label">Source Type</label>
+          <select class="form-select">
+            <option>Wedding Item</option>
+            <option>Bar Order</option>
+            <option>Stationery</option>
+            <option>Shopping List</option>
+            <option>Vendor Type</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Match Field</label>
+          <select class="form-select">
+            <option>Item Category</option>
+            <option>Supplier Name</option>
+            <option>Item Name</option>
+            <option>Description</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Match Value</label>
+          <input class="form-input" type="text" placeholder="e.g., Centrepieces, DJ Equipment...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Budget Category</label>
+          <select class="form-select">
+            <option>Select category...</option>
+            <option>Venue & Catering</option>
+            <option>Flowers & Decor</option>
+            <option>Photography</option>
+            <option>Music & Entertainment</option>
+            <option>Rentals & Equipment</option>
+            <option>Beverages</option>
+            <option>Stationery</option>
+            <option>Transport</option>
+          </select>
+        </div>
+        <div class="form-group" style="justify-content: flex-end;">
+          <button class="btn btn-primary btn-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+            Add Rule
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Learning Insights -->
+  <div class="settings-section">
+    <div class="section-header">
+      <h3>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        Learning Insights
+      </h3>
+    </div>
+
+    <div class="learning-card">
+      <div class="learning-header">
+        <div class="learning-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 1 1 7.072 0l-.548.547A3.374 3.374 0 0 0 12 18.469a3.374 3.374 0 0 0-.916-1.86l-.548-.547z"/></svg>
+        </div>
+        <div>
+          <div class="learning-title">Based on your previous categorizations</div>
+          <div class="learning-subtitle">The system learns from your manual category overrides to improve future suggestions</div>
+        </div>
+      </div>
+
+      <div class="learning-grid">
+        <div class="learning-item">
+          <div class="learning-item-header">
+            <div class="learning-item-label">Most overridden category</div>
+            <div class="learning-item-count">4 overrides</div>
+          </div>
+          <div class="learning-item-value">Flowers & Decor</div>
+          <div class="learning-item-desc">Items like candles and centrepieces often reassigned here</div>
+          <div class="learning-item-bar">
+            <div class="learning-item-fill" style="width: 80%;"></div>
+          </div>
+        </div>
+
+        <div class="learning-item">
+          <div class="learning-item-header">
+            <div class="learning-item-label">Highest accuracy source</div>
+            <div class="learning-item-count">99% accurate</div>
+          </div>
+          <div class="learning-item-value">Bar Orders</div>
+          <div class="learning-item-desc">Almost always correctly categorized as Beverages</div>
+          <div class="learning-item-bar">
+            <div class="learning-item-fill" style="width: 99%;"></div>
+          </div>
+        </div>
+
+        <div class="learning-item">
+          <div class="learning-item-header">
+            <div class="learning-item-label">Suggested new rule</div>
+            <div class="learning-item-count">3 matches</div>
+          </div>
+          <div class="learning-item-value">DJ Equipment → Music</div>
+          <div class="learning-item-desc">You've categorized 3 "DJ" items to Music & Entertainment</div>
+          <div class="learning-item-bar">
+            <div class="learning-item-fill" style="width: 60%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

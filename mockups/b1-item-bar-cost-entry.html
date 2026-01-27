@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VowSync — Enhanced Cost Entry Forms | Mockup B1</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #07070a; --bg-surface: #0d0d12; --bg-card: #111116;
+    --bg-elevated: #18181e; --bg-hover: #1d1d25; --bg-input: #0e0e14;
+    --border-subtle: rgba(255,255,255,0.05); --border-medium: rgba(255,255,255,0.09);
+    --border-focus: rgba(52,211,153,0.4);
+    --text-primary: #eeeef2; --text-secondary: #8b8b98; --text-muted: #4e4e5a;
+    --text-placeholder: #3a3a44;
+    --emerald: #34d399; --emerald-dim: rgba(52,211,153,0.1);
+    --sky: #38bdf8; --sky-dim: rgba(56,189,248,0.1);
+    --amber: #fbbf24; --amber-dim: rgba(251,191,36,0.1);
+    --violet: #a78bfa; --violet-dim: rgba(167,139,250,0.1);
+    --orange: #fb923c; --orange-dim: rgba(251,146,60,0.1);
+    --rose: #fb7185; --rose-dim: rgba(251,113,133,0.08);
+    --indigo: #818cf8; --indigo-dim: rgba(129,140,248,0.1);
+    --radius: 14px; --radius-sm: 10px; --radius-xs: 6px;
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'Inter', -apple-system, sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--font-body); background: var(--bg-deep);
+    color: var(--text-primary); min-height: 100vh; -webkit-font-smoothing: antialiased;
+  }
+  .page { max-width: 1200px; margin: 0 auto; padding: 32px 40px 80px; }
+
+  .mockup-label {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 14px; background: var(--emerald-dim);
+    border: 1px solid rgba(52,211,153,0.2); border-radius: 20px;
+    font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--emerald); margin-bottom: 24px;
+  }
+  .page-title {
+    font-family: var(--font-display); font-size: 32px; font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .page-title span { color: var(--emerald); }
+  .page-desc { font-size: 14px; color: var(--text-secondary); margin-bottom: 36px; }
+
+  /* Side by side forms */
+  .forms-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  }
+
+  /* Form Panel */
+  .form-panel {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: var(--radius); overflow: hidden;
+  }
+  .form-header {
+    padding: 20px 24px; border-bottom: 1px solid var(--border-subtle);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .form-header-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; font-size: 18px;
+  }
+  .form-header h2 { font-family: var(--font-display); font-size: 18px; font-weight: 600; }
+  .form-header .form-type {
+    font-size: 10px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 1px; padding: 3px 8px; border-radius: 4px; margin-left: auto;
+  }
+  .form-body { padding: 24px; }
+
+  /* Form Fields */
+  .field { margin-bottom: 18px; }
+  .field-label {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 600; color: var(--text-secondary);
+    margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .field-label .required { color: var(--rose); font-size: 14px; }
+  .field-label .new-badge {
+    font-size: 9px; padding: 1px 6px; border-radius: 3px;
+    background: var(--emerald-dim); color: var(--emerald);
+    font-weight: 700; letter-spacing: 0.5px;
+  }
+
+  .input, .select {
+    width: 100%; padding: 10px 14px; font-size: 13px;
+    background: var(--bg-input); border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xs); color: var(--text-primary);
+    font-family: var(--font-body); transition: border-color 0.2s;
+    outline: none;
+  }
+  .input:focus, .select:focus { border-color: var(--border-focus); }
+  .input::placeholder { color: var(--text-placeholder); }
+  .select { appearance: none; cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234e4e5a' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center;
+    padding-right: 32px;
+  }
+  .select option { background: var(--bg-elevated); color: var(--text-primary); }
+
+  .input-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+
+  .field-hint {
+    font-size: 11px; color: var(--text-muted); margin-top: 4px;
+  }
+
+  /* Auto-suggest chip */
+  .auto-suggest {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px; margin-top: 8px;
+    background: var(--violet-dim); border: 1px solid rgba(167,139,250,0.15);
+    border-radius: var(--radius-xs); font-size: 12px; color: var(--violet);
+  }
+  .auto-suggest .star { font-size: 14px; }
+  .auto-suggest .confidence {
+    margin-left: auto; font-size: 10px; font-weight: 600;
+    padding: 2px 6px; background: rgba(167,139,250,0.15); border-radius: 4px;
+  }
+  .auto-suggest .change-btn {
+    font-size: 11px; color: var(--text-muted); cursor: pointer;
+    text-decoration: underline; background: none; border: none; font-family: var(--font-body);
+  }
+
+  /* Budget Impact Preview */
+  .budget-impact {
+    background: var(--bg-elevated); border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm); padding: 16px; margin-top: 20px;
+  }
+  .impact-header {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 14px;
+  }
+  .impact-header h3 {
+    font-family: var(--font-display); font-size: 14px; font-weight: 600;
+  }
+  .impact-header .live-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--emerald); animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  .impact-category {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; margin-bottom: 8px;
+  }
+  .impact-category .cat-name { color: var(--text-secondary); }
+  .impact-bar-wrap {
+    height: 6px; background: rgba(255,255,255,0.04); border-radius: 3px;
+    overflow: hidden; margin-bottom: 6px; position: relative;
+  }
+  .impact-bar-current {
+    position: absolute; top: 0; left: 0; height: 100%;
+    background: var(--emerald); border-radius: 3px; transition: width 0.5s ease;
+  }
+  .impact-bar-new {
+    position: absolute; top: 0; height: 100%;
+    background: var(--orange); border-radius: 0 3px 3px 0;
+    opacity: 0.7; transition: all 0.5s ease; animation: barPulse 2s infinite;
+  }
+  @keyframes barPulse { 0%,100% { opacity: 0.7; } 50% { opacity: 0.4; } }
+
+  .impact-amounts {
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: var(--text-muted);
+  }
+  .impact-amounts .new-amount { color: var(--orange); font-weight: 600; }
+  .impact-amounts .projected { color: var(--text-secondary); }
+
+  .impact-summary {
+    margin-top: 12px; padding-top: 12px;
+    border-top: 1px solid var(--border-subtle);
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 12px;
+  }
+  .impact-summary .total-label { color: var(--text-secondary); }
+  .impact-summary .total-val {
+    font-family: var(--font-display); font-size: 18px; font-weight: 700;
+  }
+
+  /* Cost Summary Card */
+  .cost-summary {
+    background: linear-gradient(135deg, rgba(52,211,153,0.05) 0%, rgba(129,140,248,0.03) 100%);
+    border: 1px solid rgba(52,211,153,0.12); border-radius: var(--radius-sm);
+    padding: 16px; margin-top: 20px;
+  }
+  .cost-row {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 13px; padding: 6px 0;
+  }
+  .cost-row .label { color: var(--text-secondary); }
+  .cost-row .val { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .cost-row.total {
+    border-top: 1px solid rgba(52,211,153,0.15);
+    margin-top: 6px; padding-top: 10px;
+  }
+  .cost-row.total .val {
+    font-family: var(--font-display); font-size: 18px; color: var(--emerald);
+  }
+
+  /* Vendor link indicator */
+  .vendor-link {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; margin-top: 8px;
+    background: var(--sky-dim); border: 1px solid rgba(56,189,248,0.12);
+    border-radius: var(--radius-xs); font-size: 12px; color: var(--sky);
+  }
+  .vendor-link .arrow { margin-left: auto; opacity: 0.5; }
+
+  /* Form Actions */
+  .form-actions {
+    display: flex; gap: 10px; margin-top: 24px; padding-top: 20px;
+    border-top: 1px solid var(--border-subtle);
+  }
+  .btn {
+    padding: 10px 20px; border-radius: var(--radius-xs);
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    font-family: var(--font-body); border: none; transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--emerald); color: #07070a; flex: 1;
+  }
+  .btn-primary:hover { background: #4ade80; box-shadow: 0 2px 12px rgba(52,211,153,0.3); }
+  .btn-secondary {
+    background: var(--bg-elevated); color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .btn-secondary:hover { border-color: var(--border-medium); color: var(--text-primary); }
+
+  /* Toast notification preview */
+  .toast-preview {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--bg-elevated); border: 1px solid rgba(52,211,153,0.2);
+    border-radius: var(--radius-sm); padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5); max-width: 400px;
+    animation: slideUp 0.5s ease 2s both;
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .toast-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--emerald-dim); font-size: 16px; flex-shrink: 0;
+  }
+  .toast-text { font-size: 13px; color: var(--text-secondary); line-height: 1.4; }
+  .toast-text strong { color: var(--emerald); }
+  .toast-action {
+    font-size: 11px; color: var(--violet); cursor: pointer;
+    text-decoration: underline; background: none; border: none;
+    font-family: var(--font-body); white-space: nowrap;
+  }
+
+  /* Section divider */
+  .section-divider {
+    display: flex; align-items: center; gap: 12px;
+    margin: 28px 0; font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted);
+  }
+  .section-divider .line { flex: 1; height: 1px; background: var(--border-subtle); }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .ani { animation: fadeUp 0.5s ease forwards; opacity: 0; }
+  .d1 { animation-delay: 0.05s; } .d2 { animation-delay: 0.1s; }
+  .d3 { animation-delay: 0.15s; } .d4 { animation-delay: 0.2s; }
+
+  @media (max-width: 900px) {
+    .forms-grid { grid-template-columns: 1fr; }
+    .page { padding: 20px 16px 60px; }
+    .toast-preview { right: 16px; left: 16px; max-width: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="mockup-label ani d1">Mockup B1 — Cost Entry Forms</div>
+  <div class="page-title ani d1">Enhanced <span>Cost Entry</span></div>
+  <div class="page-desc ani d1">New budget-linked fields for wedding items and bar orders. Auto-categorization suggestions with live budget impact preview.</div>
+
+  <div class="forms-grid">
+
+    <!-- Wedding Item Form -->
+    <div class="form-panel ani d2">
+      <div class="form-header">
+        <div class="form-header-icon" style="background:var(--emerald-dim)">🪑</div>
+        <div>
+          <h2>Wedding Item</h2>
+        </div>
+        <span class="form-type" style="background:var(--emerald-dim);color:var(--emerald)">Edit Mode</span>
+      </div>
+      <div class="form-body">
+        <!-- Existing fields -->
+        <div class="field">
+          <div class="field-label">Category <span class="required">*</span></div>
+          <select class="select">
+            <option>Tables</option>
+            <option>Chairs</option>
+            <option>Linens</option>
+            <option selected>Chairs</option>
+            <option>Decorations</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <div class="field-label">Description <span class="required">*</span></div>
+          <input class="input" type="text" value="Chiavari Chairs — Gold finish" />
+        </div>
+
+        <div class="input-row">
+          <div class="field">
+            <div class="field-label">Total Required</div>
+            <input class="input" type="number" value="200" />
+          </div>
+          <div class="field">
+            <div class="field-label">Available</div>
+            <input class="input" type="number" value="200" />
+          </div>
+        </div>
+
+        <div class="section-divider"><span class="line"></span>Cost & Budget<span class="line"></span></div>
+
+        <!-- NEW: Vendor Dropdown -->
+        <div class="field">
+          <div class="field-label">
+            Vendor
+            <span class="new-badge">NEW</span>
+          </div>
+          <select class="select" style="border-color:rgba(56,189,248,0.2)">
+            <option value="">Select vendor (optional)</option>
+            <option selected>Elite Rentals</option>
+            <option>Grand Estate Venue</option>
+            <option>Bloom & Petal Florists</option>
+          </select>
+          <div class="vendor-link">
+            <span>🏢</span>
+            <span>Elite Rentals — Default category: <strong>Rentals</strong></span>
+            <span class="arrow">→</span>
+          </div>
+        </div>
+
+        <!-- NEW: Budget Category with auto-suggest -->
+        <div class="field">
+          <div class="field-label">
+            Budget Category
+            <span class="new-badge">NEW</span>
+          </div>
+          <select class="select" style="border-color:rgba(167,139,250,0.2)">
+            <option value="">Select category (optional)</option>
+            <option selected>Rentals & Equipment (R48k / R50k)</option>
+            <option>Venue & Catering (R165k / R180k)</option>
+            <option>Flowers & Decor (R45k / R65k)</option>
+          </select>
+          <div class="auto-suggest">
+            <span class="star">✦</span>
+            <span>Suggested: <strong>Rentals & Equipment</strong> — item category "Chairs" maps to Rentals</span>
+            <span class="confidence">92%</span>
+          </div>
+        </div>
+
+        <div class="input-row">
+          <div class="field">
+            <div class="field-label">Cost Per Unit <span class="required">*</span></div>
+            <input class="input" type="text" value="R 62.50" />
+          </div>
+          <div class="field">
+            <div class="field-label">Cost Details</div>
+            <input class="input" type="text" placeholder="Optional notes..." value="Incl. delivery & setup" />
+          </div>
+        </div>
+
+        <!-- Cost Summary -->
+        <div class="cost-summary">
+          <div class="cost-row">
+            <span class="label">Quantity × Unit Cost</span>
+            <span class="val">200 × R62.50</span>
+          </div>
+          <div class="cost-row total">
+            <span class="label">Estimated Total Cost</span>
+            <span class="val">R12,500</span>
+          </div>
+        </div>
+
+        <!-- Budget Impact Preview -->
+        <div class="budget-impact">
+          <div class="impact-header">
+            <div class="live-dot"></div>
+            <h3>Budget Impact Preview</h3>
+          </div>
+          <div class="impact-category">
+            <span class="cat-name">Rentals & Equipment</span>
+            <span style="color:var(--text-primary);font-weight:600">R48,000 → R60,500</span>
+          </div>
+          <div class="impact-bar-wrap">
+            <div class="impact-bar-current" style="width:70%"></div>
+            <div class="impact-bar-new" style="left:70%;width:18.2%"></div>
+          </div>
+          <div class="impact-amounts">
+            <span>Current: R48,000 (96%)</span>
+            <span class="new-amount">+R12,500</span>
+            <span class="projected">of R50,000</span>
+          </div>
+          <div class="impact-summary">
+            <span class="total-label" style="color:var(--rose)">⚠ Will exceed budget by</span>
+            <span class="total-val" style="color:var(--rose)">R10,500</span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-secondary">Cancel</button>
+          <button class="btn btn-primary">Save Item & Sync Budget</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bar Order Form -->
+    <div class="form-panel ani d3">
+      <div class="form-header">
+        <div class="form-header-icon" style="background:var(--orange-dim)">🍷</div>
+        <div>
+          <h2>Bar Order</h2>
+        </div>
+        <span class="form-type" style="background:var(--orange-dim);color:var(--orange)">New Order</span>
+      </div>
+      <div class="form-body">
+        <div class="field">
+          <div class="field-label">Order Name <span class="required">*</span></div>
+          <input class="input" type="text" value="Reception Bar" />
+        </div>
+
+        <div class="input-row">
+          <div class="field">
+            <div class="field-label">Event</div>
+            <select class="select">
+              <option selected>Reception — Mar 15</option>
+              <option>Welcome Dinner — Mar 14</option>
+              <option>After Party — Mar 15</option>
+            </select>
+          </div>
+          <div class="field">
+            <div class="field-label">Status</div>
+            <select class="select">
+              <option selected>Draft</option>
+              <option>Confirmed</option>
+              <option>Ordered</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Existing vendor field -->
+        <div class="field">
+          <div class="field-label">Vendor</div>
+          <select class="select" style="border-color:rgba(56,189,248,0.2)">
+            <option value="">Select vendor (optional)</option>
+            <option selected>Cape Cellars</option>
+            <option>Elite Rentals</option>
+          </select>
+          <div class="vendor-link">
+            <span>🏢</span>
+            <span>Cape Cellars — Default category: <strong>Beverages</strong></span>
+            <span class="arrow">→</span>
+          </div>
+        </div>
+
+        <!-- NEW: Budget Category -->
+        <div class="field">
+          <div class="field-label">
+            Budget Category
+            <span class="new-badge">NEW</span>
+          </div>
+          <select class="select" style="border-color:rgba(167,139,250,0.2)">
+            <option value="">Select category (optional)</option>
+            <option selected>Beverages (R42k / R45k)</option>
+            <option>Venue & Catering (R165k / R180k)</option>
+          </select>
+          <div class="auto-suggest">
+            <span class="star">✦</span>
+            <span>Suggested: <strong>Beverages</strong> — bar orders auto-map to Beverages category</span>
+            <span class="confidence">98%</span>
+          </div>
+        </div>
+
+        <div class="section-divider"><span class="line"></span>Consumption Model<span class="line"></span></div>
+
+        <div class="input-row">
+          <div class="field">
+            <div class="field-label">Guest Count (Adults)</div>
+            <input class="input" type="number" value="120" />
+          </div>
+          <div class="field">
+            <div class="field-label">Duration (hours)</div>
+            <input class="input" type="number" value="5" />
+          </div>
+        </div>
+
+        <div class="input-row">
+          <div class="field">
+            <div class="field-label">First Hours</div>
+            <input class="input" type="number" value="2" />
+            <div class="field-hint">Higher consumption period</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Drinks/Hour (First)</div>
+            <input class="input" type="number" value="2" />
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-label">Drinks/Hour (Remaining)</div>
+          <input class="input" type="number" value="1" />
+        </div>
+
+        <!-- Bar items summary -->
+        <div class="section-divider"><span class="line"></span>Items & Costs<span class="line"></span></div>
+
+        <div style="background:var(--bg-elevated);border-radius:var(--radius-xs);overflow:hidden;border:1px solid var(--border-subtle);">
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;padding:8px 12px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);border-bottom:1px solid var(--border-subtle);background:var(--bg-card);">
+            <span>Item</span><span style="text-align:right">%</span><span style="text-align:right">Units</span><span style="text-align:right">Cost</span>
+          </div>
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;padding:10px 12px;font-size:12px;border-bottom:1px solid var(--border-subtle);">
+            <span>🍷 Wine</span><span style="text-align:right;color:var(--text-secondary)">40%</span><span style="text-align:right;color:var(--text-secondary)">40 btl</span><span style="text-align:right;font-weight:600">R16,000</span>
+          </div>
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;padding:10px 12px;font-size:12px;border-bottom:1px solid var(--border-subtle);">
+            <span>🍺 Beer</span><span style="text-align:right;color:var(--text-secondary)">30%</span><span style="text-align:right;color:var(--text-secondary)">86 cases</span><span style="text-align:right;font-weight:600">R12,900</span>
+          </div>
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;padding:10px 12px;font-size:12px;border-bottom:1px solid var(--border-subtle);">
+            <span>🥃 Spirits</span><span style="text-align:right;color:var(--text-secondary)">20%</span><span style="text-align:right;color:var(--text-secondary)">20 btl</span><span style="text-align:right;font-weight:600">R10,000</span>
+          </div>
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;padding:10px 12px;font-size:12px;">
+            <span>🥤 Soft Drinks</span><span style="text-align:right;color:var(--text-secondary)">10%</span><span style="text-align:right;color:var(--text-secondary)">24 cases</span><span style="text-align:right;font-weight:600">R3,100</span>
+          </div>
+        </div>
+
+        <!-- Cost Summary -->
+        <div class="cost-summary">
+          <div class="cost-row">
+            <span class="label">Total Bar Items</span>
+            <span class="val">4 items, 100% allocated</span>
+          </div>
+          <div class="cost-row total">
+            <span class="label">Estimated Bar Cost</span>
+            <span class="val">R42,000</span>
+          </div>
+        </div>
+
+        <!-- Budget Impact -->
+        <div class="budget-impact">
+          <div class="impact-header">
+            <div class="live-dot"></div>
+            <h3>Budget Impact Preview</h3>
+          </div>
+          <div class="impact-category">
+            <span class="cat-name">Beverages</span>
+            <span style="color:var(--text-primary);font-weight:600">R0 → R42,000</span>
+          </div>
+          <div class="impact-bar-wrap">
+            <div class="impact-bar-current" style="width:0%"></div>
+            <div class="impact-bar-new" style="left:0%;width:93.3%"></div>
+          </div>
+          <div class="impact-amounts">
+            <span>Current: R0 (0%)</span>
+            <span class="new-amount">+R42,000</span>
+            <span class="projected">of R45,000</span>
+          </div>
+          <div class="impact-summary">
+            <span class="total-label">Remaining after save</span>
+            <span class="total-val" style="color:var(--emerald)">R3,000</span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-secondary">Cancel</button>
+          <button class="btn btn-primary" style="background:var(--orange);color:#07070a;">Save Order & Sync Budget</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Toast notification preview -->
+<div class="toast-preview">
+  <div class="toast-icon">✦</div>
+  <div class="toast-text">
+    <strong>R12,500</strong> added to <strong>Rentals</strong> budget<br>
+    <span style="font-size:11px;color:var(--text-muted)">Auto-categorized from item type "Chairs"</span>
+  </div>
+  <button class="toast-action">Change Category</button>
+</div>
+
+</body>
+</html>

@@ -84,14 +84,14 @@ export function BulkActionsBar({
   const handleExportSelected = () => {
     if (onExportSelected) {
       onExportSelected();
-      toast.success(`Exported ${selectedCount} guests to CSV`);
+      toast.success(`Exported ${selectedCount} guests to Excel`);
     }
   };
 
   const handleExportAll = () => {
     if (onExportAll) {
       onExportAll();
-      toast.success(`Exported all ${totalCount} guests to CSV`);
+      toast.success(`Exported all ${totalCount} guests to Excel`);
     }
   };
 

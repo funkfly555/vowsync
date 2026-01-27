@@ -1,0 +1,1650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VowSync — Cost Reconciliation View (B2)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #0a0f1a;
+    --bg-primary: #0f1629;
+    --bg-card: #151d33;
+    --bg-card-hover: #1a2440;
+    --bg-surface: #1e2a4a;
+    --bg-input: #121a2e;
+    --border: #1e2d50;
+    --border-light: #253560;
+    --border-focus: #34d399;
+    --text-primary: #f0f4f8;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --text-dim: #475569;
+    --emerald: #34d399;
+    --emerald-dim: #059669;
+    --emerald-glow: rgba(52, 211, 153, 0.15);
+    --emerald-soft: rgba(52, 211, 153, 0.08);
+    --amber: #fbbf24;
+    --amber-dim: #d97706;
+    --amber-glow: rgba(251, 191, 36, 0.15);
+    --red: #f87171;
+    --red-dim: #dc2626;
+    --red-glow: rgba(248, 113, 113, 0.12);
+    --blue: #60a5fa;
+    --blue-dim: #2563eb;
+    --blue-glow: rgba(96, 165, 250, 0.15);
+    --purple: #a78bfa;
+    --purple-glow: rgba(167, 139, 250, 0.12);
+    --green-bright: #4ade80;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --radius-xs: 6px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.3);
+    --shadow-lg: 0 8px 40px rgba(0,0,0,0.4);
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  /* ─── Page Container ─── */
+  .page {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+
+  /* ─── Breadcrumb ─── */
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .breadcrumb a {
+    color: var(--emerald);
+    text-decoration: none;
+    transition: var(--transition);
+  }
+  .breadcrumb a:hover { color: var(--emerald-dim); }
+  .breadcrumb .sep { opacity: 0.4; }
+
+  /* ─── Page Header ─── */
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .page-header h1 {
+    font-size: 28px;
+    line-height: 1.2;
+    color: var(--text-primary);
+  }
+  .page-header .subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+  }
+  .header-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  /* ─── Buttons ─── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--emerald), var(--emerald-dim));
+    color: #0a0f1a;
+    box-shadow: 0 2px 12px var(--emerald-glow);
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(52, 211, 153, 0.3);
+  }
+  .btn-secondary {
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border-light);
+  }
+  .btn-secondary:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--emerald);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover {
+    color: var(--text-primary);
+    border-color: var(--border-light);
+  }
+  .btn-danger {
+    background: rgba(248, 113, 113, 0.1);
+    color: var(--red);
+    border: 1px solid rgba(248, 113, 113, 0.2);
+  }
+  .btn-danger:hover {
+    background: rgba(248, 113, 113, 0.18);
+  }
+  .btn-sm {
+    padding: 6px 14px;
+    font-size: 13px;
+  }
+  .btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* ─── Context Banner ─── */
+  .context-banner {
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(52, 211, 153, 0.05) 100%);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .context-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--emerald-glow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .context-icon svg {
+    width: 24px;
+    height: 24px;
+    color: var(--emerald);
+  }
+  .context-body { flex: 1; }
+  .context-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+  .context-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .context-meta {
+    display: flex;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+  .context-stat {
+    text-align: center;
+  }
+  .context-stat-value {
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Fraunces', serif;
+    color: var(--text-primary);
+  }
+  .context-stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── Reconciliation Layout ─── */
+  .recon-layout {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0;
+    margin-bottom: 32px;
+  }
+
+  .recon-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .recon-panel-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .recon-panel-header h3 {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .recon-panel-header .icon-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .recon-panel-header .icon-circle svg {
+    width: 18px;
+    height: 18px;
+  }
+  .panel-left .icon-circle {
+    background: var(--amber-glow);
+    color: var(--amber);
+  }
+  .panel-right .icon-circle {
+    background: var(--blue-glow);
+    color: var(--blue);
+  }
+  .panel-badge {
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+  .badge-estimated {
+    background: var(--amber-glow);
+    color: var(--amber);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+  }
+  .badge-invoice {
+    background: var(--blue-glow);
+    color: var(--blue);
+    border: 1px solid rgba(96, 165, 250, 0.2);
+  }
+
+  .recon-panel-body {
+    padding: 0;
+  }
+
+  /* ─── Estimated Items List ─── */
+  .est-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    gap: 14px;
+    transition: var(--transition);
+  }
+  .est-item:last-child { border-bottom: none; }
+  .est-item:hover { background: var(--bg-card-hover); }
+
+  .est-item-check {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    border: 2px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    flex-shrink: 0;
+  }
+  .est-item-check.checked {
+    background: var(--emerald);
+    border-color: var(--emerald);
+  }
+  .est-item-check.checked svg {
+    color: var(--bg-deep);
+  }
+  .est-item-check svg {
+    width: 14px;
+    height: 14px;
+    color: transparent;
+  }
+
+  .est-item-info { flex: 1; min-width: 0; }
+  .est-item-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .est-item-name .source-tag {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .source-item {
+    background: rgba(52, 211, 153, 0.12);
+    color: var(--emerald);
+  }
+  .source-bar {
+    background: rgba(251, 191, 36, 0.12);
+    color: var(--amber);
+  }
+  .est-item-detail {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  .est-item-amount {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-family: 'Fraunces', serif;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .est-item-category {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-align: right;
+  }
+
+  /* ─── Arrow Bridge ─── */
+  .arrow-bridge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 16px;
+    gap: 8px;
+    position: relative;
+  }
+  .arrow-line {
+    width: 2px;
+    flex: 1;
+    background: repeating-linear-gradient(
+      to bottom,
+      var(--border-light) 0px,
+      var(--border-light) 6px,
+      transparent 6px,
+      transparent 12px
+    );
+    opacity: 0.5;
+  }
+  .arrow-icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--emerald), var(--emerald-dim));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px var(--emerald-glow);
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+  .arrow-icon-box svg {
+    width: 22px;
+    height: 22px;
+    color: var(--bg-deep);
+  }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 4px 20px var(--emerald-glow); }
+    50% { box-shadow: 0 4px 30px rgba(52, 211, 153, 0.35); }
+  }
+
+  .arrow-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+  }
+
+  /* ─── Invoice Panel Items ─── */
+  .inv-line {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    gap: 14px;
+  }
+  .inv-line:last-child { border-bottom: none; }
+  .inv-line-info { flex: 1; }
+  .inv-line-desc {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+  .inv-line-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  .inv-line-amount {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-family: 'Fraunces', serif;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* ─── Variance Indicator ─── */
+  .variance {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .variance-positive {
+    color: var(--emerald);
+    background: var(--emerald-soft);
+  }
+  .variance-negative {
+    color: var(--red);
+    background: var(--red-glow);
+  }
+  .variance-neutral {
+    color: var(--text-muted);
+    background: rgba(100, 116, 139, 0.1);
+  }
+  .variance svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  /* ─── Comparison Table ─── */
+  .comparison-section {
+    margin-bottom: 32px;
+  }
+  .comparison-section h3 {
+    font-size: 18px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .comparison-section h3 svg {
+    width: 20px;
+    height: 20px;
+    color: var(--emerald);
+  }
+
+  .comparison-table {
+    width: 100%;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+  .comparison-table thead th {
+    padding: 12px 16px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-surface);
+  }
+  .comparison-table tbody td {
+    padding: 14px 16px;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .comparison-table tbody tr:last-child td { border-bottom: none; }
+  .comparison-table tbody tr:hover { background: var(--bg-card-hover); }
+
+  .col-item { font-weight: 500; color: var(--text-primary); }
+  .col-estimated {
+    color: var(--amber);
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+  }
+  .col-invoice {
+    color: var(--blue);
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+  }
+  .col-diff {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+  }
+  .diff-positive { color: var(--emerald); }
+  .diff-negative { color: var(--red); }
+  .diff-zero { color: var(--text-muted); }
+
+  .match-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .match-exact { color: var(--emerald); }
+  .match-under { color: var(--blue); }
+  .match-over { color: var(--red); }
+
+  /* ─── Totals Row ─── */
+  .comparison-table tfoot td {
+    padding: 14px 16px;
+    font-weight: 700;
+    font-size: 15px;
+    border-top: 2px solid var(--border-light);
+    background: var(--bg-surface);
+    font-family: 'Fraunces', serif;
+  }
+
+  /* ─── Action Cards ─── */
+  .action-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .action-card {
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+  }
+  .action-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: transparent;
+    transition: var(--transition);
+  }
+  .action-card:hover {
+    border-color: var(--emerald);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+  .action-card:hover::before {
+    background: linear-gradient(90deg, var(--emerald), var(--emerald-dim));
+  }
+  .action-card.recommended {
+    border-color: var(--emerald);
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--emerald-soft) 100%);
+  }
+  .action-card.recommended::before {
+    background: linear-gradient(90deg, var(--emerald), var(--emerald-dim));
+  }
+  .action-card-rec-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--emerald);
+    background: var(--emerald-glow);
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+  .action-card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+  }
+  .action-card-icon svg {
+    width: 22px;
+    height: 22px;
+  }
+  .action-card h4 {
+    font-size: 16px;
+    margin-bottom: 6px;
+    color: var(--text-primary);
+    font-family: 'Fraunces', serif;
+  }
+  .action-card p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .action-card .effect-list {
+    margin-top: 12px;
+    list-style: none;
+  }
+  .action-card .effect-list li {
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 3px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .action-card .effect-list li svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  .card-replace .action-card-icon { background: var(--emerald-glow); color: var(--emerald); }
+  .card-keep .action-card-icon { background: var(--amber-glow); color: var(--amber); }
+  .card-custom .action-card-icon { background: var(--purple-glow); color: var(--purple); }
+
+  /* ─── After-State Preview ─── */
+  .after-state {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 32px;
+  }
+  .after-state-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-surface);
+  }
+  .after-state-header h3 {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .after-state-header h3 svg {
+    width: 20px;
+    height: 20px;
+    color: var(--emerald);
+  }
+  .after-state-toggle {
+    display: flex;
+    background: var(--bg-card);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .after-state-toggle button {
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: 'Inter', sans-serif;
+    color: var(--text-secondary);
+    background: transparent;
+  }
+  .after-state-toggle button.active {
+    background: var(--emerald);
+    color: var(--bg-deep);
+  }
+
+  .after-state-body {
+    padding: 20px;
+  }
+
+  /* ─── Budget Preview Cards ─── */
+  .budget-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .preview-stat {
+    background: var(--bg-surface);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+  }
+  .preview-stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+  .preview-stat-value {
+    font-size: 20px;
+    font-weight: 600;
+    font-family: 'Fraunces', serif;
+    color: var(--text-primary);
+  }
+  .preview-stat-change {
+    font-size: 11px;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .change-positive { color: var(--emerald); }
+  .change-negative { color: var(--red); }
+  .change-neutral { color: var(--text-muted); }
+
+  .preview-stat-value .strike {
+    text-decoration: line-through;
+    color: var(--text-dim);
+    font-size: 14px;
+    margin-right: 8px;
+  }
+
+  /* ─── Budget Category Impact ─── */
+  .impact-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+  .impact-table thead th {
+    padding: 10px 14px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .impact-table tbody td {
+    padding: 12px 14px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border);
+  }
+  .impact-table tbody tr:last-child td { border-bottom: none; }
+  .impact-bar-container {
+    height: 8px;
+    background: var(--bg-input);
+    border-radius: 4px;
+    overflow: hidden;
+    min-width: 120px;
+  }
+  .impact-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.8s ease;
+    position: relative;
+  }
+  .impact-bar-before {
+    background: var(--amber);
+    opacity: 0.4;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-radius: 4px;
+  }
+  .impact-bar-after {
+    background: var(--emerald);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ─── Reconciliation History ─── */
+  .recon-history {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .recon-history h3 {
+    font-size: 16px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .recon-history h3 svg {
+    width: 18px;
+    height: 18px;
+    color: var(--text-muted);
+  }
+  .history-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .history-item:last-child { border-bottom: none; }
+  .history-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+  .dot-green { background: var(--emerald); }
+  .dot-blue { background: var(--blue); }
+  .dot-amber { background: var(--amber); }
+  .history-content { flex: 1; }
+  .history-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+  .history-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  .history-time {
+    font-size: 11px;
+    color: var(--text-dim);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* ─── Flow Diagram ─── */
+  .flow-section {
+    margin-bottom: 32px;
+  }
+  .flow-section h3 {
+    font-size: 18px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .flow-section h3 svg {
+    width: 20px;
+    height: 20px;
+    color: var(--emerald);
+  }
+
+  .flow-diagram {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow-x: auto;
+  }
+  .flow-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    min-width: 140px;
+    flex-shrink: 0;
+  }
+  .flow-node-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid;
+  }
+  .flow-node-icon svg {
+    width: 26px;
+    height: 26px;
+  }
+  .flow-node-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: center;
+  }
+  .flow-node-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+  .flow-node.node-estimate .flow-node-icon {
+    background: var(--amber-glow);
+    border-color: rgba(251, 191, 36, 0.3);
+    color: var(--amber);
+  }
+  .flow-node.node-invoice .flow-node-icon {
+    background: var(--blue-glow);
+    border-color: rgba(96, 165, 250, 0.3);
+    color: var(--blue);
+  }
+  .flow-node.node-compare .flow-node-icon {
+    background: var(--purple-glow);
+    border-color: rgba(167, 139, 250, 0.3);
+    color: var(--purple);
+  }
+  .flow-node.node-action .flow-node-icon {
+    background: var(--emerald-glow);
+    border-color: rgba(52, 211, 153, 0.3);
+    color: var(--emerald);
+  }
+  .flow-node.node-budget .flow-node-icon {
+    background: rgba(52, 211, 153, 0.2);
+    border-color: var(--emerald);
+    color: var(--emerald);
+  }
+
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    padding: 0 4px;
+  }
+  .flow-arrow-line {
+    width: 40px;
+    height: 2px;
+    background: var(--border-light);
+    position: relative;
+  }
+  .flow-arrow-line::after {
+    content: '';
+    position: absolute;
+    right: -1px;
+    top: -4px;
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 8px solid var(--border-light);
+  }
+
+  /* ─── Bottom Actions Bar ─── */
+  .bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-primary);
+    border-top: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 -4px 24px rgba(0,0,0,0.3);
+  }
+  .bottom-bar-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .bottom-bar-summary {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .bottom-bar-summary strong {
+    color: var(--text-primary);
+  }
+  .bottom-bar-actions {
+    display: flex;
+    gap: 12px;
+  }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 1080px) {
+    .recon-layout {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .arrow-bridge {
+      flex-direction: row;
+      padding: 12px 20px;
+    }
+    .arrow-line {
+      height: 2px;
+      width: auto;
+      flex: 1;
+      background: repeating-linear-gradient(
+        to right,
+        var(--border-light) 0px,
+        var(--border-light) 6px,
+        transparent 6px,
+        transparent 12px
+      );
+    }
+    .arrow-label {
+      writing-mode: horizontal-tb;
+      transform: none;
+    }
+    .action-cards { grid-template-columns: 1fr; }
+    .budget-preview-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ─── Scrollbar ─── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-deep); }
+  ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <a href="#">VowSync</a>
+    <span class="sep">›</span>
+    <a href="#">Thompson-Williams Wedding</a>
+    <span class="sep">›</span>
+    <a href="#">Budget</a>
+    <span class="sep">›</span>
+    <span style="color: var(--text-secondary)">Cost Reconciliation</span>
+  </div>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1>Reconcile Costs with Invoice</h1>
+      <div class="subtitle">Review and resolve overlapping cost entries before applying the new invoice</div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-ghost btn-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        Help
+      </button>
+      <button class="btn btn-ghost btn-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <!-- Context Banner -->
+  <div class="context-banner">
+    <div class="context-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
+    </div>
+    <div class="context-body">
+      <div class="context-title">New Invoice: INV-2026-047 from Elite Rentals</div>
+      <div class="context-desc">This invoice covers items that are already tracked as estimated costs in your budget. Choose how to handle the overlap below.</div>
+    </div>
+    <div class="context-meta">
+      <div class="context-stat">
+        <div class="context-stat-value" style="color: var(--amber)">R48,000</div>
+        <div class="context-stat-label">Estimated</div>
+      </div>
+      <div class="context-stat">
+        <div class="context-stat-value" style="color: var(--blue)">R51,750</div>
+        <div class="context-stat-label">Invoice</div>
+      </div>
+      <div class="context-stat">
+        <div class="context-stat-value" style="color: var(--red)">+R3,750</div>
+        <div class="context-stat-label">Difference</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reconciliation Flow Diagram -->
+  <div class="flow-section">
+    <h3>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Reconciliation Flow
+    </h3>
+    <div class="flow-diagram">
+      <div class="flow-node node-estimate">
+        <div class="flow-node-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>
+        </div>
+        <div class="flow-node-label">Estimated Costs</div>
+        <div class="flow-node-sub">3 items · R48,000</div>
+      </div>
+      <div class="flow-arrow"><div class="flow-arrow-line"></div></div>
+
+      <div class="flow-node node-invoice">
+        <div class="flow-node-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
+        </div>
+        <div class="flow-node-label">New Invoice</div>
+        <div class="flow-node-sub">INV-2026-047 · R51,750</div>
+      </div>
+      <div class="flow-arrow"><div class="flow-arrow-line"></div></div>
+
+      <div class="flow-node node-compare">
+        <div class="flow-node-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>
+        </div>
+        <div class="flow-node-label">Compare & Match</div>
+        <div class="flow-node-sub">Line-by-line review</div>
+      </div>
+      <div class="flow-arrow"><div class="flow-arrow-line"></div></div>
+
+      <div class="flow-node node-action">
+        <div class="flow-node-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
+        </div>
+        <div class="flow-node-label">Choose Action</div>
+        <div class="flow-node-sub">Replace · Keep · Custom</div>
+      </div>
+      <div class="flow-arrow"><div class="flow-arrow-line"></div></div>
+
+      <div class="flow-node node-budget">
+        <div class="flow-node-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div class="flow-node-label">Budget Updated</div>
+        <div class="flow-node-sub">Clean, no double-count</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Side-by-Side Panels -->
+  <div class="recon-layout">
+    <!-- Left Panel: Existing Estimated Costs -->
+    <div class="recon-panel panel-left">
+      <div class="recon-panel-header">
+        <h3>
+          <span class="icon-circle">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>
+          </span>
+          Existing Budget Entries
+        </h3>
+        <span class="panel-badge badge-estimated">Estimated · R48,000</span>
+      </div>
+      <div class="recon-panel-body">
+        <div class="est-item">
+          <div class="est-item-check checked">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="est-item-info">
+            <div class="est-item-name">
+              Chairs (200x Gold Chiavari)
+              <span class="source-tag source-item">Item</span>
+            </div>
+            <div class="est-item-detail">200 × R62.50 · Added 3 Jan 2026</div>
+          </div>
+          <div style="text-align:right">
+            <div class="est-item-amount">R12,500</div>
+            <div class="est-item-category">Rentals &amp; Equipment</div>
+          </div>
+        </div>
+
+        <div class="est-item">
+          <div class="est-item-check checked">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="est-item-info">
+            <div class="est-item-name">
+              Tables (25x Round 10-seater)
+              <span class="source-tag source-item">Item</span>
+            </div>
+            <div class="est-item-detail">25 × R720.00 · Added 3 Jan 2026</div>
+          </div>
+          <div style="text-align:right">
+            <div class="est-item-amount">R18,000</div>
+            <div class="est-item-category">Rentals &amp; Equipment</div>
+          </div>
+        </div>
+
+        <div class="est-item">
+          <div class="est-item-check checked">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="est-item-info">
+            <div class="est-item-name">
+              Table Linens (50x White Organza)
+              <span class="source-tag source-item">Item</span>
+            </div>
+            <div class="est-item-detail">50 × R350.00 · Added 5 Jan 2026</div>
+          </div>
+          <div style="text-align:right">
+            <div class="est-item-amount">R17,500</div>
+            <div class="est-item-category">Rentals &amp; Equipment</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Arrow Bridge -->
+    <div class="arrow-bridge">
+      <div class="arrow-line"></div>
+      <div class="arrow-icon-box">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </div>
+      <div class="arrow-label">RECONCILE</div>
+      <div class="arrow-line"></div>
+    </div>
+
+    <!-- Right Panel: New Invoice Lines -->
+    <div class="recon-panel panel-right">
+      <div class="recon-panel-header">
+        <h3>
+          <span class="icon-circle">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
+          </span>
+          Invoice INV-2026-047
+        </h3>
+        <span class="panel-badge badge-invoice">Invoice · R51,750</span>
+      </div>
+      <div class="recon-panel-body">
+        <div class="inv-line">
+          <div class="inv-line-info">
+            <div class="inv-line-desc">Gold Chiavari Chairs — Hire (200 units)</div>
+            <div class="inv-line-meta">Rental fee including delivery &amp; collection</div>
+          </div>
+          <div style="text-align:right">
+            <div class="inv-line-amount">R14,000</div>
+            <div class="variance variance-negative">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+              +R1,500
+            </div>
+          </div>
+        </div>
+
+        <div class="inv-line">
+          <div class="inv-line-info">
+            <div class="inv-line-desc">Round Tables 10-seater — Hire (25 units)</div>
+            <div class="inv-line-meta">Includes setup &amp; takedown</div>
+          </div>
+          <div style="text-align:right">
+            <div class="inv-line-amount">R18,750</div>
+            <div class="variance variance-negative">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+              +R750
+            </div>
+          </div>
+        </div>
+
+        <div class="inv-line">
+          <div class="inv-line-info">
+            <div class="inv-line-desc">White Organza Table Runners (50 units)</div>
+            <div class="inv-line-meta">Premium quality, includes pressing</div>
+          </div>
+          <div style="text-align:right">
+            <div class="inv-line-amount">R16,000</div>
+            <div class="variance variance-positive">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              -R1,500
+            </div>
+          </div>
+        </div>
+
+        <div class="inv-line" style="background: var(--bg-surface); border-radius: 0;">
+          <div class="inv-line-info">
+            <div class="inv-line-desc" style="color: var(--text-muted); font-style: italic;">VAT (15%)</div>
+          </div>
+          <div style="text-align:right">
+            <div class="inv-line-amount" style="font-size: 13px; color: var(--text-secondary);">R3,000</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Line-by-Line Comparison Table -->
+  <div class="comparison-section">
+    <h3>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/></svg>
+      Line-by-Line Comparison
+    </h3>
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th style="width: 30%">Item</th>
+          <th style="width: 15%; text-align: right;">Estimated</th>
+          <th style="width: 15%; text-align: right;">Invoice</th>
+          <th style="width: 15%; text-align: right;">Difference</th>
+          <th style="width: 25%; text-align: center;">Match</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="col-item">Chairs (200x Gold Chiavari)</td>
+          <td class="col-estimated" style="text-align: right;">R12,500</td>
+          <td class="col-invoice" style="text-align: right;">R14,000</td>
+          <td class="col-diff diff-negative" style="text-align: right;">+R1,500</td>
+          <td style="text-align: center;">
+            <span class="match-indicator match-over">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/><path d="m21 16-4 4-4-4"/><path d="M17 20V4"/></svg>
+              12% over estimate
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-item">Tables (25x Round 10-seater)</td>
+          <td class="col-estimated" style="text-align: right;">R18,000</td>
+          <td class="col-invoice" style="text-align: right;">R18,750</td>
+          <td class="col-diff diff-negative" style="text-align: right;">+R750</td>
+          <td style="text-align: center;">
+            <span class="match-indicator match-over">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/><path d="m21 16-4 4-4-4"/><path d="M17 20V4"/></svg>
+              4% over estimate
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-item">Table Linens (50x White Organza)</td>
+          <td class="col-estimated" style="text-align: right;">R17,500</td>
+          <td class="col-invoice" style="text-align: right;">R16,000</td>
+          <td class="col-diff diff-positive" style="text-align: right;">-R1,500</td>
+          <td style="text-align: center;">
+            <span class="match-indicator match-under">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/><path d="m21 16-4 4-4-4"/><path d="M17 20V4"/></svg>
+              9% under estimate
+            </span>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td>Total (excl. VAT)</td>
+          <td class="col-estimated" style="text-align: right;">R48,000</td>
+          <td class="col-invoice" style="text-align: right;">R48,750</td>
+          <td class="col-diff diff-negative" style="text-align: right;">+R750</td>
+          <td style="text-align: center;">
+            <span class="match-indicator match-over" style="font-weight: 600; font-size: 13px;">
+              1.6% over estimate
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td>Invoice Total (incl. VAT)</td>
+          <td style="color: var(--text-muted); text-align: right;">—</td>
+          <td class="col-invoice" style="text-align: right;">R51,750</td>
+          <td colspan="2" style="text-align: right; color: var(--text-muted); font-size: 12px; font-family: 'Inter', sans-serif; font-weight: 400;">
+            VAT: R3,000 (15% on R48,750 excl. linens)
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <!-- Action Cards -->
+  <div style="margin-bottom: 8px;">
+    <h3 style="font-size: 18px; display: flex; align-items: center; gap: 10px; margin-bottom: 16px; font-family: 'Fraunces', serif;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--emerald)"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
+      Choose Reconciliation Action
+    </h3>
+  </div>
+  <div class="action-cards">
+    <!-- Replace -->
+    <div class="action-card card-replace recommended">
+      <div class="action-card-rec-badge">Recommended</div>
+      <div class="action-card-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
+      </div>
+      <h4>Replace Estimates with Invoice</h4>
+      <p>Mark estimated entries as superseded and use invoice amounts as your actual costs.</p>
+      <ul class="effect-list">
+        <li>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--emerald)"><polyline points="20 6 9 17 4 12"/></svg>
+          3 estimated entries → superseded
+        </li>
+        <li>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--emerald)"><polyline points="20 6 9 17 4 12"/></svg>
+          Invoice linked to Rentals category
+        </li>
+        <li>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--emerald)"><polyline points="20 6 9 17 4 12"/></svg>
+          Net budget change: +R750
+        </li>
+        <li>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--emerald)"><polyline points="20 6 9 17 4 12"/></svg>
+          No double-counting risk
+        </li>
+      </ul>
+    </div>
+
+    <!-- Keep Both -->
+    <div class="action-card card-keep">
+      <div class="action-card-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+      </div>
+      <h4>Keep Both (Separate Items)</h4>
+      <p>Treat the invoice as additional costs separate from existing estimates. Use when items don't overlap.</p>
+      <ul class="effect-list">
+        <li>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--amber)"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Estimated entries remain active
+        </li>
+        <li>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--amber)"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Invoice added as new entry
+        </li>
+        <li>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--red)"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Double-counting warning added
+        </li>
+        <li>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--amber)"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Net budget change: +R99,750
+        </li>
+      </ul>
+    </div>
+
+    <!-- Custom Selection -->
+    <div class="action-card card-custom">
+      <div class="action-card-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+      </div>
+      <h4>Custom Selection</h4>
+      <p>Choose per-line which estimated entries to replace and which to keep alongside the invoice.</p>
+      <ul class="effect-list">
+        <li>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--purple)"><polyline points="20 6 9 17 4 12"/></svg>
+          Select entries individually
+        </li>
+        <li>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--purple)"><polyline points="20 6 9 17 4 12"/></svg>
+          Mix: some replaced, some kept
+        </li>
+        <li>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--purple)"><polyline points="20 6 9 17 4 12"/></svg>
+          Split invoice across categories
+        </li>
+        <li>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--purple)"><polyline points="20 6 9 17 4 12"/></svg>
+          Full control, granular decisions
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- After-State Preview -->
+  <div class="after-state">
+    <div class="after-state-header">
+      <h3>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+        Budget Preview — After Reconciliation
+      </h3>
+      <div class="after-state-toggle">
+        <button class="active">Replace (Recommended)</button>
+        <button>Keep Both</button>
+        <button>Custom</button>
+      </div>
+    </div>
+    <div class="after-state-body">
+      <!-- Stats -->
+      <div class="budget-preview-grid">
+        <div class="preview-stat">
+          <div class="preview-stat-label">Rentals &amp; Equipment</div>
+          <div class="preview-stat-value">
+            <span class="strike">R48,000</span>R48,750
+          </div>
+          <div class="preview-stat-change change-negative">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+            +R750 from estimate
+          </div>
+        </div>
+        <div class="preview-stat">
+          <div class="preview-stat-label">Total Budget Spent</div>
+          <div class="preview-stat-value">
+            <span class="strike">R368,500</span>R369,250
+          </div>
+          <div class="preview-stat-change change-negative">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+            +R750 net increase
+          </div>
+        </div>
+        <div class="preview-stat">
+          <div class="preview-stat-label">Estimated Costs</div>
+          <div class="preview-stat-value">
+            <span class="strike">R95,500</span>R47,500
+          </div>
+          <div class="preview-stat-change change-positive">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            -R48,000 moved to invoiced
+          </div>
+        </div>
+        <div class="preview-stat">
+          <div class="preview-stat-label">Budget Remaining</div>
+          <div class="preview-stat-value">
+            <span class="strike">R131,500</span>R130,750
+          </div>
+          <div class="preview-stat-change change-neutral">Minimal impact on remaining</div>
+        </div>
+      </div>
+
+      <!-- Impact on categories -->
+      <table class="impact-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Before</th>
+            <th>After</th>
+            <th>Change</th>
+            <th style="width: 180px">Usage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight: 500; color: var(--text-primary);">Rentals &amp; Equipment</td>
+            <td style="color: var(--amber); font-family: 'Fraunces', serif;">R48,000 <span style="font-size: 11px; color: var(--text-muted); font-family: 'Inter', sans-serif;">(est)</span></td>
+            <td style="color: var(--blue); font-family: 'Fraunces', serif;">R48,750 <span style="font-size: 11px; color: var(--text-muted); font-family: 'Inter', sans-serif;">(inv)</span></td>
+            <td style="color: var(--red); font-family: 'Fraunces', serif; font-weight: 600;">+R750</td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div class="impact-bar-container">
+                  <div class="impact-bar impact-bar-after" style="width: 97.5%; height: 100%; border-radius: 4px;"></div>
+                </div>
+                <span style="font-size: 12px; color: var(--text-secondary); font-weight: 500;">97.5%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="font-weight: 500; color: var(--text-primary);">Venue &amp; Catering</td>
+            <td style="color: var(--text-secondary); font-family: 'Fraunces', serif;">R165,000</td>
+            <td style="color: var(--text-secondary); font-family: 'Fraunces', serif;">R165,000</td>
+            <td style="color: var(--text-muted);">—</td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div class="impact-bar-container">
+                  <div class="impact-bar impact-bar-after" style="width: 91.7%; height: 100%; border-radius: 4px;"></div>
+                </div>
+                <span style="font-size: 12px; color: var(--text-secondary); font-weight: 500;">91.7%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="font-weight: 500; color: var(--text-primary);">Beverages</td>
+            <td style="color: var(--text-secondary); font-family: 'Fraunces', serif;">R42,000</td>
+            <td style="color: var(--text-secondary); font-family: 'Fraunces', serif;">R42,000</td>
+            <td style="color: var(--text-muted);">—</td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div class="impact-bar-container">
+                  <div class="impact-bar impact-bar-after" style="width: 93.3%; height: 100%; border-radius: 4px; background: var(--amber);"></div>
+                </div>
+                <span style="font-size: 12px; color: var(--amber); font-weight: 500;">93.3%</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Previous Reconciliation History -->
+  <div class="recon-history" style="margin-bottom: 80px;">
+    <h3>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Recent Reconciliation History
+    </h3>
+    <div class="history-item">
+      <div class="history-dot dot-green"></div>
+      <div class="history-content">
+        <div class="history-title">Photography — Moment Makers (INV-2026-031)</div>
+        <div class="history-desc">Replaced 1 estimated entry (R35,000) with invoice (R35,000). No difference. Clean match.</div>
+      </div>
+      <div class="history-time">18 Jan 2026</div>
+    </div>
+    <div class="history-item">
+      <div class="history-dot dot-blue"></div>
+      <div class="history-content">
+        <div class="history-title">Flowers — Bloom &amp; Co (INV-2026-028)</div>
+        <div class="history-desc">Replaced 4 estimated entries (R42,000) with invoice (R45,000). +R3,000 variance accepted.</div>
+      </div>
+      <div class="history-time">12 Jan 2026</div>
+    </div>
+    <div class="history-item">
+      <div class="history-dot dot-amber"></div>
+      <div class="history-content">
+        <div class="history-title">Music — DJ Pulse (INV-2026-022)</div>
+        <div class="history-desc">Custom selection: Replaced sound equipment entry (R15,000 → R12,000), kept lighting entry (R8,000) as separate.</div>
+      </div>
+      <div class="history-time">5 Jan 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom Actions Bar -->
+<div class="bottom-bar">
+  <div class="bottom-bar-info">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--emerald);"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+    <div class="bottom-bar-summary">
+      Selected: <strong>Replace Estimates with Invoice</strong> · Net change: <strong style="color: var(--red)">+R750</strong> to Rentals &amp; Equipment · <strong>3 entries</strong> will be superseded
+    </div>
+  </div>
+  <div class="bottom-bar-actions">
+    <button class="btn btn-ghost">Cancel</button>
+    <button class="btn btn-primary">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      Apply Reconciliation
+    </button>
+  </div>
+</div>
+
+</body>
+</html>

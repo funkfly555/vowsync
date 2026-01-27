@@ -15,6 +15,9 @@ import { Button } from '@/components/ui/button';
 import { useGuestCards, useWeddingEvents } from '@/hooks/useGuests';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useBulkGuestActions } from '@/hooks/useBulkGuestActions';
+import { useGuestTableData } from '@/hooks/useGuestTableData';
+import { useWedding } from '@/hooks/useWeddings';
+import { exportGuestsToXlsx } from '@/lib/export-xlsx';
 import {
   GuestFiltersState,
   DEFAULT_GUEST_FILTERS_STATE,
@@ -90,12 +93,25 @@ export function GuestListPage() {
   // Fetch events for event filter dropdown
   const { data: events = [] } = useWeddingEvents(weddingId || '');
 
+  // Fetch wedding for bride/groom names (used by Excel export filename)
+  const { data: wedding } = useWedding(weddingId || '');
+
   // Debounce search for performance (300ms)
   const debouncedSearch = useDebounce(filters.search, 300);
   const debouncedFilters = { ...filters, search: debouncedSearch };
 
   // Fetch guests with event attendance for card display
   const { guests, isLoading, isError } = useGuestCards({
+    weddingId: weddingId || '',
+    filters: debouncedFilters,
+  });
+
+  // Fetch table data for Excel export (shares cache with Table View)
+  const {
+    rows: tableRows,
+    events: tableEvents,
+    mealOptions,
+  } = useGuestTableData({
     weddingId: weddingId || '',
     filters: debouncedFilters,
   });
@@ -151,13 +167,35 @@ export function GuestListPage() {
     deselectAll,
     allSelected,
     someSelected,
-    exportSelected,
-    exportAll,
   } = useBulkGuestActions({
     guests,
     selectedGuests,
     setSelectedGuests,
   });
+
+  // Excel export handlers (Table View structure with merged headers)
+  const handleExportAllXlsx = useCallback(() => {
+    if (tableRows.length === 0) return;
+    exportGuestsToXlsx(
+      tableRows,
+      tableEvents,
+      mealOptions,
+      wedding?.bride_name || 'Bride',
+      wedding?.groom_name || 'Groom'
+    );
+  }, [tableRows, tableEvents, mealOptions, wedding]);
+
+  const handleExportSelectedXlsx = useCallback(() => {
+    const selectedRows = tableRows.filter((r) => selectedGuests.has(r.id));
+    if (selectedRows.length === 0) return;
+    exportGuestsToXlsx(
+      selectedRows,
+      tableEvents,
+      mealOptions,
+      wedding?.bride_name || 'Bride',
+      wedding?.groom_name || 'Groom'
+    );
+  }, [tableRows, tableEvents, mealOptions, wedding, selectedGuests]);
 
   const handleClearSelection = () => {
     deselectAll();
@@ -356,7 +394,6 @@ export function GuestListPage() {
         }}
         onClearFilters={() => setFilters(DEFAULT_GUEST_FILTERS_STATE)}
         events={events}
-        guests={guests}
       />
 
       {/* Loading State - Skeleton */}
@@ -401,8 +438,8 @@ export function GuestListPage() {
           onSelectAll={selectAll}
           onAssignTable={handleBulkAssignTable}
           onAssignSeats={handleOpenBulkSeating}
-          onExportSelected={exportSelected}
-          onExportAll={exportAll}
+          onExportSelected={handleExportSelectedXlsx}
+          onExportAll={handleExportAllXlsx}
           onDeleteSelected={handleBulkDeleteClick}
           isAssigning={bulkAssignTable.isPending}
           isDeleting={bulkDeleteGuests.isPending}

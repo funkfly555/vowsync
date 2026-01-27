@@ -1,9 +1,8 @@
 /**
  * DietaryTab - Dietary requirements form fields with Plus One column
- * Restrictions, allergies, notes fields
- * Plus One dietary is a placeholder for future enhancement
+ * Uses Select dropdown for restrictions, AllergyMultiSelect for allergies
  * @feature 021-guest-page-redesign
- * @task T022, T034
+ * @feature 033-guest-page-tweaks - Structured dropdowns + plus one dietary
  */
 
 import { useFormContext, Controller } from 'react-hook-form';
@@ -11,18 +10,61 @@ import { UserPlus } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { GuestEditFormData } from '@/types/guest';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { GuestEditFormData, DIETARY_RESTRICTION_OPTIONS } from '@/types/guest';
+import { AllergyMultiSelect } from '../AllergyMultiSelect';
 
 export function DietaryTab() {
   const {
-    register,
     control,
     watch,
+    setValue,
     formState: { errors },
   } = useFormContext<GuestEditFormData>();
 
   const hasPlusOne = watch('has_plus_one');
-  const plusOneName = watch('plus_one_name');
+  const dietaryRestrictions = watch('dietary_restrictions');
+  const plusOneDietaryRestrictions = watch('plus_one_dietary_restrictions');
+
+  const isOtherRestriction = dietaryRestrictions?.startsWith('Other');
+  const isPlusOneOtherRestriction = plusOneDietaryRestrictions?.startsWith('Other');
+
+  const handleRestrictionChange = (value: string, isPlusOne: boolean) => {
+    const field = isPlusOne ? 'plus_one_dietary_restrictions' as const : 'dietary_restrictions' as const;
+    if (value === '__none__') {
+      setValue(field, '', { shouldDirty: true });
+    } else if (value === 'Other') {
+      const current = isPlusOne ? plusOneDietaryRestrictions : dietaryRestrictions;
+      if (!current?.startsWith('Other')) {
+        setValue(field, 'Other', { shouldDirty: true });
+      }
+    } else {
+      setValue(field, value, { shouldDirty: true });
+    }
+  };
+
+  const getRestrictionSelectValue = (value: string): string => {
+    if (!value) return '__none__';
+    if (value.startsWith('Other')) return 'Other';
+    if (DIETARY_RESTRICTION_OPTIONS.includes(value as (typeof DIETARY_RESTRICTION_OPTIONS)[number])) return value;
+    return '__none__';
+  };
+
+  const getOtherRestrictionText = (value: string): string => {
+    if (!value?.startsWith('Other:')) return '';
+    return value.replace('Other:', '').trim();
+  };
+
+  const handleOtherRestrictionText = (text: string, isPlusOne: boolean) => {
+    const field = isPlusOne ? 'plus_one_dietary_restrictions' as const : 'dietary_restrictions' as const;
+    setValue(field, text ? `Other: ${text}` : 'Other', { shouldDirty: true });
+  };
 
   return (
     <div className="p-4">
@@ -34,15 +76,30 @@ export function DietaryTab() {
 
           {/* Dietary Restrictions */}
           <div className="space-y-2">
-            <Label htmlFor="dietary_restrictions">Dietary Restrictions</Label>
-            <Input
-              id="dietary_restrictions"
-              {...register('dietary_restrictions')}
-              placeholder="e.g., Vegetarian, Vegan, Halal, Kosher"
-            />
-            <p className="text-xs text-gray-500">
-              Enter any dietary preferences or restrictions.
-            </p>
+            <Label>Dietary Restrictions</Label>
+            <Select
+              value={getRestrictionSelectValue(dietaryRestrictions)}
+              onValueChange={(v) => handleRestrictionChange(v, false)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select restriction..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__none__">No selection</SelectItem>
+                {DIETARY_RESTRICTION_OPTIONS.map((option) => (
+                  <SelectItem key={option} value={option}>
+                    {option}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {isOtherRestriction && (
+              <Input
+                placeholder="Specify dietary restriction..."
+                value={getOtherRestrictionText(dietaryRestrictions)}
+                onChange={(e) => handleOtherRestrictionText(e.target.value, false)}
+              />
+            )}
             {errors.dietary_restrictions && (
               <p className="text-sm text-red-500">{errors.dietary_restrictions.message}</p>
             )}
@@ -50,19 +107,20 @@ export function DietaryTab() {
 
           {/* Allergies */}
           <div className="space-y-2">
-            <Label htmlFor="allergies">
+            <Label>
               Allergies
               <span className="ml-1 text-xs font-normal text-red-500">(Important)</span>
             </Label>
-            <Input
-              id="allergies"
-              {...register('allergies')}
-              placeholder="e.g., Nuts, Shellfish, Dairy, Gluten"
-              className={errors.allergies ? 'border-red-500' : ''}
+            <Controller
+              control={control}
+              name="allergies"
+              render={({ field }) => (
+                <AllergyMultiSelect
+                  value={field.value}
+                  onChange={(v) => field.onChange(v)}
+                />
+              )}
             />
-            <p className="text-xs text-gray-500">
-              List any food allergies for safety.
-            </p>
             {errors.allergies && (
               <p className="text-sm text-red-500">{errors.allergies.message}</p>
             )}
@@ -70,13 +128,12 @@ export function DietaryTab() {
 
           {/* Dietary Notes */}
           <div className="space-y-2">
-            <Label htmlFor="dietary_notes">Additional Notes</Label>
+            <Label>Additional Notes</Label>
             <Controller
               control={control}
               name="dietary_notes"
               render={({ field }) => (
                 <Textarea
-                  id="dietary_notes"
                   {...field}
                   placeholder="Any additional dietary requirements or preferences..."
                   className="min-h-[100px]"
@@ -86,17 +143,6 @@ export function DietaryTab() {
             {errors.dietary_notes && (
               <p className="text-sm text-red-500">{errors.dietary_notes.message}</p>
             )}
-          </div>
-
-          {/* Summary card */}
-          <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-            <p className="text-sm font-medium text-amber-800">
-              Kitchen Information
-            </p>
-            <p className="text-xs text-amber-600 mt-1">
-              This information will be shared with the catering team to ensure
-              all dietary requirements are accommodated.
-            </p>
           </div>
         </div>
 
@@ -109,29 +155,75 @@ export function DietaryTab() {
 
           {hasPlusOne ? (
             <>
-              {/* Plus One Info */}
-              <div className="p-4 bg-gray-50 rounded-lg space-y-3">
-                <div>
-                  <p className="text-sm text-gray-500">Plus One</p>
-                  <p className="font-medium">{plusOneName || 'Not specified'}</p>
-                </div>
+              {/* Plus One Dietary Restrictions */}
+              <div className="space-y-2">
+                <Label>Dietary Restrictions</Label>
+                <Select
+                  value={getRestrictionSelectValue(plusOneDietaryRestrictions)}
+                  onValueChange={(v) => handleRestrictionChange(v, true)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select restriction..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__none__">No selection</SelectItem>
+                    {DIETARY_RESTRICTION_OPTIONS.map((option) => (
+                      <SelectItem key={option} value={option}>
+                        {option}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {isPlusOneOtherRestriction && (
+                  <Input
+                    placeholder="Specify dietary restriction..."
+                    value={getOtherRestrictionText(plusOneDietaryRestrictions)}
+                    onChange={(e) => handleOtherRestrictionText(e.target.value, true)}
+                  />
+                )}
+                {errors.plus_one_dietary_restrictions && (
+                  <p className="text-sm text-red-500">{errors.plus_one_dietary_restrictions.message}</p>
+                )}
               </div>
 
-              {/* Placeholder for future enhancement */}
-              <div className="p-4 bg-gray-100 border border-dashed border-gray-300 rounded-lg">
-                <p className="text-sm font-medium text-gray-600">Future Enhancement</p>
-                <p className="text-xs text-gray-500 mt-1">
-                  Individual dietary tracking for plus ones will be available in a future update.
-                  For now, please include plus one dietary requirements in the primary guest's notes.
-                </p>
+              {/* Plus One Allergies */}
+              <div className="space-y-2">
+                <Label>
+                  Allergies
+                  <span className="ml-1 text-xs font-normal text-red-500">(Important)</span>
+                </Label>
+                <Controller
+                  control={control}
+                  name="plus_one_allergies"
+                  render={({ field }) => (
+                    <AllergyMultiSelect
+                      value={field.value}
+                      onChange={(v) => field.onChange(v)}
+                    />
+                  )}
+                />
+                {errors.plus_one_allergies && (
+                  <p className="text-sm text-red-500">{errors.plus_one_allergies.message}</p>
+                )}
               </div>
 
-              {/* Note about Plus One Dietary */}
-              <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700">
-                <p className="font-medium">Tip</p>
-                <p className="mt-1 text-blue-600">
-                  Include any plus one dietary requirements in the "Additional Notes" field of the primary guest.
-                </p>
+              {/* Plus One Dietary Notes */}
+              <div className="space-y-2">
+                <Label>Additional Notes</Label>
+                <Controller
+                  control={control}
+                  name="plus_one_dietary_notes"
+                  render={({ field }) => (
+                    <Textarea
+                      {...field}
+                      placeholder="Any additional dietary requirements or preferences..."
+                      className="min-h-[100px]"
+                    />
+                  )}
+                />
+                {errors.plus_one_dietary_notes && (
+                  <p className="text-sm text-red-500">{errors.plus_one_dietary_notes.message}</p>
+                )}
               </div>
             </>
           ) : (

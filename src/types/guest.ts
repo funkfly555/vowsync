@@ -73,6 +73,12 @@ export interface Guest {
   plus_one_starter_choice: number | null;
   plus_one_main_choice: number | null;
   plus_one_dessert_choice: number | null;
+  // Plus one dietary (033-guest-page-tweaks)
+  plus_one_dietary_restrictions: string | null;
+  plus_one_allergies: string | null;
+  plus_one_dietary_notes: string | null;
+  // Plus one seating (033-guest-page-tweaks)
+  plus_one_table_position: number | null;
   // Wedding Party (025-guest-page-fixes)
   gender: Gender | null;
   wedding_party_side: WeddingPartySide | null;
@@ -292,11 +298,17 @@ export interface GuestFormData {
   // Seating
   table_number: string | null;
   table_position: number | null;
+  plus_one_table_position: number | null;
 
   // Dietary
   dietary_restrictions: string;
   allergies: string;
   dietary_notes: string;
+
+  // Dietary - Plus One (033-guest-page-tweaks)
+  plus_one_dietary_restrictions: string;
+  plus_one_allergies: string;
+  plus_one_dietary_notes: string;
 
   // Meal - Primary Guest
   starter_choice: number | null;
@@ -334,9 +346,13 @@ export const DEFAULT_GUEST_FORM_DATA: GuestFormData = {
   plus_one_confirmed: false,
   table_number: null,
   table_position: null,
+  plus_one_table_position: null,
   dietary_restrictions: '',
   allergies: '',
   dietary_notes: '',
+  plus_one_dietary_restrictions: '',
+  plus_one_allergies: '',
+  plus_one_dietary_notes: '',
   starter_choice: null,
   main_choice: null,
   dessert_choice: null,
@@ -447,6 +463,41 @@ export const MEAL_OPTIONS = [1, 2, 3, 4, 5] as const;
 export type MealOption = (typeof MEAL_OPTIONS)[number];
 
 export const TABLE_NUMBERS = Array.from({ length: 20 }, (_, i) => String(i + 1));
+
+// =============================================================================
+// Dietary Constants (033-guest-page-tweaks)
+// =============================================================================
+
+export const DIETARY_RESTRICTION_OPTIONS = [
+  'No dietary restrictions',
+  'Vegetarian',
+  'Vegan',
+  'Pescatarian',
+  'Halal',
+  'Kosher',
+  'No pork',
+  'Gluten-free',
+  'Other',
+] as const;
+
+export const ALLERGY_OPTIONS = [
+  'No known allergies',
+  'Peanuts',
+  'Tree nuts',
+  'Shellfish',
+  'Fish',
+  'Dairy/lactose',
+  'Eggs',
+  'Gluten/wheat',
+  'Soy',
+  'Sesame',
+  'Mustard',
+  'Celery',
+  'Sulphites',
+  'Lupin',
+  'Molluscs',
+  'Other',
+] as const;
 
 // =============================================================================
 // UI State Types (Phase 021 - Guest Page Redesign)
@@ -572,11 +623,17 @@ export interface GuestEditFormData {
   // Seating Tab
   table_number: string;
   table_position: number | null;
+  plus_one_table_position: number | null;
 
   // Dietary Tab
   dietary_restrictions: string;
   allergies: string;
   dietary_notes: string;
+
+  // Dietary Tab - Plus One (033-guest-page-tweaks)
+  plus_one_dietary_restrictions: string;
+  plus_one_allergies: string;
+  plus_one_dietary_notes: string;
 
   // Meals Tab - Primary Guest
   starter_choice: number | null;
@@ -614,9 +671,13 @@ export const DEFAULT_GUEST_EDIT_FORM_DATA: GuestEditFormData = {
   rsvp_notes: '',
   table_number: '',
   table_position: null,
+  plus_one_table_position: null,
   dietary_restrictions: '',
   allergies: '',
   dietary_notes: '',
+  plus_one_dietary_restrictions: '',
+  plus_one_allergies: '',
+  plus_one_dietary_notes: '',
   starter_choice: null,
   main_choice: null,
   dessert_choice: null,
